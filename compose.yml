@@ -16,7 +16,7 @@ services:
       - "5000:5000"
 
     depends_on:
-      postgres:
+      stellar-db:
         condition: service_healthy
 
     networks:
@@ -24,7 +24,7 @@ services:
       - back_end
 
 
-  postgres:
+  stellar-db:
     image: postgres:18
 
     container_name: stellar-postgres
@@ -48,6 +48,7 @@ services:
           "CMD-SHELL",
           "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
         ]
+
       interval: 5s
       timeout: 5s
       retries: 5
