@@ -1,4 +1,3 @@
-
 @page {
     size: A4;
     margin: 0;
@@ -18,12 +17,27 @@
     --sidebar: #f5f8fb;
 }
 
+/* =========================
+   Page
+   ========================= */
+
+html,
 body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 297mm;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+
     font-family: Arial, Helvetica, sans-serif;
     color: var(--text);
     font-size: 9.4pt;
     line-height: 1.35;
+
     background: #ffffff;
 }
 
@@ -32,7 +46,10 @@ body {
    ========================= */
 
 .header {
+    flex-shrink: 0;
+
     padding: 13mm 17mm 10mm;
+
     border-top: 7px solid var(--blue);
     border-bottom: 1px solid var(--border);
 }
@@ -47,6 +64,7 @@ body {
 
 .header h1 {
     margin: 0;
+
     color: #111827;
     font-size: 27pt;
     font-weight: 700;
@@ -55,6 +73,7 @@ body {
 
 .headline {
     margin-top: 4px;
+
     color: var(--blue);
     font-size: 12pt;
     font-weight: 600;
@@ -64,10 +83,13 @@ body {
     position: absolute;
     right: 0;
     top: 3px;
+
     width: 38mm;
     height: 12mm;
+
     border-top: 4px solid var(--blue);
     border-right: 4px solid var(--blue);
+
     opacity: 0.18;
 }
 
@@ -78,15 +100,38 @@ body {
 .layout {
     display: grid;
     grid-template-columns: 31% 69%;
+
+    /*
+     * This is the important part.
+     * The layout occupies all remaining
+     * vertical space on the A4 page.
+     */
+    flex: 1;
+    min-height: 0;
+
+    align-items: stretch;
 }
 
+/* =========================
+   Sidebar
+   ========================= */
+
 aside {
+    height: 100%;
+
     padding: 9mm 7mm 10mm 17mm;
+
     background: var(--sidebar);
     border-right: 1px solid var(--border);
 }
 
+/* =========================
+   Main content
+   ========================= */
+
 main {
+    height: 100%;
+
     padding: 9mm 17mm 10mm 12mm;
 }
 
@@ -102,8 +147,10 @@ section {
     display: flex;
     align-items: center;
     gap: 7px;
+
     margin-bottom: 8px;
     padding-bottom: 5px;
+
     border-bottom: 2px solid var(--blue-light);
 }
 
@@ -111,6 +158,7 @@ section {
     width: 18px;
     height: 18px;
     flex: 0 0 18px;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -121,6 +169,7 @@ section {
 .date-icon svg {
     width: 100%;
     height: 100%;
+
     fill: none;
     stroke: var(--blue);
     stroke-width: 1.8;
@@ -130,15 +179,18 @@ section {
 
 h2 {
     margin: 0;
+
     color: var(--blue-dark);
     font-size: 11.5pt;
     font-weight: 700;
+
     text-transform: uppercase;
     letter-spacing: 0.6px;
 }
 
 h3 {
     margin: 0;
+
     color: #111827;
     font-size: 10.5pt;
     font-weight: 700;
@@ -172,6 +224,7 @@ p {
     display: flex;
     align-items: flex-start;
     gap: 6px;
+
     color: #404854;
     font-size: 8.4pt;
 }
@@ -181,6 +234,7 @@ p {
     width: 15px;
     height: 15px;
     flex: 0 0 15px;
+
     margin-top: 1px;
 }
 
@@ -201,6 +255,7 @@ p {
 
 .skill {
     padding-bottom: 5px;
+
     border-bottom: 1px solid #e2e8ef;
 }
 
@@ -215,6 +270,7 @@ p {
 
 .skill-level {
     margin-top: 1px;
+
     color: var(--muted);
     font-size: 8.2pt;
 }
@@ -253,6 +309,7 @@ p {
 
 .company {
     margin-top: 1px;
+
     color: var(--blue);
     font-size: 9pt;
     font-weight: 700;
@@ -267,7 +324,9 @@ p {
     display: flex;
     align-items: center;
     gap: 4px;
+
     margin-top: 3px;
+
     color: var(--muted);
     font-size: 8.3pt;
 }
@@ -280,9 +339,11 @@ p {
 
 .timeline-item {
     position: relative;
+
     display: grid;
     grid-template-columns: 10px 1fr;
     gap: 9px;
+
     margin-bottom: 12px;
 }
 
@@ -292,28 +353,36 @@ p {
 
 .timeline-marker {
     position: relative;
+
     width: 8px;
     min-height: 100%;
 }
 
 .timeline-marker::before {
     content: "";
+
     position: absolute;
     left: 2px;
     top: 4px;
+
     width: 7px;
     height: 7px;
+
     border-radius: 50%;
+
     background: var(--blue);
 }
 
 .timeline-marker::after {
     content: "";
+
     position: absolute;
     left: 5px;
     top: 14px;
     bottom: -12px;
+
     width: 1px;
+
     background: #c8d8e7;
 }
 
@@ -347,6 +416,7 @@ p {
 
 .education-degree {
     margin-top: 2px;
+
     color: var(--blue);
     font-weight: 700;
 }
@@ -368,6 +438,7 @@ p {
 .project-item {
     margin-bottom: 11px;
     padding: 0 0 8px 10px;
+
     border-left: 3px solid var(--blue-light);
 }
 
@@ -379,7 +450,9 @@ p {
     display: flex;
     align-items: flex-start;
     gap: 6px;
+
     margin-top: 4px;
+
     color: var(--blue);
     font-size: 8.2pt;
 }
@@ -395,6 +468,7 @@ p {
 .certification-item {
     margin-bottom: 10px;
     padding-left: 10px;
+
     border-left: 3px solid var(--blue-light);
 }
 
@@ -404,12 +478,14 @@ p {
 
 .certification-org {
     margin-top: 1px;
+
     color: var(--blue);
     font-weight: 600;
 }
 
 .credential {
     margin-top: 3px;
+
     color: #5d6672;
     font-size: 8.2pt;
 }
@@ -419,8 +495,25 @@ p {
    ========================= */
 
 @media print {
+
+    html,
+    body {
+        width: 210mm;
+        min-height: 297mm;
+        height: 297mm;
+    }
+
     body {
         background: #ffffff;
+    }
+
+    .layout {
+        flex: 1;
+    }
+
+    aside,
+    main {
+        min-height: 0;
     }
 
     section,
@@ -429,4 +522,3 @@ p {
         page-break-inside: avoid;
     }
 }
-

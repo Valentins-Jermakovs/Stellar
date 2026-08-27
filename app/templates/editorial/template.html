@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cv.title }}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    {% if cv.personal_info %}
+    <header class="header">
+
+        <div class="header-top">
+            <span class="label">CURRICULUM VITAE</span>
+            <span class="line"></span>
+        </div>
+
+        <div class="header-main">
+
+            <div class="identity">
+                <h1>
+                    {{ cv.personal_info.first_name }}
+                    <span>{{ cv.personal_info.last_name }}</span>
+                </h1>
+
+                {% if cv.personal_info.headline %}
+                <div class="headline">
+                    {{ cv.personal_info.headline }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="contact-block">
+
+                {% if cv.personal_info.email %}
+                <div>{{ cv.personal_info.email }}</div>
+                {% endif %}
+
+                {% if cv.personal_info.phone %}
+                <div>{{ cv.personal_info.phone }}</div>
+                {% endif %}
+
+                {% if cv.personal_info.location %}
+                <div>{{ cv.personal_info.location }}</div>
+                {% endif %}
+
+                {% if cv.personal_info.website %}
+                <div class="break-word">{{ cv.personal_info.website }}</div>
+                {% endif %}
+
+                {% if cv.personal_info.linkedin %}
+                <div class="break-word">{{ cv.personal_info.linkedin }}</div>
+                {% endif %}
+
+                {% if cv.personal_info.github %}
+                <div class="break-word">{{ cv.personal_info.github }}</div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </header>
+    {% endif %}
+
+
+    <div class="content">
+
+        <main>
+
+            {% if cv.personal_info and cv.personal_info.summary %}
+            <section>
+
+                <div class="section-heading">
+                    <span>01</span>
+                    <h2>Profile</h2>
+                </div>
+
+                <p class="profile">
+                    {{ cv.personal_info.summary }}
+                </p>
+
+            </section>
+            {% endif %}
+
+
+            {% if cv.experience %}
+            <section>
+
+                <div class="section-heading">
+                    <span>02</span>
+                    <h2>Experience</h2>
+                </div>
+
+                {% for item in cv.experience %}
+                <article class="experience-item">
+
+                    <div class="period">
+                        {{ item.start_date.strftime("%Y") }}
+                        —
+                        {% if item.is_current %}
+                        Present
+                        {% elif item.end_date %}
+                        {{ item.end_date.strftime("%Y") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="entry">
+
+                        <h3>{{ item.position }}</h3>
+
+                        <div class="company">
+                            {{ item.company }}
+
+                            {% if item.location %}
+                            <span> / {{ item.location }}</span>
+                            {% endif %}
+                        </div>
+
+                        {% if item.description %}
+                        <p>
+                            {{ item.description }}
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+                {% endfor %}
+
+            </section>
+            {% endif %}
+
+
+            {% if cv.education %}
+            <section>
+
+                <div class="section-heading">
+                    <span>03</span>
+                    <h2>Education</h2>
+                </div>
+
+                {% for item in cv.education %}
+                <article class="education-item">
+
+                    <div class="period">
+                        {% if item.start_date %}
+                        {{ item.start_date.strftime("%Y") }}
+                        —
+                        {% if item.end_date %}
+                        {{ item.end_date.strftime("%Y") }}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="entry">
+
+                        <h3>{{ item.institution }}</h3>
+
+                        {% if item.degree %}
+                        <div class="degree">
+                            {{ item.degree }}
+                        </div>
+                        {% endif %}
+
+                        {% if item.field_of_study %}
+                        <div class="field">
+                            {{ item.field_of_study }}
+                        </div>
+                        {% endif %}
+
+                        {% if item.location %}
+                        <div class="location">
+                            {{ item.location }}
+                        </div>
+                        {% endif %}
+
+                        {% if item.description %}
+                        <p>
+                            {{ item.description }}
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+                {% endfor %}
+
+            </section>
+            {% endif %}
+
+
+            {% if cv.projects %}
+            <section>
+
+                <div class="section-heading">
+                    <span>04</span>
+                    <h2>Projects</h2>
+                </div>
+
+                {% for item in cv.projects %}
+                <article class="project-item">
+
+                    <h3>{{ item.name }}</h3>
+
+                    {% if item.description %}
+                    <p>
+                        {{ item.description }}
+                    </p>
+                    {% endif %}
+
+                    {% if item.github_url %}
+                    <div class="project-link break-word">
+                        {{ item.github_url }}
+                    </div>
+                    {% endif %}
+
+                    {% if item.url %}
+                    <div class="project-link break-word">
+                        {{ item.url }}
+                    </div>
+                    {% endif %}
+
+                </article>
+                {% endfor %}
+
+            </section>
+            {% endif %}
+
+        </main>
+
+
+        <aside>
+
+            {% if cv.skills %}
+            <section>
+
+                <div class="side-heading">
+                    <span>05</span>
+                    <h2>Skills</h2>
+                </div>
+
+                <div class="skills">
+
+                    {% for skill in cv.skills %}
+                    <div class="skill">
+
+                        <div class="skill-name">
+                            {{ skill.name }}
+                        </div>
+
+                        {% if skill.level %}
+                        <div class="skill-level">
+                            {{ skill.level }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </section>
+            {% endif %}
+
+
+            {% if cv.languages %}
+            <section>
+
+                <div class="side-heading">
+                    <span>06</span>
+                    <h2>Languages</h2>
+                </div>
+
+                <div class="languages">
+
+                    {% for language in cv.languages %}
+                    <div class="language">
+
+                        <span class="language-name">
+                            {{ language.name }}
+                        </span>
+
+                        <span class="language-level">
+                            {{ language.proficiency }}
+                        </span>
+
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </section>
+            {% endif %}
+
+
+            {% if cv.certifications %}
+            <section>
+
+                <div class="side-heading">
+                    <span>07</span>
+                    <h2>Certifications</h2>
+                </div>
+
+                {% for item in cv.certifications %}
+                <article class="certification">
+
+                    <h3>{{ item.name }}</h3>
+
+                    {% if item.organization %}
+                    <div class="certification-org">
+                        {{ item.organization }}
+                    </div>
+                    {% endif %}
+
+                    {% if item.issue_date %}
+                    <div class="certification-date">
+                        {{ item.issue_date.strftime("%B %Y") }}
+
+                        {% if item.expiration_date %}
+                        — {{ item.expiration_date.strftime("%B %Y") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if item.credential_id %}
+                    <div class="credential break-word">
+                        ID: {{ item.credential_id }}
+                    </div>
+                    {% endif %}
+
+                </article>
+                {% endfor %}
+
+            </section>
+            {% endif %}
+
+        </aside>
+
+    </div>
+
+</body>
+
+</html>

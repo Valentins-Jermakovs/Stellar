@@ -1,0 +1,992 @@
+@page {
+    size: A4;
+    margin: 0;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --accent: #635bff;
+    --accent-dark: #4f46d8;
+    --accent-soft: #eeedff;
+
+    --sidebar: #f7f7fb;
+
+    --text: #202124;
+    --heading: #111318;
+    --muted: #747986;
+
+    --border: #e4e5ea;
+    --border-dark: #d4d6dd;
+}
+
+html,
+body {
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #ffffff;
+    color: var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 9.5pt;
+    line-height: 1.45;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.page {
+    width: 210mm;
+    max-width: 210mm;
+    min-height: 297mm;
+
+    margin: 0 auto;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    position: relative;
+
+    width: 100%;
+
+    padding: 13mm 17mm 10mm;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid var(--border);
+
+    overflow: hidden;
+}
+
+.header-accent {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: var(--accent);
+}
+
+.header-content {
+    display: flex;
+
+    width: 100%;
+    min-width: 0;
+
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 20px;
+}
+
+.identity {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    color: var(--heading);
+
+    font-size: 30pt;
+    line-height: 0.95;
+
+    letter-spacing: -1.2px;
+
+    overflow-wrap: anywhere;
+}
+
+.name span {
+    font-weight: 400;
+}
+
+.name strong {
+    font-weight: 750;
+}
+
+.headline {
+    max-width: 100%;
+
+    margin-top: 9px;
+
+    color: var(--accent);
+
+    font-size: 11pt;
+    font-weight: 650;
+
+    letter-spacing: 0.1px;
+
+    overflow-wrap: anywhere;
+}
+
+.header-mark {
+    display: flex;
+
+    flex: 0 0 auto;
+
+    gap: 4px;
+
+    padding-bottom: 4px;
+}
+
+.header-mark span {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    flex: 0 0 7px;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+}
+
+.header-mark span:nth-child(2) {
+    opacity: 0.55;
+}
+
+.header-mark span:nth-child(3) {
+    opacity: 0.25;
+}
+
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.layout {
+    display: grid;
+
+    width: 100%;
+    min-width: 0;
+
+    grid-template-columns: 30% 70%;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    min-width: 0;
+
+    padding:
+        9mm
+        8mm
+        12mm
+        17mm;
+
+    background: var(--sidebar);
+
+    border-right: 1px solid var(--border);
+
+    overflow: hidden;
+}
+
+.sidebar-section {
+    min-width: 0;
+
+    margin-bottom: 23px;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.sidebar-section:last-child {
+    margin-bottom: 0;
+}
+
+.sidebar h2 {
+    margin: 0 0 11px;
+
+    color: var(--heading);
+
+    font-size: 8.3pt;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+}
+
+.sidebar h2::after {
+    content: "";
+
+    display: block;
+
+    width: 24px;
+    height: 2px;
+
+    margin-top: 5px;
+
+    background: var(--accent);
+}
+
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+
+.contact-list {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 10px;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 1px;
+}
+
+.contact-label {
+    color: var(--muted);
+
+    font-size: 7.2pt;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.contact-value {
+    min-width: 0;
+
+    color: #30343b;
+
+    font-size: 8.4pt;
+    line-height: 1.35;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   SKILLS
+   ========================================================= */
+
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.skill {
+    min-width: 0;
+    max-width: 100%;
+
+    padding: 4px 7px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+    overflow-wrap: anywhere;
+}
+
+.skill-name {
+    color: #292d34;
+
+    font-size: 8pt;
+    font-weight: 650;
+
+    overflow-wrap: anywhere;
+}
+
+.skill-level {
+    margin-top: 1px;
+
+    color: var(--muted);
+
+    font-size: 7.2pt;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   LANGUAGES
+   ========================================================= */
+
+.languages {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 7px;
+}
+
+.language {
+    display: flex;
+
+    min-width: 0;
+
+    justify-content: space-between;
+    align-items: baseline;
+
+    gap: 8px;
+
+    padding-bottom: 6px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.language:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.language-name {
+    min-width: 0;
+
+    color: #292d34;
+
+    font-weight: 650;
+
+    overflow-wrap: anywhere;
+}
+
+.language-level {
+    min-width: 0;
+
+    flex: 0 0 auto;
+
+    color: var(--accent);
+
+    font-size: 7.8pt;
+    font-weight: 650;
+
+    text-align: right;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.content {
+    min-width: 0;
+    max-width: 100%;
+
+    padding:
+        9mm
+        17mm
+        14mm
+        11mm;
+
+    overflow: hidden;
+}
+
+.section {
+    min-width: 0;
+
+    margin-bottom: 22px;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+
+    min-width: 0;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+}
+
+.section-number {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 23px;
+    height: 23px;
+
+    flex: 0 0 23px;
+
+    background: var(--accent-soft);
+
+    color: var(--accent);
+
+    border-radius: 6px;
+
+    font-size: 7.2pt;
+    font-weight: 750;
+}
+
+.section-heading h2 {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--heading);
+
+    font-size: 10.5pt;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+
+    overflow-wrap: anywhere;
+}
+
+.section-body {
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.profile {
+    min-width: 0;
+    max-width: 100%;
+
+    margin: 0;
+
+    color: #454a53;
+
+    font-size: 9.5pt;
+    line-height: 1.55;
+
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   EXPERIENCE
+   ========================================================= */
+
+.timeline {
+    position: relative;
+
+    min-width: 0;
+    max-width: 100%;
+
+    padding-left: 16px;
+}
+
+.timeline::before {
+    content: "";
+
+    position: absolute;
+
+    top: 5px;
+    bottom: 5px;
+    left: 3px;
+
+    width: 1px;
+
+    background: var(--border-dark);
+}
+
+.experience-item {
+    position: relative;
+
+    min-width: 0;
+    max-width: 100%;
+
+    margin-bottom: 17px;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.experience-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+
+    left: -17px;
+    top: 4px;
+
+    width: 7px;
+    height: 7px;
+
+    border: 2px solid #ffffff;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+
+    box-shadow: 0 0 0 1px var(--accent);
+}
+
+.experience-content {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.experience-top {
+    display: flex;
+
+    min-width: 0;
+    max-width: 100%;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 15px;
+}
+
+.experience-top > div:first-child {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+h3 {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--heading);
+
+    font-size: 10.3pt;
+    line-height: 1.25;
+
+    font-weight: 720;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.company {
+    min-width: 0;
+
+    margin-top: 3px;
+
+    color: var(--accent);
+
+    font-size: 8.7pt;
+    font-weight: 650;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.company span {
+    padding: 0 2px;
+
+    color: var(--muted);
+}
+
+.dates {
+    min-width: 0;
+
+    flex: 0 0 auto;
+
+    color: var(--muted);
+
+    font-size: 7.9pt;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.experience-content p {
+    min-width: 0;
+    max-width: 100%;
+
+    margin: 6px 0 0;
+
+    color: #4a5059;
+
+    line-height: 1.48;
+
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   EDUCATION
+   ========================================================= */
+
+.education-item {
+    display: flex;
+
+    min-width: 0;
+    max-width: 100%;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid var(--border);
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.education-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.education-main {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.education-degree {
+    margin-top: 3px;
+
+    color: var(--accent);
+
+    font-size: 8.8pt;
+    font-weight: 650;
+
+    overflow-wrap: anywhere;
+}
+
+.education-field {
+    margin-top: 2px;
+
+    color: #454b54;
+
+    overflow-wrap: anywhere;
+}
+
+.education-location {
+    margin-top: 2px;
+
+    color: var(--muted);
+
+    font-size: 8.1pt;
+
+    overflow-wrap: anywhere;
+}
+
+.education-main p {
+    min-width: 0;
+
+    margin: 5px 0 0;
+
+    color: #4a5059;
+
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   PROJECTS
+   ========================================================= */
+
+.projects {
+    display: grid;
+
+    min-width: 0;
+    max-width: 100%;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.project {
+    min-width: 0;
+    max-width: 100%;
+
+    padding: 11px;
+
+    background: #fafafe;
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+
+    overflow: hidden;
+}
+
+.project-top {
+    display: flex;
+
+    min-width: 0;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 10px;
+}
+
+.project-top h3 {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.project-arrow {
+    flex: 0 0 auto;
+
+    color: var(--accent);
+
+    font-size: 12pt;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+.project p {
+    min-width: 0;
+
+    margin: 6px 0 0;
+
+    color: #4b515a;
+
+    line-height: 1.45;
+
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.project-links {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 2px;
+
+    margin-top: 7px;
+}
+
+.project-link {
+    min-width: 0;
+    max-width: 100%;
+
+    color: var(--accent);
+
+    font-size: 7.7pt;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   CERTIFICATIONS
+   ========================================================= */
+
+.certification {
+    display: flex;
+
+    min-width: 0;
+    max-width: 100%;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid var(--border);
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.certification:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+
+    border-bottom: 0;
+}
+
+.certification-main {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.certification-main h3 {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.certification-org {
+    min-width: 0;
+
+    margin-top: 3px;
+
+    color: var(--accent);
+
+    font-size: 8.4pt;
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.certification-date {
+    flex: 0 0 auto;
+
+    color: var(--muted);
+
+    font-size: 7.8pt;
+
+    white-space: nowrap;
+}
+
+.credential {
+    min-width: 0;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: 7.7pt;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+
+.break-word {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+p {
+    min-width: 0;
+    max-width: 100%;
+
+    white-space: pre-line;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    html,
+    body {
+        width: 210mm;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: #ffffff;
+
+        overflow: visible;
+    }
+
+    .page {
+        width: 210mm;
+        max-width: 210mm;
+        min-height: 297mm;
+
+        margin: 0;
+
+        overflow: visible;
+    }
+
+    .sidebar,
+    .content {
+        overflow: visible;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+}
+
