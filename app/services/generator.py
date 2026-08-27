@@ -3,7 +3,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
 
-from schemas import CVDocument, CVTemplate
+from app.schemas import CVDocument, CVTemplate
 
 
 class CVGeneratorService:

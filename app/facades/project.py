@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVProject
-from schemas import (
+from app.models import CVProject
+from app.schemas import (
     CVProjectCreate,
     CVProjectUpdate,
 )
-from services import CVProjectService
+from app.services import CVProjectService
 
 
 class CVProjectFacade:

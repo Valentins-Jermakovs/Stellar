@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVProject
-from repositories import CVProjectRepository
-from schemas import (
+from app.models import CVProject
+from app.repositories import CVProjectRepository
+from app.schemas import (
     CVProjectCreate,
     CVProjectUpdate,
 )

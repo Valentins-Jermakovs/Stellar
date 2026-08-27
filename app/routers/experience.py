@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
-from facades import CVExperienceFacade
-from schemas import (
+from app.facades import CVExperienceFacade
+from app.schemas import (
     CVExperienceCreate,
     CVExperienceRead,
     CVExperienceUpdate,

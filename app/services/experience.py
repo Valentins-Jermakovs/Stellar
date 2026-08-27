@@ -1,9 +1,9 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVExperience
-from repositories import CVExperienceRepository
-from schemas import (
+from app.models import CVExperience
+from app.repositories import CVExperienceRepository
+from app.schemas import (
     CVExperienceCreate,
     CVExperienceUpdate,
 )

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from repositories import (
+from app.repositories import (
     CVCertificationRepository,
     CVEducationRepository,
     CVExperienceRepository,
@@ -12,7 +12,7 @@ from repositories import (
     CVSkillRepository,
 )
 
-from schemas import (
+from app.schemas import (
     CVDocument,
     CVDocumentLanguage,
     CVDocumentSkill,

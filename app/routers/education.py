@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
-from facades import CVEducationFacade
-from schemas import (
+from app.facades import CVEducationFacade
+from app.schemas import (
     CVEducationCreate,
     CVEducationRead,
     CVEducationUpdate,

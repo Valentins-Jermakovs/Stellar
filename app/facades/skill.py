@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVSkill, Skill
-from schemas import (
+from app.models import CVSkill, Skill
+from app.schemas import (
     CVSkillCreate,
     CVSkillUpdate,
     SkillCreate,
 )
-from services import (
+from app.services import (
     CVSkillService,
     SkillService,
 )

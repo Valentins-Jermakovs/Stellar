@@ -2,8 +2,8 @@ from pathlib import Path
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from schemas import CVTemplate
-from services import (
+from app.schemas import CVTemplate
+from app.services import (
     CVDocumentService,
     CVGeneratorService,
 )

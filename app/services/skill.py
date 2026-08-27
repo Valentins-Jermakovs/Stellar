@@ -1,12 +1,12 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVSkill, Skill
-from repositories import (
+from app.models import CVSkill, Skill
+from app.repositories import (
     CVSkillRepository,
     SkillRepository,
 )
-from schemas import (
+from app.schemas import (
     CVSkillCreate,
     CVSkillUpdate,
     SkillCreate,

@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVLanguage, Language
-from schemas import (
+from app.models import CVLanguage, Language
+from app.schemas import (
     CVLanguageCreate,
     CVLanguageUpdate,
     LanguageCreate,
 )
-from services import (
+from app.services import (
     CVLanguageService,
     LanguageService,
 )

@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVExperience
-from schemas import (
+from app.models import CVExperience
+from app.schemas import (
     CVExperienceCreate,
     CVExperienceUpdate,
 )
-from services import CVExperienceService
+from app.services import CVExperienceService
 
 
 class CVExperienceFacade:

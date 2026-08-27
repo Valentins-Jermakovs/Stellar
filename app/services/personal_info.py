@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVPersonalInfo
-from repositories import CVPersonalInfoRepository
-from schemas import (
+from app.models import CVPersonalInfo
+from app.repositories import CVPersonalInfoRepository
+from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
 )

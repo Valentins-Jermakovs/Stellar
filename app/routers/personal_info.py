@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
-from facades import CVPersonalInfoFacade
-from schemas import (
+from app.facades import CVPersonalInfoFacade
+from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoRead,
     CVPersonalInfoUpdate,

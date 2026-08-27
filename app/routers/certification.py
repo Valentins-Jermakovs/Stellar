@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
-from facades import CVCertificationFacade
-from schemas import (
+from app.facades import CVCertificationFacade
+from app.schemas import (
     CVCertificationCreate,
     CVCertificationRead,
     CVCertificationUpdate,

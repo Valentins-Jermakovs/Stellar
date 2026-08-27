@@ -4,15 +4,15 @@ from redis.asyncio import Redis
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.database import get_session
+from app.config.database import get_session
 
-from config.paths import TEMPLATES_DIR
+from app.config.paths import TEMPLATES_DIR
 
-from config.redis import get_redis
+from app.config.redis import get_redis
 
-from config.settings import settings
+from app.config.settings import settings
 
-from facades import (
+from app.facades import (
     CVCertificationFacade,
     CVEducationFacade,
     CVExperienceFacade,
@@ -26,7 +26,7 @@ from facades import (
     SkillFacade,
 )
 
-from utils import JWTAuth, JWTManager
+from app.utils import JWTAuth, JWTManager
 
 
 jwt_manager = JWTManager(

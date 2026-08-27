@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVCertification
-from schemas import (
+from app.models import CVCertification
+from app.schemas import (
     CVCertificationCreate,
     CVCertificationUpdate,
 )
-from services import CVCertificationService
+from app.services import CVCertificationService
 
 
 class CVCertificationFacade:

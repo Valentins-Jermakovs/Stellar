@@ -11,19 +11,19 @@ from fastapi import FastAPI
 # Database Initialization
 # ==============================
 
-from config.database import init_db
-
-from config.redis import (
+from app.config.database import init_db
+from app.config.redis import (
     init_redis,
     close_redis,
 )
+
 
 
 # ==============================
 # Router Imports
 # ==============================
 
-from routers import main_router
+from app.routers import main_router
 
 
 # ==============================

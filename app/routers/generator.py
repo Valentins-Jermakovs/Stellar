@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 
-from facades import CVGeneratorFacade
-from schemas import CVGenerateRequest
+from app.facades import CVGeneratorFacade
+from app.schemas import CVGenerateRequest
 
 from .dependencies import (
     get_generator_facade,

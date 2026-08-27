@@ -9,6 +9,7 @@ from .cv import (
     CVSkill,
     Language,
     Skill,
+    utc_now,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "CVLanguage",
     "Language",
     "CVCertification",
+    "utc_now",
 ]

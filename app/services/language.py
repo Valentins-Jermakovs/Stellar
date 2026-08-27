@@ -1,12 +1,12 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVLanguage, Language
-from repositories import (
+from app.models import CVLanguage, Language
+from app.repositories import (
     CVLanguageRepository,
     LanguageRepository,
 )
-from schemas import (
+from app.schemas import (
     CVLanguageCreate,
     CVLanguageUpdate,
     LanguageCreate,

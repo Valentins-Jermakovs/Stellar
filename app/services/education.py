@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVEducation
-from repositories import CVEducationRepository
-from schemas import (
+from app.models import CVEducation
+from app.repositories import CVEducationRepository
+from app.schemas import (
     CVEducationCreate,
     CVEducationUpdate,
 )

@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVPersonalInfo
-from schemas import (
+from app.models import CVPersonalInfo
+from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
 )
-from services import CVPersonalInfoService
+from app.services import CVPersonalInfoService
 
 
 class CVPersonalInfoFacade:

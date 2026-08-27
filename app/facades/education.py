@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import CVEducation
-from schemas import (
+from app.models import CVEducation
+from app.schemas import (
     CVEducationCreate,
     CVEducationUpdate,
 )
-from services import CVEducationService
+from app.services import CVEducationService
 
 
 class CVEducationFacade:

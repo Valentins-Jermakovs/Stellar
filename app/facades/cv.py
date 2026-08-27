@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
-from models import CV
-from schemas import (
+from app.models import CV
+from app.schemas import (
     CVCreate,
     CVUpdate,
 )
-from services import CVService
+from app.services import CVService
 
 
 class CVFacade:

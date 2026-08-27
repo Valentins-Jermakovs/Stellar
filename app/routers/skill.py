@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, status
 
-from facades import (
+from app.facades import (
     CVSkillFacade,
     SkillFacade,
 )
-from schemas import (
+from app.schemas import (
     CVSkillCreate,
     CVSkillRead,
     CVSkillUpdate,
