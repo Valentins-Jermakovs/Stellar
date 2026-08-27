@@ -11,8 +11,10 @@ def create_app() -> Flask:
 
     from stellar.blueprints.main import main_bp
     from stellar.blueprints.auth import auth_bp
+    from stellar.blueprints.cv import cv_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(cv_bp)
 
     return app

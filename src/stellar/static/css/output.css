@@ -4555,6 +4555,10 @@
       --tw-tracking: 0.12em;
       letter-spacing: 0.12em;
     }
+    .sm\:tracking-widest {
+      --tw-tracking: var(--tracking-widest);
+      letter-spacing: var(--tracking-widest);
+    }
   }
   @media (width >= 48rem) {
     .md\:col-span-2 {
