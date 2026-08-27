@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-theme="stellar">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -15,12 +16,65 @@
             Stellar
         {% endblock %}
     </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/output.css') }}"
+    >
+
 </head>
 
-<body>
 
-    {% block content %}
-    {% endblock %}
+<body class="min-h-screen bg-base-100 text-base-content">
+
+    <header class="navbar border-b border-base-300 px-6">
+
+        <div class="flex-1">
+
+            <a
+                href="{{ url_for('main.index') }}"
+                class="text-xl font-bold tracking-wide"
+            >
+                STELLAR
+            </a>
+
+        </div>
+
+
+        <div class="flex-none">
+
+            <button class="btn btn-ghost">
+                Login
+            </button>
+
+            <button class="btn btn-primary">
+                Create CV
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <footer class="footer footer-center border-t border-base-300 p-6">
+
+        <aside>
+
+            <p class="opacity-60">
+                Stellar CV Builder
+            </p>
+
+        </aside>
+
+    </footer>
 
 </body>
 
