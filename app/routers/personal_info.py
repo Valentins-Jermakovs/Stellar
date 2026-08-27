@@ -1,39 +1,41 @@
 from fastapi import APIRouter, Depends, status
 
-from facades import CVFacade
+from facades import CVPersonalInfoFacade
 from schemas import (
-    CVCreate,
-    CVRead,
-    CVUpdate,
+    CVPersonalInfoCreate,
+    CVPersonalInfoRead,
+    CVPersonalInfoUpdate,
 )
 
 from .dependencies import (
-    get_cv_facade,
+    get_personal_info_facade,
     jwt_auth,
 )
 
 
 router = APIRouter(
-    prefix="/cvs",
-    tags=["CV"],
+    prefix="/cvs/{cv_id}/personal-info",
+    tags=["CV Personal Info"],
 )
 
 
 @router.post(
     "",
-    response_model=CVRead,
+    response_model=CVPersonalInfoRead,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_cv(
-    data: CVCreate,
+async def create_personal_info(
+    cv_id: int,
+    data: CVPersonalInfoCreate,
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
-    facade: CVFacade = Depends(
-        get_cv_facade
+    facade: CVPersonalInfoFacade = Depends(
+        get_personal_info_facade
     ),
 ):
     return await facade.create(
+        cv_id=cv_id,
         user_id=int(current_user["sub"]),
         data=data,
     )
@@ -41,52 +43,35 @@ async def create_cv(
 
 @router.get(
     "",
-    response_model=list[CVRead],
+    response_model=CVPersonalInfoRead,
 )
-async def get_my_cvs(
-    current_user: dict = Depends(
-        jwt_auth.get_current_user
-    ),
-    facade: CVFacade = Depends(
-        get_cv_facade
-    ),
-):
-    return await facade.get_by_user_id(
-        user_id=int(current_user["sub"]),
-    )
-
-
-@router.get(
-    "/{cv_id}",
-    response_model=CVRead,
-)
-async def get_cv(
+async def get_personal_info(
     cv_id: int,
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
-    facade: CVFacade = Depends(
-        get_cv_facade
+    facade: CVPersonalInfoFacade = Depends(
+        get_personal_info_facade
     ),
 ):
-    return await facade.get_by_id(
+    return await facade.get_by_cv_id(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
     )
 
 
 @router.patch(
-    "/{cv_id}",
-    response_model=CVRead,
+    "",
+    response_model=CVPersonalInfoRead,
 )
-async def update_cv(
+async def update_personal_info(
     cv_id: int,
-    data: CVUpdate,
+    data: CVPersonalInfoUpdate,
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
-    facade: CVFacade = Depends(
-        get_cv_facade
+    facade: CVPersonalInfoFacade = Depends(
+        get_personal_info_facade
     ),
 ):
     return await facade.update(
@@ -97,16 +82,16 @@ async def update_cv(
 
 
 @router.delete(
-    "/{cv_id}",
+    "",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_cv(
+async def delete_personal_info(
     cv_id: int,
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
-    facade: CVFacade = Depends(
-        get_cv_facade
+    facade: CVPersonalInfoFacade = Depends(
+        get_personal_info_facade
     ),
 ):
     await facade.delete(

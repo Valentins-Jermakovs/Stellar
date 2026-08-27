@@ -3,7 +3,7 @@
 # ==============================
 
 from contextlib import asynccontextmanager
-
+from .main import main_router
 from fastapi import FastAPI
 
 
