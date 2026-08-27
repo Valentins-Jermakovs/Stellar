@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVPersonalInfo
@@ -15,6 +16,8 @@ class CVPersonalInfoService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVPersonalInfoRepository(
             session
         )
@@ -39,8 +42,9 @@ class CVPersonalInfoService:
         )
 
         if existing is not None:
-            raise ValueError(
-                "Personal information already exists"
+            raise HTTPException(
+                status_code=409,
+                detail="Personal information already exists",
             )
 
         personal_info = CVPersonalInfo(
@@ -48,9 +52,17 @@ class CVPersonalInfoService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             personal_info
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            personal_info
+        )
+
+        return personal_info
 
     async def get_by_cv_id(
         self,
@@ -78,26 +90,39 @@ class CVPersonalInfoService:
         )
 
         personal_info = (
-            await self.repository.get_by_cv_id(cv_id)
+            await self.repository.get_by_cv_id(
+                cv_id
+            )
         )
 
         if personal_info is None:
-            raise ValueError(
-                "Personal information not found"
+            raise HTTPException(
+                status_code=404,
+                detail="Personal information not found",
             )
 
-        for field, value in data.model_dump(
+        values = data.model_dump(
             exclude_unset=True
-        ).items():
+        )
+
+        for field, value in values.items():
             setattr(
                 personal_info,
                 field,
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             personal_info
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            personal_info
+        )
+
+        return personal_info
 
     async def delete(
         self,
@@ -110,10 +135,19 @@ class CVPersonalInfoService:
         )
 
         personal_info = (
-            await self.repository.get_by_cv_id(cv_id)
+            await self.repository.get_by_cv_id(
+                cv_id
+            )
         )
 
-        if personal_info is not None:
-            await self.repository.delete(
-                personal_info
+        if personal_info is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Personal information not found",
             )
+
+        await self.repository.delete(
+            personal_info
+        )
+
+        await self.session.commit()

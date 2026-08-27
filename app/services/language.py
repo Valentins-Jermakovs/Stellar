@@ -20,6 +20,8 @@ class LanguageService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = LanguageRepository(
             session
         )
@@ -39,9 +41,17 @@ class LanguageService:
             name=data.name
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             language
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            language
+        )
+
+        return language
 
     async def get_by_id(
         self,
@@ -67,7 +77,9 @@ class LanguageService:
             name
         )
 
-    async def get_all(self) -> list[Language]:
+    async def get_all(
+        self,
+    ) -> list[Language]:
         return await self.repository.get_all()
 
 
@@ -76,6 +88,8 @@ class CVLanguageService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVLanguageRepository(
             session
         )
@@ -127,9 +141,13 @@ class CVLanguageService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             cv_language
         )
+
+        await self.session.commit()
+
+        return cv_language
 
     async def get_by_cv_id(
         self,
@@ -177,9 +195,13 @@ class CVLanguageService:
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             cv_language
         )
+
+        await self.session.commit()
+
+        return cv_language
 
     async def delete(
         self,
@@ -206,3 +228,5 @@ class CVLanguageService:
         await self.repository.delete(
             cv_language
         )
+
+        await self.session.commit()

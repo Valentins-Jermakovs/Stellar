@@ -20,7 +20,11 @@ class SkillService:
         self,
         session: AsyncSession,
     ):
-        self.repository = SkillRepository(session)
+        self.session = session
+
+        self.repository = SkillRepository(
+            session
+        )
 
     async def create(
         self,
@@ -37,7 +41,17 @@ class SkillService:
             name=data.name
         )
 
-        return await self.repository.create(skill)
+        await self.repository.create(
+            skill
+        )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            skill
+        )
+
+        return skill
 
     async def get_by_id(
         self,
@@ -55,7 +69,9 @@ class SkillService:
 
         return skill
 
-    async def get_all(self) -> list[Skill]:
+    async def get_all(
+        self,
+    ) -> list[Skill]:
         return await self.repository.get_all()
 
     async def get_by_name(
@@ -72,6 +88,8 @@ class CVSkillService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVSkillRepository(
             session
         )
@@ -121,9 +139,13 @@ class CVSkillService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             cv_skill
         )
+
+        await self.session.commit()
+
+        return cv_skill
 
     async def get_by_cv_id(
         self,
@@ -171,9 +193,13 @@ class CVSkillService:
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             cv_skill
         )
+
+        await self.session.commit()
+
+        return cv_skill
 
     async def delete(
         self,
@@ -200,3 +226,5 @@ class CVSkillService:
         await self.repository.delete(
             cv_skill
         )
+
+        await self.session.commit()

@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVCertification
@@ -15,6 +16,8 @@ class CVCertificationService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVCertificationRepository(
             session
         )
@@ -39,9 +42,17 @@ class CVCertificationService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             certification
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            certification
+        )
+
+        return certification
 
     async def get_by_id(
         self,
@@ -53,9 +64,19 @@ class CVCertificationService:
             user_id,
         )
 
-        return await self.repository.get_by_id(
-            certification_id
+        certification = (
+            await self.repository.get_by_id(
+                certification_id
+            )
         )
+
+        if certification is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Certification not found",
+            )
+
+        return certification
 
     async def get_by_cv_id(
         self,
@@ -91,9 +112,17 @@ class CVCertificationService:
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             certification
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            certification
+        )
+
+        return certification
 
     async def delete(
         self,
@@ -108,3 +137,5 @@ class CVCertificationService:
         await self.repository.delete(
             certification
         )
+
+        await self.session.commit()

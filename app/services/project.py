@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVProject
@@ -15,6 +16,8 @@ class CVProjectService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVProjectRepository(
             session
         )
@@ -39,9 +42,17 @@ class CVProjectService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             project
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            project
+        )
+
+        return project
 
     async def get_by_id(
         self,
@@ -53,9 +64,17 @@ class CVProjectService:
             user_id,
         )
 
-        return await self.repository.get_by_id(
+        project = await self.repository.get_by_id(
             project_id
         )
+
+        if project is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Project not found",
+            )
+
+        return project
 
     async def get_by_cv_id(
         self,
@@ -91,9 +110,17 @@ class CVProjectService:
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             project
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            project
+        )
+
+        return project
 
     async def delete(
         self,
@@ -108,3 +135,5 @@ class CVProjectService:
         await self.repository.delete(
             project
         )
+
+        await self.session.commit()

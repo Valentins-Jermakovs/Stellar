@@ -26,9 +26,11 @@ class CVService:
         redis: Redis,
     ):
         self.session = session
+
         self.repository = CVRepository(
             session
         )
+
         self.cache = CacheRepository(
             redis
         )
@@ -60,6 +62,7 @@ class CVService:
         )
 
         await self.session.commit()
+
         await self.session.refresh(
             cv
         )
@@ -193,6 +196,7 @@ class CVService:
         )
 
         await self.session.commit()
+
         await self.session.refresh(
             cv
         )

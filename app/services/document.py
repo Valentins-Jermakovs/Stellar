@@ -75,6 +75,7 @@ class CVDocumentService:
         self,
         cv_id: int,
         user_id: int,
+        template: CVTemplate,
     ) -> CVDocument:
         cv = await self.cv_repository.get_by_id_for_user(
             cv_id=cv_id,
@@ -156,4 +157,5 @@ class CVDocumentService:
                 for cv_language, language in languages
             ],
             certifications=certifications,
+            template=template,
         )

@@ -5,11 +5,8 @@ from app.repositories import (
     CVCertificationRepository,
     CVEducationRepository,
     CVExperienceRepository,
-    CVLanguageRepository,
-    CVPersonalInfoRepository,
     CVProjectRepository,
     CVRepository,
-    CVSkillRepository,
 )
 
 
@@ -18,34 +15,32 @@ class CVOwnershipService:
         self,
         session: AsyncSession,
     ):
-        self.cv_repository = CVRepository(session)
-
-        self.personal_info_repository = (
-            CVPersonalInfoRepository(session)
+        self.cv_repository = CVRepository(
+            session
         )
 
         self.experience_repository = (
-            CVExperienceRepository(session)
+            CVExperienceRepository(
+                session
+            )
         )
 
         self.education_repository = (
-            CVEducationRepository(session)
-        )
-
-        self.skill_repository = (
-            CVSkillRepository(session)
+            CVEducationRepository(
+                session
+            )
         )
 
         self.project_repository = (
-            CVProjectRepository(session)
-        )
-
-        self.language_repository = (
-            CVLanguageRepository(session)
+            CVProjectRepository(
+                session
+            )
         )
 
         self.certification_repository = (
-            CVCertificationRepository(session)
+            CVCertificationRepository(
+                session
+            )
         )
 
     async def verify_cv(
@@ -53,11 +48,12 @@ class CVOwnershipService:
         cv_id: int,
         user_id: int,
     ) -> None:
-        cv = await self.cv_repository.get_by_id(
-            cv_id
+        cv = await self.cv_repository.get_by_id_for_user(
+            cv_id=cv_id,
+            user_id=user_id,
         )
 
-        if cv is None or cv.user_id != user_id:
+        if cv is None:
             raise HTTPException(
                 status_code=404,
                 detail="CV not found",
@@ -81,8 +77,8 @@ class CVOwnershipService:
             )
 
         await self.verify_cv(
-            experience.cv_id,
-            user_id,
+            cv_id=experience.cv_id,
+            user_id=user_id,
         )
 
     async def verify_education(
@@ -103,8 +99,8 @@ class CVOwnershipService:
             )
 
         await self.verify_cv(
-            education.cv_id,
-            user_id,
+            cv_id=education.cv_id,
+            user_id=user_id,
         )
 
     async def verify_project(
@@ -125,8 +121,8 @@ class CVOwnershipService:
             )
 
         await self.verify_cv(
-            project.cv_id,
-            user_id,
+            cv_id=project.cv_id,
+            user_id=user_id,
         )
 
     async def verify_certification(
@@ -147,8 +143,8 @@ class CVOwnershipService:
             )
 
         await self.verify_cv(
-            certification.cv_id,
-            user_id,
+            cv_id=certification.cv_id,
+            user_id=user_id,
         )
 
     async def verify_personal_info(
@@ -157,8 +153,8 @@ class CVOwnershipService:
         user_id: int,
     ) -> None:
         await self.verify_cv(
-            cv_id,
-            user_id,
+            cv_id=cv_id,
+            user_id=user_id,
         )
 
     async def verify_skill(
@@ -167,8 +163,8 @@ class CVOwnershipService:
         user_id: int,
     ) -> None:
         await self.verify_cv(
-            cv_id,
-            user_id,
+            cv_id=cv_id,
+            user_id=user_id,
         )
 
     async def verify_language(
@@ -177,6 +173,6 @@ class CVOwnershipService:
         user_id: int,
     ) -> None:
         await self.verify_cv(
-            cv_id,
-            user_id,
+            cv_id=cv_id,
+            user_id=user_id,
         )

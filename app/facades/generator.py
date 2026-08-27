@@ -33,6 +33,7 @@ class CVGeneratorFacade:
             await self.document_service.get_document(
                 cv_id=cv_id,
                 user_id=user_id,
+                template=template,
             )
         )
 

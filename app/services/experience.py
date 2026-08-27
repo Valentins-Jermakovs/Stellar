@@ -16,6 +16,8 @@ class CVExperienceService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVExperienceRepository(
             session
         )
@@ -40,9 +42,17 @@ class CVExperienceService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             experience
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            experience
+        )
+
+        return experience
 
     async def get_by_id(
         self,
@@ -54,9 +64,17 @@ class CVExperienceService:
             user_id,
         )
 
-        return await self.repository.get_by_id(
+        experience = await self.repository.get_by_id(
             experience_id
         )
+
+        if experience is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Experience not found",
+            )
+
+        return experience
 
     async def get_by_cv_id(
         self,
@@ -92,9 +110,17 @@ class CVExperienceService:
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             experience
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            experience
+        )
+
+        return experience
 
     async def delete(
         self,
@@ -109,3 +135,5 @@ class CVExperienceService:
         await self.repository.delete(
             experience
         )
+
+        await self.session.commit()

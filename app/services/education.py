@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVEducation
@@ -15,6 +16,8 @@ class CVEducationService:
         self,
         session: AsyncSession,
     ):
+        self.session = session
+
         self.repository = CVEducationRepository(
             session
         )
@@ -39,9 +42,17 @@ class CVEducationService:
             **data.model_dump(),
         )
 
-        return await self.repository.create(
+        await self.repository.create(
             education
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            education
+        )
+
+        return education
 
     async def get_by_id(
         self,
@@ -53,9 +64,17 @@ class CVEducationService:
             user_id,
         )
 
-        return await self.repository.get_by_id(
+        education = await self.repository.get_by_id(
             education_id
         )
+
+        if education is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Education not found",
+            )
+
+        return education
 
     async def get_by_cv_id(
         self,
@@ -91,9 +110,17 @@ class CVEducationService:
                 value,
             )
 
-        return await self.repository.update(
+        await self.repository.update(
             education
         )
+
+        await self.session.commit()
+
+        await self.session.refresh(
+            education
+        )
+
+        return education
 
     async def delete(
         self,
@@ -108,3 +135,5 @@ class CVEducationService:
         await self.repository.delete(
             education
         )
+
+        await self.session.commit()
