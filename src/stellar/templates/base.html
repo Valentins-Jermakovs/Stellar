@@ -25,38 +25,57 @@
 </head>
 
 
-<body class="min-h-screen bg-base-100 text-base-content">
-
-    <header class="navbar border-b border-base-300 px-6">
-
-        <div class="flex-1">
-
-            <a
-                href="{{ url_for('main.index') }}"
-                class="text-xl font-bold tracking-wide"
-            >
-                STELLAR
-            </a>
-
-        </div>
+<body class="min-h-screen bg-base-100 text-base-content flex flex-col">
 
 
-        <div class="flex-none">
+    <!-- ==============================
+         Navigation
+         ============================== -->
 
-            <button class="btn btn-ghost">
-                Login
-            </button>
+    <header class="border-b border-base-300 bg-base-100">
 
-            <button class="btn btn-primary">
-                Create CV
-            </button>
+        <div class="navbar max-w-7xl mx-auto px-6">
+
+            <div class="flex-1">
+
+                <a
+                    href="{{ url_for('main.index') }}"
+                    class="text-xl font-bold tracking-tight"
+                >
+                    STELLAR
+                </a>
+
+            </div>
+
+
+            <nav class="flex items-center gap-2">
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="btn btn-ghost"
+                >
+                    Login
+                </a>
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="btn btn-primary"
+                >
+                    Create CV
+                </a>
+
+            </nav>
 
         </div>
 
     </header>
 
 
-    <main>
+    <!-- ==============================
+         Main content
+         ============================== -->
+
+    <main class="flex-1">
 
         {% block content %}
         {% endblock %}
@@ -64,17 +83,30 @@
     </main>
 
 
-    <footer class="footer footer-center border-t border-base-300 p-6">
+    <!-- ==============================
+         Footer
+         ============================== -->
 
-        <aside>
+    <footer class="border-t border-base-300">
 
-            <p class="opacity-60">
-                Stellar CV Builder
-            </p>
+        <div class="max-w-7xl mx-auto px-6 py-6">
 
-        </aside>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+
+                <p class="text-sm opacity-60">
+                    Stellar CV Builder
+                </p>
+
+                <p class="text-sm opacity-50">
+                    Create. Customize. Stand out.
+                </p>
+
+            </div>
+
+        </div>
 
     </footer>
+
 
 </body>
 
