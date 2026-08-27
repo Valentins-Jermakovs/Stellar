@@ -20,6 +20,7 @@ class CV(SQLModel, table=True):
     )
 
     user_id: int = Field(
+        foreign_key="user.id",
         index=True,
     )
 
