@@ -29,7 +29,23 @@ from .cv import (
     CVCertificationRead,
 )
 
+from .document import (
+    CVDocument,
+    CVDocumentLanguage,
+    CVDocumentSkill,
+)
+
+from .template import (
+    CVGenerateRequest,
+    CVTemplate,
+)
+
 __all__ = [
+    "CVDocument",
+    "CVDocumentSkill",
+    "CVDocumentLanguage",
+    "CVTemplate",
+    "CVGenerateRequest",
     "CVCreate",
     "CVUpdate",
     "CVRead",

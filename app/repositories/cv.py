@@ -32,6 +32,20 @@ class CVRepository(BaseRepository[CV]):
 
         return list(result.scalars().all())
 
+    async def get_by_id_for_user(
+        self,
+        cv_id: int,
+        user_id: int,
+    ) -> CV | None:
+        result = await self.session.execute(
+            select(CV).where(
+                CV.id == cv_id,
+                CV.user_id == user_id,
+            )
+        )
+
+        return result.scalar_one_or_none()
+
 
 class CVPersonalInfoRepository(
     BaseRepository[CVPersonalInfo]
@@ -152,6 +166,29 @@ class CVSkillRepository:
 
         return list(result.scalars().all())
 
+    async def get_with_skills(
+        self,
+        cv_id: int,
+    ) -> list[tuple[CVSkill, Skill]]:
+        result = await self.session.execute(
+            select(
+                CVSkill,
+                Skill,
+            )
+            .join(
+                Skill,
+                Skill.id == CVSkill.skill_id,
+            )
+            .where(
+                CVSkill.cv_id == cv_id
+            )
+            .order_by(
+                CVSkill.sort_order
+            )
+        )
+
+        return list(result.all())
+
     async def update(
         self,
         cv_skill: CVSkill,
@@ -252,6 +289,29 @@ class CVLanguageRepository:
         )
 
         return list(result.scalars().all())
+
+    async def get_with_languages(
+        self,
+        cv_id: int,
+    ) -> list[tuple[CVLanguage, Language]]:
+        result = await self.session.execute(
+            select(
+                CVLanguage,
+                Language,
+            )
+            .join(
+                Language,
+                Language.id == CVLanguage.language_id,
+            )
+            .where(
+                CVLanguage.cv_id == cv_id
+            )
+            .order_by(
+                CVLanguage.sort_order
+            )
+        )
+
+        return list(result.all())
 
     async def update(
         self,

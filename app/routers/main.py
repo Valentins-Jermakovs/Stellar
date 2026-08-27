@@ -8,6 +8,7 @@ from .language import router as language_router
 from .personal_info import router as personal_info_router
 from .project import router as project_router
 from .skill import router as skill_router
+from .generator import router as generator_router
 
 
 main_router = APIRouter(
@@ -45,4 +46,8 @@ main_router.include_router(
 
 main_router.include_router(
     certification_router
+)
+
+main_router.include_router(
+    generator_router
 )

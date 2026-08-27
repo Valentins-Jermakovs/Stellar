@@ -1,9 +1,15 @@
 from fastapi import Depends
+
 from redis.asyncio import Redis
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.database import get_session
+
+from config.paths import TEMPLATES_DIR
+
 from config.redis import get_redis
+
 from config.settings import settings
 
 from facades import (
@@ -11,6 +17,7 @@ from facades import (
     CVEducationFacade,
     CVExperienceFacade,
     CVFacade,
+    CVGeneratorFacade,
     CVLanguageFacade,
     CVPersonalInfoFacade,
     CVProjectFacade,
@@ -111,4 +118,13 @@ def get_certification_facade(
 ) -> CVCertificationFacade:
     return CVCertificationFacade(
         session
+    )
+
+
+def get_generator_facade(
+    session: AsyncSession = Depends(get_session),
+) -> CVGeneratorFacade:
+    return CVGeneratorFacade(
+        session=session,
+        templates_path=TEMPLATES_DIR,
     )

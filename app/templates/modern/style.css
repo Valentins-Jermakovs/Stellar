@@ -1,0 +1,98 @@
+@page {
+    size: A4;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #202124;
+    font-size: 10pt;
+    line-height: 1.45;
+}
+
+.header {
+    padding: 25mm 18mm 14mm;
+    border-bottom: 3px solid #222;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28pt;
+}
+
+.headline {
+    margin-top: 5px;
+    font-size: 13pt;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 31% 69%;
+}
+
+aside {
+    padding: 15mm 9mm 15mm 18mm;
+    border-right: 1px solid #aaa;
+}
+
+main {
+    padding: 15mm 18mm 15mm 12mm;
+}
+
+section {
+    margin-bottom: 22px;
+}
+
+h2 {
+    margin: 0 0 10px;
+    font-size: 13pt;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+article {
+    margin-bottom: 16px;
+}
+
+h3 {
+    margin: 0;
+    font-size: 11pt;
+}
+
+.company {
+    font-weight: bold;
+}
+
+.dates {
+    margin-top: 2px;
+    color: #666;
+    font-size: 9pt;
+}
+
+p {
+    margin: 6px 0 0;
+    white-space: pre-line;
+}
+
+.skill,
+.language {
+    margin-bottom: 8px;
+}
+
+.skill span,
+.language span {
+    display: block;
+    margin-top: 1px;
+    color: #666;
+    font-size: 9pt;
+}
+
+.link {
+    font-size: 8.5pt;
+    word-break: break-all;
+}

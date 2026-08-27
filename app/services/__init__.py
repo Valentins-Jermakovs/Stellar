@@ -14,6 +14,9 @@ from .skill import (
     SkillService,
 )
 
+from .document import CVDocumentService
+from .generator import CVGeneratorService
+
 __all__ = [
     "CVService",
     "CVOwnershipService",
@@ -26,4 +29,6 @@ __all__ = [
     "LanguageService",
     "CVLanguageService",
     "CVCertificationService",
+    "CVDocumentService",
+    "CVGeneratorService",
 ]

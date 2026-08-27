@@ -2,6 +2,7 @@ from .certification import CVCertificationFacade
 from .cv import CVFacade
 from .education import CVEducationFacade
 from .experience import CVExperienceFacade
+from .generator import CVGeneratorFacade
 from .language import (
     CVLanguageFacade,
     LanguageFacade,
@@ -24,4 +25,5 @@ __all__ = [
     "LanguageFacade",
     "CVLanguageFacade",
     "CVCertificationFacade",
+    "CVGeneratorFacade",
 ]
