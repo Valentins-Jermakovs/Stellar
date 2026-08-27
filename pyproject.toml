@@ -8,4 +8,6 @@ dependencies = [
     "asyncpg>=0.31.0",
     "fastapi[standard]>=0.141.1",
     "python-jose[cryptography]>=3.5.0",
+    "redis>=8.1.0",
+    "sqlmodel>=0.0.39",
 ]
