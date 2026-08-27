@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Profile — Stellar
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto py-12 px-6">
+
+    <div class="card bg-base-200 shadow-xl">
+
+        <div class="card-body">
+
+            <h1 class="card-title text-3xl">
+                {{ user.full_name }}
+            </h1>
+
+            <div class="divider"></div>
+
+            <div class="space-y-3">
+
+                <p>
+                    <strong>Username:</strong>
+                    {{ user.username }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ user.email }}
+                </p>
+
+                <p>
+                    <strong>Role:</strong>
+                    {{ user.roles | join(", ") }}
+                </p>
+
+                <p>
+                    <strong>Account:</strong>
+
+                    {% if user.is_active %}
+                        <span class="badge badge-success">
+                            Active
+                        </span>
+                    {% else %}
+                        <span class="badge badge-error">
+                            Inactive
+                        </span>
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+            <div class="card-actions justify-end mt-6">
+
+                <form method="POST" action="{{ url_for('auth.logout') }}">
+
+                    <button
+                        type="submit"
+                        class="btn btn-error"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
