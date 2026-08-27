@@ -8,7 +8,10 @@ from flask import (
     url_for,
 )
 
-from stellar.clients.meridian import MeridianClient, MeridianError
+from stellar.clients.meridian import (
+    MeridianClient,
+    MeridianError,
+)
 
 
 auth_bp = Blueprint(
@@ -24,6 +27,7 @@ auth_bp = Blueprint(
 
 @auth_bp.get("/login")
 async def login():
+
     return render_template(
         "auth/login.html"
     )
@@ -75,8 +79,13 @@ async def login_submit():
 
     session.clear()
 
-    session["access_token"] = tokens.access_token
-    session["refresh_token"] = tokens.refresh_token
+    session["access_token"] = (
+        tokens.access_token
+    )
+
+    session["refresh_token"] = (
+        tokens.refresh_token
+    )
 
     return redirect(
         url_for("auth.current_user")
@@ -123,12 +132,12 @@ async def register_submit():
         "",
     )
 
-
     # --------------------------------------------------------
-    # Basic validation
+    # Validation
     # --------------------------------------------------------
 
     if not username:
+
         flash(
             "Username is required.",
             "error",
@@ -138,8 +147,8 @@ async def register_submit():
             url_for("auth.register")
         )
 
-
     if not full_name:
+
         flash(
             "Full name is required.",
             "error",
@@ -149,8 +158,8 @@ async def register_submit():
             url_for("auth.register")
         )
 
-
     if not email:
+
         flash(
             "Email is required.",
             "error",
@@ -160,8 +169,8 @@ async def register_submit():
             url_for("auth.register")
         )
 
-
     if not password:
+
         flash(
             "Password is required.",
             "error",
@@ -170,7 +179,6 @@ async def register_submit():
         return redirect(
             url_for("auth.register")
         )
-
 
     if password != password_confirm:
 
@@ -183,7 +191,6 @@ async def register_submit():
             url_for("auth.register")
         )
 
-
     if len(password) < 8:
 
         flash(
@@ -195,9 +202,8 @@ async def register_submit():
             url_for("auth.register")
         )
 
-
     # --------------------------------------------------------
-    # Create user in Meridian
+    # Create account
     # --------------------------------------------------------
 
     client = MeridianClient()
@@ -223,9 +229,8 @@ async def register_submit():
             url_for("auth.register")
         )
 
-
     # --------------------------------------------------------
-    # Login after successful registration
+    # Login after registration
     # --------------------------------------------------------
 
     try:
@@ -247,12 +252,15 @@ async def register_submit():
             url_for("auth.login")
         )
 
-
     session.clear()
 
-    session["access_token"] = tokens.access_token
-    session["refresh_token"] = tokens.refresh_token
+    session["access_token"] = (
+        tokens.access_token
+    )
 
+    session["refresh_token"] = (
+        tokens.refresh_token
+    )
 
     return redirect(
         url_for("auth.current_user")
@@ -270,7 +278,11 @@ async def current_user():
         "access_token"
     )
 
-    if not access_token:
+    refresh_token = session.get(
+        "refresh_token"
+    )
+
+    if not access_token or not refresh_token:
 
         return redirect(
             url_for("auth.login")
@@ -289,7 +301,8 @@ async def current_user():
         session.clear()
 
         flash(
-            "Your session has expired.",
+            "Your session has expired. "
+            "Please sign in again.",
             "error",
         )
 
@@ -300,6 +313,152 @@ async def current_user():
     return render_template(
         "auth/me.html",
         user=user,
+    )
+
+
+# ============================================================
+# UPDATE CURRENT USER
+# ============================================================
+
+@auth_bp.post("/me/update")
+async def update_current_user():
+
+    access_token = session.get(
+        "access_token"
+    )
+
+    refresh_token = session.get(
+        "refresh_token"
+    )
+
+    if not access_token or not refresh_token:
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    username = request.form.get(
+        "username",
+        "",
+    ).strip()
+
+    full_name = request.form.get(
+        "full_name",
+        "",
+    ).strip()
+
+    email = request.form.get(
+        "email",
+        "",
+    ).strip()
+
+    current_password = request.form.get(
+        "current_password",
+        "",
+    )
+
+    password = request.form.get(
+        "password",
+        "",
+    )
+
+    password_confirm = request.form.get(
+        "password_confirm",
+        "",
+    )
+
+    # --------------------------------------------------------
+    # Password validation
+    # --------------------------------------------------------
+
+    if password:
+
+        if not current_password:
+
+            flash(
+                "Current password is required "
+                "when changing your password.",
+                "error",
+            )
+
+            return redirect(
+                url_for("auth.current_user")
+            )
+
+        if password != password_confirm:
+
+            flash(
+                "New passwords do not match.",
+                "error",
+            )
+
+            return redirect(
+                url_for("auth.current_user")
+            )
+
+        if len(password) < 8:
+
+            flash(
+                "New password must contain "
+                "at least 8 characters.",
+                "error",
+            )
+
+            return redirect(
+                url_for("auth.current_user")
+            )
+
+    # --------------------------------------------------------
+    # Update
+    # --------------------------------------------------------
+
+    client = MeridianClient()
+
+    try:
+
+        await client.update_current_user(
+            access_token,
+            username=username or None,
+            full_name=full_name or None,
+            email=email or None,
+            current_password=(
+                current_password or None
+            ),
+            password=password or None,
+        )
+
+    except MeridianError as error:
+
+        if error.status_code == 401:
+
+            session.clear()
+
+            flash(
+                "Your session has expired. "
+                "Please sign in again.",
+                "error",
+            )
+
+            return redirect(
+                url_for("auth.login")
+            )
+
+        flash(
+            "Unable to update your profile.",
+            "error",
+        )
+
+        return redirect(
+            url_for("auth.current_user")
+        )
+
+    flash(
+        "Your profile has been updated.",
+        "success",
+    )
+
+    return redirect(
+        url_for("auth.current_user")
     )
 
 
@@ -345,7 +504,13 @@ async def logout_all():
         "access_token"
     )
 
-    if not access_token:
+    refresh_token = session.get(
+        "refresh_token"
+    )
+
+    if not access_token or not refresh_token:
+
+        session.clear()
 
         return redirect(
             url_for("auth.login")
@@ -361,13 +526,15 @@ async def logout_all():
 
     except MeridianError:
 
+        session.clear()
+
         flash(
             "Unable to log out from all sessions.",
             "error",
         )
 
         return redirect(
-            url_for("auth.current_user")
+            url_for("auth.login")
         )
 
     session.clear()

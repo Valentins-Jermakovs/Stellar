@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import httpx
+from flask import session
 
 from stellar.config.settings import settings
 from stellar.models.meridian import TokenResponse, User
@@ -9,6 +10,15 @@ from stellar.models.meridian import TokenResponse, User
 class MeridianError(Exception):
     """Base exception for Meridian API errors."""
 
+    def __init__(
+        self,
+        message: str,
+        status_code: int | None = None,
+    ) -> None:
+        super().__init__(message)
+
+        self.status_code = status_code
+
 
 class MeridianClient:
     """Client for communicating with the Meridian authentication service."""
@@ -16,6 +26,10 @@ class MeridianClient:
     def __init__(self) -> None:
         self.base_url = settings.MERIDIAN_URL.rstrip("/")
 
+
+    # ============================================================
+    # HTTP
+    # ============================================================
 
     async def _request(
         self,
@@ -27,10 +41,12 @@ class MeridianClient:
     ) -> httpx.Response:
         """Send a request to Meridian."""
 
-        headers = kwargs.pop("headers", {})
+        headers = kwargs.pop("headers", {}).copy()
 
         if access_token:
-            headers["Authorization"] = f"Bearer {access_token}"
+            headers["Authorization"] = (
+                f"Bearer {access_token}"
+            )
 
         async with httpx.AsyncClient(
             base_url=self.base_url,
@@ -45,13 +61,94 @@ class MeridianClient:
             )
 
         if response.is_error:
+
             raise MeridianError(
-                f"Meridian returned HTTP {response.status_code}: "
-                f"{response.text}"
+                (
+                    f"Meridian returned HTTP "
+                    f"{response.status_code}: "
+                    f"{response.text}"
+                ),
+                status_code=response.status_code,
             )
 
         return response
 
+
+    async def _authenticated_request(
+        self,
+        method: str,
+        endpoint: str,
+        *,
+        access_token: str,
+        refresh_token: str,
+        **kwargs,
+    ) -> httpx.Response:
+        """
+        Send an authenticated request.
+
+        If the access token has expired, automatically refresh
+        the token pair and retry the original request once.
+        """
+
+        try:
+
+            return await self._request(
+                method,
+                endpoint,
+                access_token=access_token,
+                **kwargs,
+            )
+
+        except MeridianError as error:
+
+            if error.status_code != 401:
+                raise
+
+        # --------------------------------------------------------
+        # Access token expired.
+        # Refresh the token pair.
+        # --------------------------------------------------------
+
+        try:
+
+            tokens = await self.refresh(
+                refresh_token
+            )
+
+        except MeridianError:
+
+            # Refresh token is also invalid.
+            session.clear()
+
+            raise
+
+        # --------------------------------------------------------
+        # Save the new tokens.
+        # --------------------------------------------------------
+
+        session["access_token"] = (
+            tokens.access_token
+        )
+
+        session["refresh_token"] = (
+            tokens.refresh_token
+        )
+
+        # --------------------------------------------------------
+        # Retry original request.
+        # --------------------------------------------------------
+
+        return await self._request(
+            method,
+            endpoint,
+            access_token=tokens.access_token,
+            **kwargs,
+        )
+
+
+    # ============================================================
+    # AUTH
+    # ============================================================
 
     async def register(
         self,
@@ -73,9 +170,9 @@ class MeridianClient:
             },
         )
 
-        data = response.json()
-
-        return self._parse_user(data)
+        return self._parse_user(
+            response.json()
+        )
 
 
     async def login(
@@ -94,7 +191,9 @@ class MeridianClient:
             },
         )
 
-        return self._parse_tokens(response.json())
+        return self._parse_tokens(
+            response.json()
+        )
 
 
     async def refresh(
@@ -111,7 +210,9 @@ class MeridianClient:
             },
         )
 
-        return self._parse_tokens(response.json())
+        return self._parse_tokens(
+            response.json()
+        )
 
 
     async def logout(
@@ -135,12 +236,26 @@ class MeridianClient:
     ) -> None:
         """Logout all sessions for the current user."""
 
-        await self._request(
+        refresh_token = session.get(
+            "refresh_token"
+        )
+
+        if not refresh_token:
+            raise MeridianError(
+                "Refresh token is missing."
+            )
+
+        await self._authenticated_request(
             "POST",
             "/auth/logout-all",
             access_token=access_token,
+            refresh_token=refresh_token,
         )
 
+
+    # ============================================================
+    # USERS
+    # ============================================================
 
     async def get_current_user(
         self,
@@ -148,13 +263,25 @@ class MeridianClient:
     ) -> User:
         """Get the currently authenticated user."""
 
-        response = await self._request(
+        refresh_token = session.get(
+            "refresh_token"
+        )
+
+        if not refresh_token:
+            raise MeridianError(
+                "Refresh token is missing."
+            )
+
+        response = await self._authenticated_request(
             "GET",
             "/users/me",
             access_token=access_token,
+            refresh_token=refresh_token,
         )
 
-        return self._parse_user(response.json())
+        return self._parse_user(
+            response.json()
+        )
 
 
     async def update_current_user(
@@ -177,36 +304,58 @@ class MeridianClient:
             "password": password,
         }
 
-        # Remove fields that were not provided.
         payload = {
             key: value
             for key, value in payload.items()
             if value is not None
         }
 
-        response = await self._request(
+        refresh_token = session.get(
+            "refresh_token"
+        )
+
+        if not refresh_token:
+            raise MeridianError(
+                "Refresh token is missing."
+            )
+
+        response = await self._authenticated_request(
             "PATCH",
             "/users/me",
             access_token=access_token,
+            refresh_token=refresh_token,
             json=payload,
         )
 
-        return self._parse_user(response.json())
+        return self._parse_user(
+            response.json()
+        )
 
+
+    # ============================================================
+    # PARSERS
+    # ============================================================
 
     @staticmethod
-    def _parse_tokens(data: dict) -> TokenResponse:
+    def _parse_tokens(
+        data: dict,
+    ) -> TokenResponse:
         """Convert Meridian token response to TokenResponse."""
 
         return TokenResponse(
             access_token=data["access_token"],
             refresh_token=data["refresh_token"],
-            token_type=data.get("token_type", "bearer"),
+            token_type=data.get(
+                "token_type",
+                "bearer",
+            ),
         )
 
 
     @staticmethod
-    def _parse_user(data: dict) -> User:
+    def _parse_user(
+        data: dict,
+    ) -> User:
         """Convert Meridian user response to User."""
 
         return User(
@@ -217,6 +366,9 @@ class MeridianClient:
             roles=data["roles"],
             is_active=data["is_active"],
             created_at=datetime.fromisoformat(
-                data["created_at"].replace("Z", "+00:00")
+                data["created_at"].replace(
+                    "Z",
+                    "+00:00",
+                )
             ),
         )
