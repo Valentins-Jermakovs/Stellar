@@ -1,3 +1,6 @@
+# SQLAlchemy column and foreign key definitions.
+from sqlalchemy import Column, ForeignKey
+
 # Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
@@ -9,9 +12,16 @@ class CVSkill(SQLModel, table=True):
 
     # ID of the CV.
     # Together with skill_id, it forms the composite primary key.
+    # Delete the association when the CV is deleted.
     cv_id: int = Field(
-        foreign_key="cv.id",
-        primary_key=True,
+        sa_column=Column(
+            ForeignKey(
+                "cv.id",
+                ondelete="CASCADE",
+            ),
+            nullable=False,
+            primary_key=True,
+        ),
     )
 
     # ID of the skill.

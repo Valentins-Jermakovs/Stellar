@@ -7,15 +7,19 @@ from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
 )
+from app.utils import DataNormalizer
 
 from .ownership import CVOwnershipService
 
 
 class CVPersonalInfoService:
+    """Handle personal information associated with a CV."""
+
     def __init__(
         self,
         session: AsyncSession,
     ):
+        """Initialize the service dependencies."""
         self.session = session
 
         self.repository = CVPersonalInfoRepository(
@@ -32,11 +36,13 @@ class CVPersonalInfoService:
         user_id: int,
         data: CVPersonalInfoCreate,
     ) -> CVPersonalInfo:
+        """Create personal information for a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,
         )
 
+        # Each CV can have only one personal information record.
         existing = await self.repository.get_by_cv_id(
             cv_id
         )
@@ -47,9 +53,13 @@ class CVPersonalInfoService:
                 detail="Personal information already exists",
             )
 
+        values = DataNormalizer.normalize_model(
+            data
+        )
+
         personal_info = CVPersonalInfo(
             cv_id=cv_id,
-            **data.model_dump(),
+            **values,
         )
 
         await self.repository.create(
@@ -57,26 +67,11 @@ class CVPersonalInfoService:
         )
 
         await self.session.commit()
-
         await self.session.refresh(
             personal_info
         )
 
         return personal_info
-
-    async def get_by_cv_id(
-        self,
-        cv_id: int,
-        user_id: int,
-    ) -> CVPersonalInfo | None:
-        await self.ownership.verify_cv(
-            cv_id,
-            user_id,
-        )
-
-        return await self.repository.get_by_cv_id(
-            cv_id
-        )
 
     async def update(
         self,
@@ -84,6 +79,7 @@ class CVPersonalInfoService:
         user_id: int,
         data: CVPersonalInfoUpdate,
     ) -> CVPersonalInfo:
+        """Update personal information for a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -101,8 +97,10 @@ class CVPersonalInfoService:
                 detail="Personal information not found",
             )
 
-        values = data.model_dump(
-            exclude_unset=True
+        # Keep only fields provided by the client and normalize strings.
+        values = DataNormalizer.normalize_model(
+            data,
+            exclude_unset=True,
         )
 
         for field, value in values.items():
@@ -117,7 +115,6 @@ class CVPersonalInfoService:
         )
 
         await self.session.commit()
-
         await self.session.refresh(
             personal_info
         )
@@ -129,6 +126,7 @@ class CVPersonalInfoService:
         cv_id: int,
         user_id: int,
     ) -> None:
+        """Delete personal information from a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,

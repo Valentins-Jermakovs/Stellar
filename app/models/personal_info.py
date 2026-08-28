@@ -1,3 +1,6 @@
+# SQLAlchemy column and foreign key definitions.
+from sqlalchemy import Column, ForeignKey
+
 # Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
@@ -14,9 +17,17 @@ class CVPersonalInfo(SQLModel, table=True):
     )
 
     # ID of the CV this information belongs to.
+    # Delete the personal information when the CV is deleted.
     cv_id: int = Field(
-        foreign_key="cv.id",
-        index=True,
+        sa_column=Column(
+            ForeignKey(
+                "cv.id",
+                ondelete="CASCADE",
+            ),
+            nullable=False,
+            unique=True,
+            index=True,
+        ),
     )
 
     # User's first name.

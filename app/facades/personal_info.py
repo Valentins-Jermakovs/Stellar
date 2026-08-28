@@ -1,18 +1,24 @@
+# Async database session used by the service.
 from sqlalchemy.ext.asyncio import AsyncSession
 
+# Model and schemas used by the facade.
 from app.models import CVPersonalInfo
 from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
 )
+
 from app.services import CVPersonalInfoService
 
 
 class CVPersonalInfoFacade:
+    """Provide a simplified interface for CV personal information."""
+
     def __init__(
         self,
         session: AsyncSession,
     ):
+        """Initialize the facade with service dependencies."""
         self.service = CVPersonalInfoService(
             session
         )
@@ -23,20 +29,11 @@ class CVPersonalInfoFacade:
         user_id: int,
         data: CVPersonalInfoCreate,
     ) -> CVPersonalInfo:
+        """Create personal information for a CV."""
         return await self.service.create(
             cv_id=cv_id,
             user_id=user_id,
             data=data,
-        )
-
-    async def get_by_cv_id(
-        self,
-        cv_id: int,
-        user_id: int,
-    ) -> CVPersonalInfo | None:
-        return await self.service.get_by_cv_id(
-            cv_id=cv_id,
-            user_id=user_id,
         )
 
     async def update(
@@ -45,6 +42,7 @@ class CVPersonalInfoFacade:
         user_id: int,
         data: CVPersonalInfoUpdate,
     ) -> CVPersonalInfo:
+        """Update personal information for a CV."""
         return await self.service.update(
             cv_id=cv_id,
             user_id=user_id,
@@ -56,6 +54,7 @@ class CVPersonalInfoFacade:
         cv_id: int,
         user_id: int,
     ) -> None:
+        """Delete personal information from a CV."""
         await self.service.delete(
             cv_id=cv_id,
             user_id=user_id,

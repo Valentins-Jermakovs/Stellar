@@ -12,9 +12,6 @@ from app.schemas import (
     CVUpdate,
 )
 
-# Utility used to normalize incoming string values.
-from app.utils import DataNormalizer
-
 # Dependencies shared by CV endpoints.
 from .dependencies import (
     get_cv_facade,
@@ -43,19 +40,9 @@ async def create_cv(
     ),
 ):
     """Create a new CV."""
-    # Normalize user-provided string values before passing the data
-    # to the application layer.
-    values = DataNormalizer.normalize_model(
-        data
-    )
-
-    normalized_data = CVCreate(
-        **values
-    )
-
     return await facade.create(
         user_id=int(current_user["sub"]),
-        data=normalized_data,
+        data=data,
     )
 
 
@@ -85,15 +72,6 @@ async def search_cvs(
     ),
 ):
     """Return a paginated list of the current user's CVs."""
-    # Normalize the search query before using it in the service layer.
-    if query is not None:
-        query = DataNormalizer.normalize_string(
-            query
-        )
-
-        if not query:
-            query = None
-
     return await facade.search(
         user_id=int(current_user["sub"]),
         query=query,
@@ -137,21 +115,10 @@ async def update_cv(
     ),
 ):
     """Update an existing CV."""
-    # Preserve only fields supplied by the client and normalize
-    # any string values before updating the CV.
-    values = DataNormalizer.normalize_model(
-        data,
-        exclude_unset=True,
-    )
-
-    normalized_data = CVUpdate(
-        **values
-    )
-
     return await facade.update(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
-        data=normalized_data,
+        data=data,
     )
 
 

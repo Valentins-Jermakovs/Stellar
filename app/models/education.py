@@ -1,6 +1,9 @@
 # Used for storing education start and end dates.
 from datetime import date
 
+# SQLAlchemy column and foreign key definitions.
+from sqlalchemy import Column, ForeignKey
+
 # Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
@@ -17,9 +20,16 @@ class CVEducation(SQLModel, table=True):
     )
 
     # ID of the CV this education entry belongs to.
+    # Delete the education entry automatically when the CV is deleted.
     cv_id: int = Field(
-        foreign_key="cv.id",
-        index=True,
+        sa_column=Column(
+            ForeignKey(
+                "cv.id",
+                ondelete="CASCADE",
+            ),
+            nullable=False,
+            index=True,
+        ),
     )
 
     # Name of the educational institution.

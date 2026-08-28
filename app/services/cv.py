@@ -39,6 +39,9 @@ from app.schemas import (
     CVUpdate,
 )
 
+# Utility used to normalize user-provided values.
+from app.utils import DataNormalizer
+
 
 class CVService:
     """Handle business logic for CV operations."""
@@ -317,9 +320,13 @@ class CVService:
             user_id
         )
 
-        # Check whether a CV with the same title already exists.
-        existing_cv = await self.repository.get_by_title(
+        # Normalize the title before checking its uniqueness.
+        title = DataNormalizer.normalize_string(
             data.title
+        )
+
+        existing_cv = await self.repository.get_by_title(
+            title
         )
 
         if existing_cv is not None:
@@ -330,7 +337,7 @@ class CVService:
 
         cv = CV(
             user_id=user_id,
-            title=data.title,
+            title=title,
         )
 
         await self.repository.create(
@@ -426,9 +433,11 @@ class CVService:
         if page_size > self.MAX_PAGE_SIZE:
             page_size = self.MAX_PAGE_SIZE
 
-        # Normalize the query so equivalent searches use the same cache key.
+        # Normalize the query before using it in the cache key and search.
         if query is not None:
-            query = query.strip()
+            query = DataNormalizer.normalize_string(
+                query
+            )
 
             if not query:
                 query = None
@@ -513,18 +522,20 @@ class CVService:
                 detail="CV not found",
             )
 
-        values = data.model_dump(
-            exclude_unset=True
+        values = DataNormalizer.normalize_model(
+            data,
+            exclude_unset=True,
         )
 
         new_title = values.get("title")
 
         if new_title is not None:
-            # Check for another CV with the same title.
+            # Check whether another CV already uses the new title.
             existing_cv = await self.repository.get_by_title(
                 new_title
             )
 
+            # The current CV is allowed to keep its existing title.
             if (
                 existing_cv is not None
                 and existing_cv.id != cv_id
