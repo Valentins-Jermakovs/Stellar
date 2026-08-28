@@ -12,5 +12,13 @@ class CVTemplate(StrEnum):
     TIMELINE = "timeline"
 
 
+class CVLocale(StrEnum):
+    ENGLISH = "en"
+    RUSSIAN = "ru"
+    LATVIAN = "lv"
+
+
 class CVGenerateRequest(BaseModel):
     template: CVTemplate
+    language: CVLocale = CVLocale.ENGLISH
+

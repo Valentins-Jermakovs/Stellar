@@ -13,3 +13,4 @@ from .skill import (
     CVSkillFacade,
     SkillFacade,
 )
+from .statistics import StatisticsFacade

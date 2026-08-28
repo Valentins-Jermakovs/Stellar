@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 
 <head>
     <meta charset="UTF-8">
@@ -28,15 +28,21 @@
         <div class="contact">
 
             {% if cv.personal_info.email %}
-            <span>{{ cv.personal_info.email }}</span>
+            <span>
+                {{ cv.personal_info.email }}
+            </span>
             {% endif %}
 
             {% if cv.personal_info.phone %}
-            <span>{{ cv.personal_info.phone }}</span>
+            <span>
+                {{ cv.personal_info.phone }}
+            </span>
             {% endif %}
 
             {% if cv.personal_info.location %}
-            <span>{{ cv.personal_info.location }}</span>
+            <span>
+                {{ cv.personal_info.location }}
+            </span>
             {% endif %}
 
         </div>
@@ -49,7 +55,9 @@
     <section>
 
         <div class="section-heading">
-            <h2>About</h2>
+            <h2>
+                {{ translations.profile }}
+            </h2>
         </div>
 
         <p class="summary">
@@ -64,7 +72,9 @@
     <section>
 
         <div class="section-heading">
-            <h2>Experience</h2>
+            <h2>
+                {{ translations.experience }}
+            </h2>
         </div>
 
         {% for item in cv.experience %}
@@ -73,7 +83,9 @@
             <div class="item-header">
 
                 <div>
-                    <h3>{{ item.position }}</h3>
+                    <h3>
+                        {{ item.position }}
+                    </h3>
 
                     <div class="company">
                         {{ item.company }}
@@ -86,19 +98,26 @@
                 </div>
 
                 <div class="dates">
-                    {{ item.start_date.strftime("%Y") }}
+
+                    {{ item.start_date | year }}
+
                     –
+
                     {% if item.is_current %}
-                    Present
+                    {{ translations.present }}
+
                     {% elif item.end_date %}
-                    {{ item.end_date.strftime("%Y") }}
+                    {{ item.end_date | year }}
                     {% endif %}
+
                 </div>
 
             </div>
 
             {% if item.description %}
-            <p>{{ item.description }}</p>
+            <p>
+                {{ item.description }}
+            </p>
             {% endif %}
 
         </article>
@@ -112,7 +131,9 @@
     <section>
 
         <div class="section-heading">
-            <h2>Education</h2>
+            <h2>
+                {{ translations.education }}
+            </h2>
         </div>
 
         {% for item in cv.education %}
@@ -121,7 +142,9 @@
             <div class="item-header">
 
                 <div>
-                    <h3>{{ item.institution }}</h3>
+                    <h3>
+                        {{ item.institution }}
+                    </h3>
 
                     {% if item.degree %}
                     <div class="degree">
@@ -138,11 +161,15 @@
 
                 {% if item.start_date %}
                 <div class="dates">
-                    {{ item.start_date.strftime("%Y") }}
+
+                    {{ item.start_date | year }}
+
                     –
+
                     {% if item.end_date %}
-                    {{ item.end_date.strftime("%Y") }}
+                    {{ item.end_date | year }}
                     {% endif %}
+
                 </div>
                 {% endif %}
 
@@ -159,26 +186,34 @@
     <section>
 
         <div class="section-heading">
-            <h2>Projects</h2>
+            <h2>
+                {{ translations.projects }}
+            </h2>
         </div>
 
         {% for item in cv.projects %}
         <article class="project-item">
 
-            <h3>{{ item.name }}</h3>
+            <h3>
+                {{ item.name }}
+            </h3>
 
             {% if item.description %}
-            <p>{{ item.description }}</p>
+            <p>
+                {{ item.description }}
+            </p>
             {% endif %}
 
             {% if item.github_url %}
             <div class="project-link">
+                {{ translations.github }}:
                 {{ item.github_url }}
             </div>
             {% endif %}
 
             {% if item.url %}
             <div class="project-link">
+                {{ translations.website }}:
                 {{ item.url }}
             </div>
             {% endif %}
@@ -194,7 +229,9 @@
     <section>
 
         <div class="section-heading">
-            <h2>Skills</h2>
+            <h2>
+                {{ translations.skills }}
+            </h2>
         </div>
 
         <div class="skills-list">
@@ -215,20 +252,22 @@
     <section>
 
         <div class="section-heading">
-            <h2>Languages</h2>
+            <h2>
+                {{ translations.languages }}
+            </h2>
         </div>
 
         <div class="languages-list">
 
-            {% for language in cv.languages %}
+            {% for item_language in cv.languages %}
             <div class="language">
 
                 <span class="language-name">
-                    {{ language.name }}
+                    {{ item_language.name }}
                 </span>
 
                 <span class="language-level">
-                    {{ language.proficiency }}
+                    {{ item_language.proficiency }}
                 </span>
 
             </div>
@@ -244,13 +283,17 @@
     <section>
 
         <div class="section-heading">
-            <h2>Certifications</h2>
+            <h2>
+                {{ translations.certifications }}
+            </h2>
         </div>
 
         {% for item in cv.certifications %}
         <article class="certification-item">
 
-            <h3>{{ item.name }}</h3>
+            <h3>
+                {{ item.name }}
+            </h3>
 
             {% if item.organization %}
             <div class="company">
@@ -260,17 +303,23 @@
 
             {% if item.issue_date %}
             <div class="certification-date">
-                Issued {{ item.issue_date.strftime("%B %Y") }}
+
+                {{ translations.issued }}
+                {{ item.issue_date | month_year(language) }}
 
                 {% if item.expiration_date %}
-                · Expires {{ item.expiration_date.strftime("%B %Y") }}
+                ·
+                {{ translations.expires }}
+                {{ item.expiration_date | month_year(language) }}
                 {% endif %}
+
             </div>
             {% endif %}
 
             {% if item.credential_id %}
             <div class="credential">
-                Credential ID: {{ item.credential_id }}
+                {{ translations.credential_id }}:
+                {{ item.credential_id }}
             </div>
             {% endif %}
 

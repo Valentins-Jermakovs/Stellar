@@ -20,3 +20,5 @@ from .ownership import CVOwnershipService
 
 # CV generation service.
 from .generator import CVGeneratorService
+
+from .statistics import StatisticsService

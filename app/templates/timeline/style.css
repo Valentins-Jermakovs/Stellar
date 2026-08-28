@@ -44,7 +44,7 @@ body {
 
 .header-top {
     display: grid;
-    grid-template-columns: 1fr 42%;
+    grid-template-columns: minmax(0, 1fr) minmax(78mm, 42%);
     gap: 25px;
     align-items: end;
 }
@@ -88,8 +88,9 @@ body {
 
 .contacts > div {
     display: grid;
-    grid-template-columns: 62px 1fr;
+    grid-template-columns: 34mm minmax(0, 1fr);
     gap: 8px;
+    align-items: baseline;
 }
 
 .contact-label {
@@ -98,6 +99,11 @@ body {
     text-transform: uppercase;
     font-size: 7.2pt;
     letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+
+.contacts > div > span:last-child {
+    min-width: 0;
 }
 
 .break-word {
@@ -116,7 +122,7 @@ main {
 
 section {
     display: grid;
-    grid-template-columns: 38px 1fr;
+    grid-template-columns: 38px minmax(0, 1fr);
     gap: 14px;
     margin-top: 17px;
 
@@ -188,7 +194,7 @@ p {
 
 .timeline-item {
     display: grid;
-    grid-template-columns: 88px 16px 1fr;
+    grid-template-columns: 88px 16px minmax(0, 1fr);
     gap: 9px;
 
     position: relative;
@@ -285,7 +291,7 @@ p {
 
 .standard-item {
     display: grid;
-    grid-template-columns: 88px 1fr;
+    grid-template-columns: 88px minmax(0, 1fr);
     gap: 18px;
 
     margin-bottom: 12px;
@@ -340,13 +346,13 @@ p {
 
 .project-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px 18px;
 }
 
 .project {
     display: grid;
-    grid-template-columns: 25px 1fr;
+    grid-template-columns: 25px minmax(0, 1fr);
     gap: 8px;
 
     padding: 8px 9px;
@@ -473,6 +479,11 @@ p {
     section,
     article,
     .project {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .header {
         break-inside: avoid;
         page-break-inside: avoid;
     }

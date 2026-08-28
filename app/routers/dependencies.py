@@ -24,6 +24,7 @@ from app.facades import (
     CVSkillFacade,
     LanguageFacade,
     SkillFacade,
+    StatisticsFacade,
 )
 
 # Authentication utilities.
@@ -154,4 +155,15 @@ def get_generator_facade(
     return CVGeneratorFacade(
         session=session,
         templates_path=TEMPLATES_DIR,
+    )
+
+
+def get_statistics_facade(
+    session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
+) -> StatisticsFacade:
+    """Create a statistics facade with database and Redis dependencies."""
+    return StatisticsFacade(
+        session=session,
+        redis=redis,
     )

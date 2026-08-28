@@ -42,5 +42,7 @@ from .document import (
 from .template import (
     CVGenerateRequest,
     CVTemplate,
+    CVLocale
 )
 
+from .statistics import CVStatistics

@@ -21,3 +21,4 @@ from .cv import (
 # Repository for application users.
 from .user import UserRepository
 
+from .statistics import StatisticsRepository

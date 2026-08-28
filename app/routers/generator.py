@@ -29,12 +29,16 @@ async def generate_cv(
         get_generator_facade
     ),
 ):
+    """Generate a CV PDF using the selected template and language."""
+    pdf = await facade.generate(
+        cv_id=cv_id,
+        user_id=int(current_user["sub"]),
+        template=data.template,
+        language=data.language,
+    )
+
     return Response(
-        content=await facade.generate(
-            cv_id=cv_id,
-            user_id=int(current_user["sub"]),
-            template=data.template,
-        ),
+        content=pdf,
         media_type="application/pdf",
         headers={
             "Content-Disposition": (

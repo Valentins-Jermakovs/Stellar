@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 
 <head>
     <meta charset="UTF-8">
@@ -59,7 +59,7 @@
     <section>
 
         <div class="section-heading">
-            <h2>Profile</h2>
+            <h2>{{ translations.profile }}</h2>
         </div>
 
         <p class="profile">
@@ -74,7 +74,7 @@
     <section>
 
         <div class="section-heading">
-            <h2>Experience</h2>
+            <h2>{{ translations.experience }}</h2>
         </div>
 
         {% for item in cv.experience %}
@@ -99,12 +99,12 @@
                 </div>
 
                 <div class="dates">
-                    {{ item.start_date.strftime("%B %Y") }}
+                    {{ item.start_date | month_year(language) }}
                     –
                     {% if item.is_current %}
-                    Present
+                    {{ translations.present }}
                     {% elif item.end_date %}
-                    {{ item.end_date.strftime("%B %Y") }}
+                    {{ item.end_date | month_year(language) }}
                     {% endif %}
                 </div>
 
@@ -126,7 +126,7 @@
     <section>
 
         <div class="section-heading">
-            <h2>Education</h2>
+            <h2>{{ translations.education }}</h2>
         </div>
 
         {% for item in cv.education %}
@@ -161,10 +161,10 @@
 
                 {% if item.start_date %}
                 <div class="dates">
-                    {{ item.start_date.strftime("%Y") }}
+                    {{ item.start_date | year }}
                     –
                     {% if item.end_date %}
-                    {{ item.end_date.strftime("%Y") }}
+                    {{ item.end_date | year }}
                     {% endif %}
                 </div>
                 {% endif %}
@@ -187,7 +187,7 @@
     <section>
 
         <div class="section-heading">
-            <h2>Skills</h2>
+            <h2>{{ translations.skills }}</h2>
         </div>
 
         <div class="skills">
@@ -195,10 +195,14 @@
             {% for skill in cv.skills %}
 
             <span class="skill">
-                <span class="skill-name">{{ skill.name }}</span>
+                <span class="skill-name">
+                    {{ skill.name }}
+                </span>
 
                 {% if skill.level %}
-                <span class="skill-level">{{ skill.level }}</span>
+                <span class="skill-level">
+                    {{ skill.level }}
+                </span>
                 {% endif %}
             </span>
 
@@ -214,7 +218,7 @@
     <section>
 
         <div class="section-heading">
-            <h2>Projects</h2>
+            <h2>{{ translations.projects }}</h2>
         </div>
 
         {% for item in cv.projects %}
@@ -229,10 +233,12 @@
 
             {% if item.github_url %}
             <div class="project-link">
+                {{ translations.github }}:
                 {{ item.github_url }}
             </div>
             {% elif item.url %}
             <div class="project-link">
+                {{ translations.website }}:
                 {{ item.url }}
             </div>
             {% endif %}
@@ -249,16 +255,21 @@
     <section>
 
         <div class="section-heading">
-            <h2>Languages</h2>
+            <h2>{{ translations.languages }}</h2>
         </div>
 
         <div class="languages">
 
-            {% for language in cv.languages %}
+            {% for item_language in cv.languages %}
 
             <div class="language">
-                <strong>{{ language.name }}</strong>
-                <span>{{ language.proficiency }}</span>
+                <strong>
+                    {{ item_language.name }}
+                </strong>
+
+                <span>
+                    {{ item_language.proficiency }}
+                </span>
             </div>
 
             {% endfor %}
@@ -273,7 +284,7 @@
     <section>
 
         <div class="section-heading">
-            <h2>Certifications</h2>
+            <h2>{{ translations.certifications }}</h2>
         </div>
 
         {% for item in cv.certifications %}
@@ -296,7 +307,7 @@
 
                 {% if item.issue_date %}
                 <div class="dates">
-                    {{ item.issue_date.strftime("%B %Y") }}
+                    {{ item.issue_date | month_year(language) }}
                 </div>
                 {% endif %}
 
@@ -304,7 +315,8 @@
 
             {% if item.credential_id %}
             <div class="credential">
-                Credential ID: {{ item.credential_id }}
+                {{ translations.credential_id }}:
+                {{ item.credential_id }}
             </div>
             {% endif %}
 

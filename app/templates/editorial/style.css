@@ -59,7 +59,7 @@ body {
 
 .header-main {
     display: grid;
-    grid-template-columns: 1fr 58mm;
+    grid-template-columns: minmax(0, 1fr) 58mm;
     gap: 15mm;
 }
 
@@ -102,20 +102,25 @@ body {
    ========================= */
 
 .content {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 53mm;
-    gap: 13mm;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
     padding-top: 9mm;
 }
 
 main {
-    min-width: 0;
+    display: table-cell;
+    width: calc(100% - 66mm);
+    padding-right: 13mm;
+    vertical-align: top;
 }
 
 aside {
-    min-width: 0;
+    display: table-cell;
+    width: 53mm;
     padding-left: 9mm;
     border-left: 1px solid var(--light);
+    vertical-align: top;
 }
 
 /* =========================
@@ -398,8 +403,18 @@ p {
         page-break-inside: avoid;
     }
 
-    .header,
-    .content {
+    .header {
         break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .content {
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+
+    main,
+    aside {
+        vertical-align: top;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,9 @@
             <div class="identity">
                 <h1>
                     {{ cv.personal_info.first_name }}
-                    <span>{{ cv.personal_info.last_name }}</span>
+                    <span>
+                        {{ cv.personal_info.last_name }}
+                    </span>
                 </h1>
 
                 {% if cv.personal_info.headline %}
@@ -35,27 +37,39 @@
             <div class="contact-block">
 
                 {% if cv.personal_info.email %}
-                <div>{{ cv.personal_info.email }}</div>
+                <div>
+                    {{ cv.personal_info.email }}
+                </div>
                 {% endif %}
 
                 {% if cv.personal_info.phone %}
-                <div>{{ cv.personal_info.phone }}</div>
+                <div>
+                    {{ cv.personal_info.phone }}
+                </div>
                 {% endif %}
 
                 {% if cv.personal_info.location %}
-                <div>{{ cv.personal_info.location }}</div>
+                <div>
+                    {{ cv.personal_info.location }}
+                </div>
                 {% endif %}
 
                 {% if cv.personal_info.website %}
-                <div class="break-word">{{ cv.personal_info.website }}</div>
+                <div class="break-word">
+                    {{ cv.personal_info.website }}
+                </div>
                 {% endif %}
 
                 {% if cv.personal_info.linkedin %}
-                <div class="break-word">{{ cv.personal_info.linkedin }}</div>
+                <div class="break-word">
+                    {{ cv.personal_info.linkedin }}
+                </div>
                 {% endif %}
 
                 {% if cv.personal_info.github %}
-                <div class="break-word">{{ cv.personal_info.github }}</div>
+                <div class="break-word">
+                    {{ cv.personal_info.github }}
+                </div>
                 {% endif %}
 
             </div>
@@ -75,7 +89,10 @@
 
                 <div class="section-heading">
                     <span>01</span>
-                    <h2>Profile</h2>
+
+                    <h2>
+                        {{ translations.profile }}
+                    </h2>
                 </div>
 
                 <p class="profile">
@@ -91,31 +108,42 @@
 
                 <div class="section-heading">
                     <span>02</span>
-                    <h2>Experience</h2>
+
+                    <h2>
+                        {{ translations.experience }}
+                    </h2>
                 </div>
 
                 {% for item in cv.experience %}
                 <article class="experience-item">
 
                     <div class="period">
-                        {{ item.start_date.strftime("%Y") }}
+
+                        {{ item.start_date | month_year(language) }}
+
                         —
+
                         {% if item.is_current %}
-                        Present
+                        {{ translations.present }}
                         {% elif item.end_date %}
-                        {{ item.end_date.strftime("%Y") }}
+                        {{ item.end_date | month_year(language) }}
                         {% endif %}
+
                     </div>
 
                     <div class="entry">
 
-                        <h3>{{ item.position }}</h3>
+                        <h3>
+                            {{ item.position }}
+                        </h3>
 
                         <div class="company">
                             {{ item.company }}
 
                             {% if item.location %}
-                            <span> / {{ item.location }}</span>
+                            <span>
+                                / {{ item.location }}
+                            </span>
                             {% endif %}
                         </div>
 
@@ -139,25 +167,34 @@
 
                 <div class="section-heading">
                     <span>03</span>
-                    <h2>Education</h2>
+
+                    <h2>
+                        {{ translations.education }}
+                    </h2>
                 </div>
 
                 {% for item in cv.education %}
                 <article class="education-item">
 
                     <div class="period">
+
                         {% if item.start_date %}
-                        {{ item.start_date.strftime("%Y") }}
+                        {{ item.start_date | year }}
+
                         —
+
                         {% if item.end_date %}
-                        {{ item.end_date.strftime("%Y") }}
+                        {{ item.end_date | year }}
                         {% endif %}
                         {% endif %}
+
                     </div>
 
                     <div class="entry">
 
-                        <h3>{{ item.institution }}</h3>
+                        <h3>
+                            {{ item.institution }}
+                        </h3>
 
                         {% if item.degree %}
                         <div class="degree">
@@ -197,13 +234,18 @@
 
                 <div class="section-heading">
                     <span>04</span>
-                    <h2>Projects</h2>
+
+                    <h2>
+                        {{ translations.projects }}
+                    </h2>
                 </div>
 
                 {% for item in cv.projects %}
                 <article class="project-item">
 
-                    <h3>{{ item.name }}</h3>
+                    <h3>
+                        {{ item.name }}
+                    </h3>
 
                     {% if item.description %}
                     <p>
@@ -213,12 +255,14 @@
 
                     {% if item.github_url %}
                     <div class="project-link break-word">
+                        {{ translations.github }}:
                         {{ item.github_url }}
                     </div>
                     {% endif %}
 
                     {% if item.url %}
                     <div class="project-link break-word">
+                        {{ translations.website }}:
                         {{ item.url }}
                     </div>
                     {% endif %}
@@ -239,7 +283,10 @@
 
                 <div class="side-heading">
                     <span>05</span>
-                    <h2>Skills</h2>
+
+                    <h2>
+                        {{ translations.skills }}
+                    </h2>
                 </div>
 
                 <div class="skills">
@@ -271,20 +318,23 @@
 
                 <div class="side-heading">
                     <span>06</span>
-                    <h2>Languages</h2>
+
+                    <h2>
+                        {{ translations.languages }}
+                    </h2>
                 </div>
 
                 <div class="languages">
 
-                    {% for language in cv.languages %}
+                    {% for item_language in cv.languages %}
                     <div class="language">
 
                         <span class="language-name">
-                            {{ language.name }}
+                            {{ item_language.name }}
                         </span>
 
                         <span class="language-level">
-                            {{ language.proficiency }}
+                            {{ item_language.proficiency }}
                         </span>
 
                     </div>
@@ -301,13 +351,18 @@
 
                 <div class="side-heading">
                     <span>07</span>
-                    <h2>Certifications</h2>
+
+                    <h2>
+                        {{ translations.certifications }}
+                    </h2>
                 </div>
 
                 {% for item in cv.certifications %}
                 <article class="certification">
 
-                    <h3>{{ item.name }}</h3>
+                    <h3>
+                        {{ item.name }}
+                    </h3>
 
                     {% if item.organization %}
                     <div class="certification-org">
@@ -317,17 +372,21 @@
 
                     {% if item.issue_date %}
                     <div class="certification-date">
-                        {{ item.issue_date.strftime("%B %Y") }}
+
+                        {{ item.issue_date | month_year(language) }}
 
                         {% if item.expiration_date %}
-                        — {{ item.expiration_date.strftime("%B %Y") }}
+                        —
+                        {{ item.expiration_date | month_year(language) }}
                         {% endif %}
+
                     </div>
                     {% endif %}
 
                     {% if item.credential_id %}
                     <div class="credential break-word">
-                        ID: {{ item.credential_id }}
+                        {{ translations.credential_id }}:
+                        {{ item.credential_id }}
                     </div>
                     {% endif %}
 

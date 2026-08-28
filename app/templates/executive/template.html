@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 
 <head>
     <meta charset="UTF-8">
@@ -21,8 +21,13 @@
                 <div class="identity">
 
                     <div class="name">
-                        <span>{{ cv.personal_info.first_name }}</span>
-                        <strong>{{ cv.personal_info.last_name }}</strong>
+                        <span>
+                            {{ cv.personal_info.first_name }}
+                        </span>
+
+                        <strong>
+                            {{ cv.personal_info.last_name }}
+                        </strong>
                     </div>
 
                     {% if cv.personal_info.headline %}
@@ -47,70 +52,103 @@
 
         <div class="layout">
 
-            <!-- =========================
-                 SIDEBAR
-                 ========================= -->
-
             <aside class="sidebar">
 
                 {% if cv.personal_info %}
                 <section class="sidebar-section">
 
-                    <h2>Contact</h2>
+                    <h2>
+                        {{ translations.contact }}
+                    </h2>
 
                     <div class="contact-list">
 
                         {% if cv.personal_info.email %}
                         <div class="contact-item">
-                            <span class="contact-label">Email</span>
+
+                            <span class="contact-label">
+                                {{ translations.email }}
+                            </span>
+
                             <span class="contact-value break-word">
                                 {{ cv.personal_info.email }}
                             </span>
+
                         </div>
                         {% endif %}
+
 
                         {% if cv.personal_info.phone %}
                         <div class="contact-item">
-                            <span class="contact-label">Phone</span>
+
+                            <span class="contact-label">
+                                {{ translations.phone }}
+                            </span>
+
                             <span class="contact-value">
                                 {{ cv.personal_info.phone }}
                             </span>
+
                         </div>
                         {% endif %}
+
 
                         {% if cv.personal_info.location %}
                         <div class="contact-item">
-                            <span class="contact-label">Location</span>
+
+                            <span class="contact-label">
+                                {{ translations.location }}
+                            </span>
+
                             <span class="contact-value">
                                 {{ cv.personal_info.location }}
                             </span>
+
                         </div>
                         {% endif %}
+
 
                         {% if cv.personal_info.website %}
                         <div class="contact-item">
-                            <span class="contact-label">Website</span>
+
+                            <span class="contact-label">
+                                {{ translations.website }}
+                            </span>
+
                             <span class="contact-value break-word">
                                 {{ cv.personal_info.website }}
                             </span>
+
                         </div>
                         {% endif %}
+
 
                         {% if cv.personal_info.linkedin %}
                         <div class="contact-item">
-                            <span class="contact-label">LinkedIn</span>
+
+                            <span class="contact-label">
+                                LinkedIn
+                            </span>
+
                             <span class="contact-value break-word">
                                 {{ cv.personal_info.linkedin }}
                             </span>
+
                         </div>
                         {% endif %}
 
+
                         {% if cv.personal_info.github %}
                         <div class="contact-item">
-                            <span class="contact-label">GitHub</span>
+
+                            <span class="contact-label">
+                                {{ translations.github }}
+                            </span>
+
                             <span class="contact-value break-word">
                                 {{ cv.personal_info.github }}
                             </span>
+
                         </div>
                         {% endif %}
 
@@ -123,7 +161,9 @@
                 {% if cv.skills %}
                 <section class="sidebar-section">
 
-                    <h2>Skills</h2>
+                    <h2>
+                        {{ translations.skills }}
+                    </h2>
 
                     <div class="skills">
 
@@ -152,19 +192,21 @@
                 {% if cv.languages %}
                 <section class="sidebar-section">
 
-                    <h2>Languages</h2>
+                    <h2>
+                        {{ translations.languages }}
+                    </h2>
 
                     <div class="languages">
 
-                        {% for language in cv.languages %}
+                        {% for item_language in cv.languages %}
                         <div class="language">
 
                             <div class="language-name">
-                                {{ language.name }}
+                                {{ item_language.name }}
                             </div>
 
                             <div class="language-level">
-                                {{ language.proficiency }}
+                                {{ item_language.proficiency }}
                             </div>
 
                         </div>
@@ -178,18 +220,21 @@
             </aside>
 
 
-            <!-- =========================
-                 MAIN CONTENT
-                 ========================= -->
-
             <main class="content">
 
                 {% if cv.personal_info and cv.personal_info.summary %}
                 <section class="section">
 
                     <div class="section-heading">
-                        <span class="section-number">01</span>
-                        <h2>Profile</h2>
+
+                        <span class="section-number">
+                            01
+                        </span>
+
+                        <h2>
+                            {{ translations.profile }}
+                        </h2>
+
                     </div>
 
                     <div class="section-body">
@@ -208,8 +253,15 @@
                 <section class="section">
 
                     <div class="section-heading">
-                        <span class="section-number">02</span>
-                        <h2>Experience</h2>
+
+                        <span class="section-number">
+                            02
+                        </span>
+
+                        <h2>
+                            {{ translations.experience }}
+                        </h2>
+
                     </div>
 
                     <div class="section-body timeline">
@@ -231,26 +283,29 @@
                                         </h3>
 
                                         <div class="company">
+
                                             {{ item.company }}
 
                                             {% if item.location %}
                                             <span>·</span>
                                             {{ item.location }}
                                             {% endif %}
+
                                         </div>
 
                                     </div>
 
                                     <div class="dates">
 
-                                        {{ item.start_date.strftime("%b %Y") }}
+                                        {{ item.start_date | month_year(language) }}
 
                                         —
 
                                         {% if item.is_current %}
-                                        Present
+                                        {{ translations.present }}
+
                                         {% elif item.end_date %}
-                                        {{ item.end_date.strftime("%b %Y") }}
+                                        {{ item.end_date | month_year(language) }}
                                         {% endif %}
 
                                     </div>
@@ -279,8 +334,15 @@
                 <section class="section">
 
                     <div class="section-heading">
-                        <span class="section-number">03</span>
-                        <h2>Education</h2>
+
+                        <span class="section-number">
+                            03
+                        </span>
+
+                        <h2>
+                            {{ translations.education }}
+                        </h2>
+
                     </div>
 
                     <div class="section-body">
@@ -324,12 +386,12 @@
                             {% if item.start_date %}
                             <div class="dates">
 
-                                {{ item.start_date.strftime("%Y") }}
+                                {{ item.start_date | year }}
 
                                 —
 
                                 {% if item.end_date %}
-                                {{ item.end_date.strftime("%Y") }}
+                                {{ item.end_date | year }}
                                 {% endif %}
 
                             </div>
@@ -349,8 +411,15 @@
                 <section class="section">
 
                     <div class="section-heading">
-                        <span class="section-number">04</span>
-                        <h2>Projects</h2>
+
+                        <span class="section-number">
+                            04
+                        </span>
+
+                        <h2>
+                            {{ translations.projects }}
+                        </h2>
+
                     </div>
 
                     <div class="section-body projects">
@@ -381,12 +450,14 @@
 
                                 {% if item.github_url %}
                                 <span class="project-link break-word">
+                                    {{ translations.github }}:
                                     {{ item.github_url }}
                                 </span>
                                 {% endif %}
 
                                 {% if item.url %}
                                 <span class="project-link break-word">
+                                    {{ translations.website }}:
                                     {{ item.url }}
                                 </span>
                                 {% endif %}
@@ -407,8 +478,15 @@
                 <section class="section">
 
                     <div class="section-heading">
-                        <span class="section-number">05</span>
-                        <h2>Certifications</h2>
+
+                        <span class="section-number">
+                            05
+                        </span>
+
+                        <h2>
+                            {{ translations.certifications }}
+                        </h2>
+
                     </div>
 
                     <div class="section-body">
@@ -431,7 +509,8 @@
 
                                 {% if item.credential_id %}
                                 <div class="credential">
-                                    Credential ID: {{ item.credential_id }}
+                                    {{ translations.credential_id }}:
+                                    {{ item.credential_id }}
                                 </div>
                                 {% endif %}
 
@@ -440,11 +519,11 @@
                             {% if item.issue_date %}
                             <div class="certification-date">
 
-                                {{ item.issue_date.strftime("%b %Y") }}
+                                {{ item.issue_date | month_year(language) }}
 
                                 {% if item.expiration_date %}
                                 —
-                                {{ item.expiration_date.strftime("%b %Y") }}
+                                {{ item.expiration_date | month_year(language) }}
                                 {% endif %}
 
                             </div>
