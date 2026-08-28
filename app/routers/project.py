@@ -1,12 +1,16 @@
+# FastAPI routing and dependency injection.
 from fastapi import APIRouter, Depends, status
 
 from app.facades import CVProjectFacade
+
+# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVProjectCreate,
     CVProjectRead,
     CVProjectUpdate,
 )
 
+# Dependencies shared by CV project endpoints.
 from .dependencies import (
     get_project_facade,
     jwt_auth,
@@ -34,48 +38,11 @@ async def create_project(
         get_project_facade
     ),
 ):
+    """Create a new project for a CV."""
     return await facade.create(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
         data=data,
-    )
-
-
-@router.get(
-    "",
-    response_model=list[CVProjectRead],
-)
-async def get_projects(
-    cv_id: int,
-    current_user: dict = Depends(
-        jwt_auth.get_current_user
-    ),
-    facade: CVProjectFacade = Depends(
-        get_project_facade
-    ),
-):
-    return await facade.get_by_cv_id(
-        cv_id=cv_id,
-        user_id=int(current_user["sub"]),
-    )
-
-
-@router.get(
-    "/{project_id}",
-    response_model=CVProjectRead,
-)
-async def get_project(
-    project_id: int,
-    current_user: dict = Depends(
-        jwt_auth.get_current_user
-    ),
-    facade: CVProjectFacade = Depends(
-        get_project_facade
-    ),
-):
-    return await facade.get_by_id(
-        project_id=project_id,
-        user_id=int(current_user["sub"]),
     )
 
 
@@ -84,6 +51,7 @@ async def get_project(
     response_model=CVProjectRead,
 )
 async def update_project(
+    cv_id: int,
     project_id: int,
     data: CVProjectUpdate,
     current_user: dict = Depends(
@@ -93,6 +61,7 @@ async def update_project(
         get_project_facade
     ),
 ):
+    """Update an existing project."""
     return await facade.update(
         project_id=project_id,
         user_id=int(current_user["sub"]),
@@ -105,6 +74,7 @@ async def update_project(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_project(
+    cv_id: int,
     project_id: int,
     current_user: dict = Depends(
         jwt_auth.get_current_user
@@ -113,6 +83,7 @@ async def delete_project(
         get_project_facade
     ),
 ):
+    """Delete an existing project."""
     await facade.delete(
         project_id=project_id,
         user_id=int(current_user["sub"]),

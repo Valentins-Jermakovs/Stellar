@@ -2,7 +2,7 @@
 from datetime import date
 
 # SQLAlchemy column and foreign key definitions.
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, UniqueConstraint
 
 # Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
@@ -12,6 +12,14 @@ class CVProject(SQLModel, table=True):
     """Store a project included in a CV."""
 
     __tablename__ = "cv_project"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "cv_id",
+            "name",
+            name="uq_cv_project",
+        ),
+    )
 
     # Automatically generated primary key.
     id: int | None = Field(

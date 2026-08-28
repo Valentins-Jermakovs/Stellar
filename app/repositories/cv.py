@@ -422,6 +422,31 @@ class CVProjectRepository(
             result.scalars().all()
         )
 
+    async def get_duplicate(
+        self,
+        cv_id: int,
+        name: str,
+        exclude_id: int | None = None,
+    ) -> CVProject | None:
+        """Return a duplicate project in a CV, if one exists."""
+        filters = [
+            CVProject.cv_id == cv_id,
+            CVProject.name == name,
+        ]
+
+        # Ignore the current project when checking during an update.
+        if exclude_id is not None:
+            filters.append(
+                CVProject.id != exclude_id
+            )
+
+        result = await self.session.execute(
+            select(CVProject)
+            .where(*filters)
+        )
+
+        return result.scalar_one_or_none()
+
 
 class LanguageRepository(
     BaseRepository[Language]
