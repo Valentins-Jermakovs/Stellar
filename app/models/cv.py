@@ -31,9 +31,11 @@ class CV(SQLModel, table=True):
         index=True,
     )
 
-    # Title used to identify the CV.
+    # Unique CV title.
     title: str = Field(
         max_length=150,
+        unique=True,
+        index=True,
     )
 
     # Time when the CV was created.

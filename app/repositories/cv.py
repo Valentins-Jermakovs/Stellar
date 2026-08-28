@@ -32,11 +32,30 @@ class CVRepository(BaseRepository[CV]):
         """Return all CVs belonging to a user."""
         result = await self.session.execute(
             select(CV)
-            .where(CV.user_id == user_id)
-            .order_by(CV.updated_at.desc())
+            .where(
+                CV.user_id == user_id
+            )
+            .order_by(
+                CV.updated_at.desc()
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
+
+    async def get_by_title(
+        self,
+        title: str,
+    ) -> CV | None:
+        """Return a CV by title, if it exists."""
+        result = await self.session.execute(
+            select(CV).where(
+                CV.title == title
+            )
+        )
+
+        return result.scalar_one_or_none()
 
     async def get_by_id_for_user(
         self,
@@ -86,7 +105,9 @@ class CVRepository(BaseRepository[CV]):
         result = await self.session.execute(
             select(CV)
             .where(*filters)
-            .order_by(CV.updated_at.desc())
+            .order_by(
+                CV.updated_at.desc()
+            )
             .offset(offset)
             .limit(limit)
         )
@@ -133,11 +154,17 @@ class CVExperienceRepository(
         """Return all experience entries for a CV."""
         result = await self.session.execute(
             select(CVExperience)
-            .where(CVExperience.cv_id == cv_id)
-            .order_by(CVExperience.sort_order)
+            .where(
+                CVExperience.cv_id == cv_id
+            )
+            .order_by(
+                CVExperience.sort_order
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
 
 class CVEducationRepository(
@@ -154,11 +181,17 @@ class CVEducationRepository(
         """Return all education entries for a CV."""
         result = await self.session.execute(
             select(CVEducation)
-            .where(CVEducation.cv_id == cv_id)
-            .order_by(CVEducation.sort_order)
+            .where(
+                CVEducation.cv_id == cv_id
+            )
+            .order_by(
+                CVEducation.sort_order
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
 
 class SkillRepository(BaseRepository[Skill]):
@@ -182,10 +215,14 @@ class SkillRepository(BaseRepository[Skill]):
     async def get_all(self) -> list[Skill]:
         """Return all skills ordered by name."""
         result = await self.session.execute(
-            select(Skill).order_by(Skill.name)
+            select(Skill).order_by(
+                Skill.name
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
 
 class CVSkillRepository:
@@ -230,11 +267,17 @@ class CVSkillRepository:
         """Return all skill associations for a CV."""
         result = await self.session.execute(
             select(CVSkill)
-            .where(CVSkill.cv_id == cv_id)
-            .order_by(CVSkill.sort_order)
+            .where(
+                CVSkill.cv_id == cv_id
+            )
+            .order_by(
+                CVSkill.sort_order
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
     async def get_with_skills(
         self,
@@ -258,7 +301,9 @@ class CVSkillRepository:
             )
         )
 
-        return list(result.all())
+        return list(
+            result.all()
+        )
 
     async def update(
         self,
@@ -292,11 +337,17 @@ class CVProjectRepository(
         """Return all projects associated with a CV."""
         result = await self.session.execute(
             select(CVProject)
-            .where(CVProject.cv_id == cv_id)
-            .order_by(CVProject.sort_order)
+            .where(
+                CVProject.cv_id == cv_id
+            )
+            .order_by(
+                CVProject.sort_order
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
 
 class LanguageRepository(
@@ -322,10 +373,14 @@ class LanguageRepository(
     async def get_all(self) -> list[Language]:
         """Return all languages ordered by name."""
         result = await self.session.execute(
-            select(Language).order_by(Language.name)
+            select(Language).order_by(
+                Language.name
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
 
 class CVLanguageRepository:
@@ -370,11 +425,17 @@ class CVLanguageRepository:
         """Return all language associations for a CV."""
         result = await self.session.execute(
             select(CVLanguage)
-            .where(CVLanguage.cv_id == cv_id)
-            .order_by(CVLanguage.sort_order)
+            .where(
+                CVLanguage.cv_id == cv_id
+            )
+            .order_by(
+                CVLanguage.sort_order
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )
 
     async def get_with_languages(
         self,
@@ -398,7 +459,9 @@ class CVLanguageRepository:
             )
         )
 
-        return list(result.all())
+        return list(
+            result.all()
+        )
 
     async def update(
         self,
@@ -432,8 +495,14 @@ class CVCertificationRepository(
         """Return all certifications associated with a CV."""
         result = await self.session.execute(
             select(CVCertification)
-            .where(CVCertification.cv_id == cv_id)
-            .order_by(CVCertification.sort_order)
+            .where(
+                CVCertification.cv_id == cv_id
+            )
+            .order_by(
+                CVCertification.sort_order
+            )
         )
 
-        return list(result.scalars().all())
+        return list(
+            result.scalars().all()
+        )

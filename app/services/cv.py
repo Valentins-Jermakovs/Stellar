@@ -317,6 +317,17 @@ class CVService:
             user_id
         )
 
+        # Check whether a CV with the same title already exists.
+        existing_cv = await self.repository.get_by_title(
+            data.title
+        )
+
+        if existing_cv is not None:
+            raise HTTPException(
+                status_code=409,
+                detail="A CV with this title already exists",
+            )
+
         cv = CV(
             user_id=user_id,
             title=data.title,
@@ -505,6 +516,23 @@ class CVService:
         values = data.model_dump(
             exclude_unset=True
         )
+
+        new_title = values.get("title")
+
+        if new_title is not None:
+            # Check for another CV with the same title.
+            existing_cv = await self.repository.get_by_title(
+                new_title
+            )
+
+            if (
+                existing_cv is not None
+                and existing_cv.id != cv_id
+            ):
+                raise HTTPException(
+                    status_code=409,
+                    detail="A CV with this title already exists",
+                )
 
         for field, value in values.items():
             setattr(
