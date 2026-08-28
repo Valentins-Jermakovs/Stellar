@@ -138,10 +138,12 @@ def get_cv_language_facade(
 
 def get_certification_facade(
     session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
 ) -> CVCertificationFacade:
-    """Create a certification facade."""
+    """Create a certification facade with database and Redis dependencies."""
     return CVCertificationFacade(
-        session
+        session=session,
+        redis=redis,
     )
 
 

@@ -619,3 +619,28 @@ class CVCertificationRepository(
         return list(
             result.scalars().all()
         )
+
+    async def get_duplicate(
+        self,
+        cv_id: int,
+        name: str,
+        exclude_id: int | None = None,
+    ) -> CVCertification | None:
+        """Return a duplicate certification in a CV, if one exists."""
+        filters = [
+            CVCertification.cv_id == cv_id,
+            CVCertification.name == name,
+        ]
+
+        # Ignore the current certification when checking during an update.
+        if exclude_id is not None:
+            filters.append(
+                CVCertification.id != exclude_id
+            )
+
+        result = await self.session.execute(
+            select(CVCertification)
+            .where(*filters)
+        )
+
+        return result.scalar_one_or_none()
