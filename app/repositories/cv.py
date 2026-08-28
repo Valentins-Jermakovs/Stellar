@@ -86,7 +86,6 @@ class CVRepository(BaseRepository[CV]):
             CV.user_id == user_id,
         ]
 
-        # Apply title filtering only when a search query is provided.
         if query:
             filters.append(
                 CV.title.ilike(
@@ -94,7 +93,6 @@ class CVRepository(BaseRepository[CV]):
                 )
             )
 
-        # Get the total number of matching CVs for pagination.
         total_result = await self.session.execute(
             select(func.count())
             .select_from(CV)
@@ -103,7 +101,6 @@ class CVRepository(BaseRepository[CV]):
 
         total = total_result.scalar_one()
 
-        # Fetch the requested page of CVs.
         result = await self.session.execute(
             select(CV)
             .where(*filters)
@@ -184,7 +181,6 @@ class CVExperienceRepository(
             CVExperience.start_date == start_date,
         ]
 
-        # Ignore the current record when checking during an update.
         if exclude_id is not None:
             filters.append(
                 CVExperience.id != exclude_id
@@ -242,7 +238,6 @@ class CVEducationRepository(
             CVEducation.start_date == start_date,
         ]
 
-        # Ignore the current record when checking during an update.
         if exclude_id is not None:
             filters.append(
                 CVEducation.id != exclude_id
@@ -274,12 +269,28 @@ class SkillRepository(BaseRepository[Skill]):
 
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[Skill]:
-        """Return all skills ordered by name."""
+    async def search(
+        self,
+        query: str | None = None,
+        limit: int = 10,
+    ) -> list[Skill]:
+        """Return up to ten skills matching the search query."""
+        filters = []
+
+        if query:
+            filters.append(
+                Skill.name.ilike(
+                    f"%{query}%"
+                )
+            )
+
         result = await self.session.execute(
-            select(Skill).order_by(
+            select(Skill)
+            .where(*filters)
+            .order_by(
                 Skill.name
             )
+            .limit(limit)
         )
 
         return list(

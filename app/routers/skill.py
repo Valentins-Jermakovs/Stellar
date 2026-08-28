@@ -1,5 +1,5 @@
 # FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.facades import (
     CVSkillFacade,
@@ -52,7 +52,11 @@ async def create_skill(
     "/skills",
     response_model=list[SkillRead],
 )
-async def get_skills(
+async def search_skills(
+    query: str | None = Query(
+        default=None,
+        description="Search skills by name",
+    ),
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
@@ -60,8 +64,10 @@ async def get_skills(
         get_skill_facade
     ),
 ):
-    """Return all global skills."""
-    return await facade.get_all()
+    """Return up to ten global skills matching the query."""
+    return await facade.search(
+        query=query
+    )
 
 
 @router.get(

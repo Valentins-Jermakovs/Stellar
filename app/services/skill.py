@@ -80,27 +80,23 @@ class SkillService:
 
         return skill
 
-    async def get_by_name(
+    async def search(
         self,
-        name: str,
-    ) -> Skill | None:
-        """Return a global skill by name."""
-        normalized_name = DataNormalizer.normalize_string(
-            name
-        )
-
-        if not normalized_name:
-            return None
-
-        return await self.repository.get_by_name(
-            normalized_name
-        )
-
-    async def get_all(
-        self,
+        query: str | None = None,
     ) -> list[Skill]:
-        """Return all global skills."""
-        return await self.repository.get_all()
+        """Return up to ten global skills matching the query."""
+        if query is not None:
+            query = DataNormalizer.normalize_string(
+                query
+            )
+
+            if not query:
+                query = None
+
+        return await self.repository.search(
+            query=query,
+            limit=10,
+        )
 
 
 class CVSkillService:

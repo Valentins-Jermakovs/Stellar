@@ -46,19 +46,13 @@ class SkillFacade:
             skill_id
         )
 
-    async def get_all(
+    async def search(
         self,
+        query: str | None = None,
     ) -> list[Skill]:
-        """Return all global skills."""
-        return await self.service.get_all()
-
-    async def get_by_name(
-        self,
-        name: str,
-    ) -> Skill | None:
-        """Return a global skill by name."""
-        return await self.service.get_by_name(
-            name
+        """Search the global skill catalog."""
+        return await self.service.search(
+            query
         )
 
 
