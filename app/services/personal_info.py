@@ -1,8 +1,12 @@
 from fastapi import HTTPException
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVPersonalInfo
-from app.repositories import CVPersonalInfoRepository
+from app.repositories import (
+    CacheRepository,
+    CVPersonalInfoRepository,
+)
 from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
@@ -18,6 +22,7 @@ class CVPersonalInfoService:
     def __init__(
         self,
         session: AsyncSession,
+        redis: Redis,
     ):
         """Initialize the service dependencies."""
         self.session = session
@@ -28,6 +33,28 @@ class CVPersonalInfoService:
 
         self.ownership = CVOwnershipService(
             session
+        )
+
+        self.cache = CacheRepository(
+            redis
+        )
+
+    def _detail_cache_key(
+        self,
+        cv_id: int,
+    ) -> str:
+        """Build the cache key for a CV detail."""
+        return f"cv:{cv_id}:detail"
+
+    async def _invalidate_cv_cache(
+        self,
+        cv_id: int,
+    ) -> None:
+        """Remove the cached CV detail."""
+        await self.cache.delete(
+            self._detail_cache_key(
+                cv_id
+            )
         )
 
     async def create(
@@ -69,6 +96,10 @@ class CVPersonalInfoService:
         await self.session.commit()
         await self.session.refresh(
             personal_info
+        )
+
+        await self._invalidate_cv_cache(
+            cv_id
         )
 
         return personal_info
@@ -119,6 +150,10 @@ class CVPersonalInfoService:
             personal_info
         )
 
+        await self._invalidate_cv_cache(
+            cv_id
+        )
+
         return personal_info
 
     async def delete(
@@ -149,3 +184,7 @@ class CVPersonalInfoService:
         )
 
         await self.session.commit()
+
+        await self._invalidate_cv_cache(
+            cv_id
+        )

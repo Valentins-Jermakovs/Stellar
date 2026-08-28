@@ -1,4 +1,5 @@
-# Async database session used by the service.
+# Async database session and Redis client used by the service.
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Model and schemas used by the facade.
@@ -17,10 +18,12 @@ class CVPersonalInfoFacade:
     def __init__(
         self,
         session: AsyncSession,
+        redis: Redis,
     ):
         """Initialize the facade with service dependencies."""
         self.service = CVPersonalInfoService(
-            session
+            session=session,
+            redis=redis,
         )
 
     async def create(
