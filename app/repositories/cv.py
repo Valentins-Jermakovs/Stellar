@@ -434,7 +434,6 @@ class CVProjectRepository(
             CVProject.name == name,
         ]
 
-        # Ignore the current project when checking during an update.
         if exclude_id is not None:
             filters.append(
                 CVProject.id != exclude_id
@@ -468,12 +467,28 @@ class LanguageRepository(
 
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[Language]:
-        """Return all languages ordered by name."""
+    async def search(
+        self,
+        query: str | None = None,
+        limit: int = 10,
+    ) -> list[Language]:
+        """Return up to ten languages matching the search query."""
+        filters = []
+
+        if query:
+            filters.append(
+                Language.name.ilike(
+                    f"%{query}%"
+                )
+            )
+
         result = await self.session.execute(
-            select(Language).order_by(
+            select(Language)
+            .where(*filters)
+            .order_by(
                 Language.name
             )
+            .limit(limit)
         )
 
         return list(

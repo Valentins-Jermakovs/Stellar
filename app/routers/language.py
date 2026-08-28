@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, status
+# FastAPI routing and dependency injection.
+from fastapi import APIRouter, Depends, Query, status
 
 from app.facades import (
     CVLanguageFacade,
     LanguageFacade,
 )
+
+# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVLanguageCreate,
     CVLanguageRead,
@@ -12,6 +15,7 @@ from app.schemas import (
     LanguageRead,
 )
 
+# Dependencies shared by language endpoints.
 from .dependencies import (
     get_cv_language_facade,
     get_language_facade,
@@ -38,14 +42,21 @@ async def create_language(
         get_language_facade
     ),
 ):
-    return await facade.create(data)
+    """Create a global language."""
+    return await facade.create(
+        data
+    )
 
 
 @router.get(
     "/languages",
     response_model=list[LanguageRead],
 )
-async def get_languages(
+async def search_languages(
+    query: str | None = Query(
+        default=None,
+        description="Search languages by name",
+    ),
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
@@ -53,7 +64,10 @@ async def get_languages(
         get_language_facade
     ),
 ):
-    return await facade.get_all()
+    """Return up to ten global languages matching the query."""
+    return await facade.search(
+        query=query
+    )
 
 
 @router.get(
@@ -69,6 +83,7 @@ async def get_language(
         get_language_facade
     ),
 ):
+    """Return a global language by ID."""
     return await facade.get_by_id(
         language_id
     )
@@ -89,29 +104,11 @@ async def add_language_to_cv(
         get_cv_language_facade
     ),
 ):
+    """Add a global language to a CV."""
     return await facade.add(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
         data=data,
-    )
-
-
-@router.get(
-    "/cvs/{cv_id}/languages",
-    response_model=list[CVLanguageRead],
-)
-async def get_cv_languages(
-    cv_id: int,
-    current_user: dict = Depends(
-        jwt_auth.get_current_user
-    ),
-    facade: CVLanguageFacade = Depends(
-        get_cv_language_facade
-    ),
-):
-    return await facade.get_by_cv_id(
-        cv_id=cv_id,
-        user_id=int(current_user["sub"]),
     )
 
 
@@ -130,6 +127,7 @@ async def update_cv_language(
         get_cv_language_facade
     ),
 ):
+    """Update a language association in a CV."""
     return await facade.update(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -152,8 +150,9 @@ async def delete_cv_language(
         get_cv_language_facade
     ),
 ):
+    """Delete a language association from a CV."""
     await facade.delete(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
         language_id=language_id,
-    )
+        )

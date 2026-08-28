@@ -127,10 +127,12 @@ def get_language_facade(
 
 def get_cv_language_facade(
     session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
 ) -> CVLanguageFacade:
-    """Create a CV language facade."""
+    """Create a CV language facade with database and Redis dependencies."""
     return CVLanguageFacade(
-        session
+        session=session,
+        redis=redis,
     )
 
 
