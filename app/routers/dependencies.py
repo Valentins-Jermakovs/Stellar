@@ -63,10 +63,12 @@ def get_personal_info_facade(
 
 def get_experience_facade(
     session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
 ) -> CVExperienceFacade:
-    """Create an experience facade."""
+    """Create an experience facade with database and Redis dependencies."""
     return CVExperienceFacade(
-        session
+        session=session,
+        redis=redis,
     )
 
 
@@ -141,3 +143,4 @@ def get_generator_facade(
         session=session,
         templates_path=TEMPLATES_DIR,
     )
+

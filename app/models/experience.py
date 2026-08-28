@@ -2,7 +2,7 @@
 from datetime import date
 
 # SQLAlchemy column and foreign key definitions.
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, UniqueConstraint
 
 # Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
@@ -12,6 +12,16 @@ class CVExperience(SQLModel, table=True):
     """Store a work experience entry included in a CV."""
 
     __tablename__ = "cv_experience"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "cv_id",
+            "company",
+            "position",
+            "start_date",
+            name="uq_cv_experience",
+        ),
+    )
 
     # Automatically generated primary key.
     id: int | None = Field(
@@ -52,7 +62,6 @@ class CVExperience(SQLModel, table=True):
     start_date: date
 
     # Date when the employment ended.
-    # A missing value means the position may still be active.
     end_date: date | None = None
 
     # Indicates whether the user currently holds this position.

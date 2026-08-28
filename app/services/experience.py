@@ -1,21 +1,30 @@
 from fastapi import HTTPException
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVExperience
-from app.repositories import CVExperienceRepository
+from app.repositories import (
+    CacheRepository,
+    CVExperienceRepository,
+)
 from app.schemas import (
     CVExperienceCreate,
     CVExperienceUpdate,
 )
+from app.utils import DataNormalizer
 
 from .ownership import CVOwnershipService
 
 
 class CVExperienceService:
+    """Handle work experience entries associated with a CV."""
+
     def __init__(
         self,
         session: AsyncSession,
+        redis: Redis,
     ):
+        """Initialize the service dependencies."""
         self.session = session
 
         self.repository = CVExperienceRepository(
@@ -26,20 +35,61 @@ class CVExperienceService:
             session
         )
 
+        self.cache = CacheRepository(
+            redis
+        )
+
+    def _detail_cache_key(
+        self,
+        cv_id: int,
+    ) -> str:
+        """Build the cache key for a CV detail."""
+        return f"cv:{cv_id}:detail"
+
+    async def _invalidate_cv_cache(
+        self,
+        cv_id: int,
+    ) -> None:
+        """Remove the cached CV detail."""
+        await self.cache.delete(
+            self._detail_cache_key(
+                cv_id
+            )
+        )
+
     async def create(
         self,
         cv_id: int,
         user_id: int,
         data: CVExperienceCreate,
     ) -> CVExperience:
+        """Create a work experience entry for a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,
         )
 
+        values = DataNormalizer.normalize_model(
+            data
+        )
+
+        # Check whether the same experience already exists in this CV.
+        existing = await self.repository.get_duplicate(
+            cv_id=cv_id,
+            company=values["company"],
+            position=values["position"],
+            start_date=values["start_date"],
+        )
+
+        if existing is not None:
+            raise HTTPException(
+                status_code=409,
+                detail="This work experience already exists",
+            )
+
         experience = CVExperience(
             cv_id=cv_id,
-            **data.model_dump(),
+            **values,
         )
 
         await self.repository.create(
@@ -47,18 +97,23 @@ class CVExperienceService:
         )
 
         await self.session.commit()
-
         await self.session.refresh(
             experience
         )
 
+        await self._invalidate_cv_cache(
+            cv_id
+        )
+
         return experience
 
-    async def get_by_id(
+    async def update(
         self,
         experience_id: int,
         user_id: int,
+        data: CVExperienceUpdate,
     ) -> CVExperience:
+        """Update an existing work experience entry."""
         await self.ownership.verify_experience(
             experience_id,
             user_id,
@@ -74,36 +129,43 @@ class CVExperienceService:
                 detail="Experience not found",
             )
 
-        return experience
-
-    async def get_by_cv_id(
-        self,
-        cv_id: int,
-        user_id: int,
-    ) -> list[CVExperience]:
-        await self.ownership.verify_cv(
-            cv_id,
-            user_id,
+        values = DataNormalizer.normalize_model(
+            data,
+            exclude_unset=True,
         )
 
-        return await self.repository.get_by_cv_id(
-            cv_id
+        # Use existing values for fields that were not provided.
+        company = values.get(
+            "company",
+            experience.company,
         )
 
-    async def update(
-        self,
-        experience_id: int,
-        user_id: int,
-        data: CVExperienceUpdate,
-    ) -> CVExperience:
-        experience = await self.get_by_id(
-            experience_id,
-            user_id,
+        position = values.get(
+            "position",
+            experience.position,
         )
 
-        for field, value in data.model_dump(
-            exclude_unset=True
-        ).items():
+        start_date = values.get(
+            "start_date",
+            experience.start_date,
+        )
+
+        # Ignore the current entry when checking for duplicates.
+        existing = await self.repository.get_duplicate(
+            cv_id=experience.cv_id,
+            company=company,
+            position=position,
+            start_date=start_date,
+            exclude_id=experience_id,
+        )
+
+        if existing is not None:
+            raise HTTPException(
+                status_code=409,
+                detail="This work experience already exists",
+            )
+
+        for field, value in values.items():
             setattr(
                 experience,
                 field,
@@ -115,9 +177,12 @@ class CVExperienceService:
         )
 
         await self.session.commit()
-
         await self.session.refresh(
             experience
+        )
+
+        await self._invalidate_cv_cache(
+            experience.cv_id
         )
 
         return experience
@@ -127,13 +192,30 @@ class CVExperienceService:
         experience_id: int,
         user_id: int,
     ) -> None:
-        experience = await self.get_by_id(
+        """Delete an existing work experience entry."""
+        await self.ownership.verify_experience(
             experience_id,
             user_id,
         )
+
+        experience = await self.repository.get_by_id(
+            experience_id
+        )
+
+        if experience is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Experience not found",
+            )
+
+        cv_id = experience.cv_id
 
         await self.repository.delete(
             experience
         )
 
         await self.session.commit()
+
+        await self._invalidate_cv_cache(
+            cv_id
+        )

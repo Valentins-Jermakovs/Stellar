@@ -1,4 +1,6 @@
 # AsyncSession is used by repositories to execute database queries.
+from datetime import date
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # SQL query helpers used to select records and calculate totals.
@@ -165,6 +167,35 @@ class CVExperienceRepository(
         return list(
             result.scalars().all()
         )
+
+    async def get_duplicate(
+        self,
+        cv_id: int,
+        company: str,
+        position: str,
+        start_date: date,
+        exclude_id: int | None = None,
+    ) -> CVExperience | None:
+        """Return a duplicate experience entry, if one exists."""
+        filters = [
+            CVExperience.cv_id == cv_id,
+            CVExperience.company == company,
+            CVExperience.position == position,
+            CVExperience.start_date == start_date,
+        ]
+
+        # Ignore the current record when checking during an update.
+        if exclude_id is not None:
+            filters.append(
+                CVExperience.id != exclude_id
+            )
+
+        result = await self.session.execute(
+            select(CVExperience)
+            .where(*filters)
+        )
+
+        return result.scalar_one_or_none()
 
 
 class CVEducationRepository(
