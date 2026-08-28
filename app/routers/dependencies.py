@@ -76,10 +76,12 @@ def get_experience_facade(
 
 def get_education_facade(
     session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
 ) -> CVEducationFacade:
-    """Create an education facade."""
+    """Create an education facade with database and Redis dependencies."""
     return CVEducationFacade(
-        session
+        session=session,
+        redis=redis,
     )
 
 

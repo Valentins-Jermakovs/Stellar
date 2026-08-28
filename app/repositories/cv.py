@@ -224,6 +224,37 @@ class CVEducationRepository(
             result.scalars().all()
         )
 
+    async def get_duplicate(
+        self,
+        cv_id: int,
+        institution: str,
+        degree: str | None,
+        field_of_study: str | None,
+        start_date: date | None,
+        exclude_id: int | None = None,
+    ) -> CVEducation | None:
+        """Return a duplicate education entry, if one exists."""
+        filters = [
+            CVEducation.cv_id == cv_id,
+            CVEducation.institution == institution,
+            CVEducation.degree == degree,
+            CVEducation.field_of_study == field_of_study,
+            CVEducation.start_date == start_date,
+        ]
+
+        # Ignore the current record when checking during an update.
+        if exclude_id is not None:
+            filters.append(
+                CVEducation.id != exclude_id
+            )
+
+        result = await self.session.execute(
+            select(CVEducation)
+            .where(*filters)
+        )
+
+        return result.scalar_one_or_none()
+
 
 class SkillRepository(BaseRepository[Skill]):
     """Repository for reusable skills."""
