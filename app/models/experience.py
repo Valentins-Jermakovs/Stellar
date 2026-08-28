@@ -1,42 +1,55 @@
+# Used for storing employment start and end dates.
 from datetime import date
 
+# Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
 
 class CVExperience(SQLModel, table=True):
-    """Work experience entry belonging to a CV."""
+    """Store a work experience entry included in a CV."""
 
     __tablename__ = "cv_experience"
 
+    # Automatically generated primary key.
     id: int | None = Field(
         default=None,
         primary_key=True,
     )
 
+    # ID of the CV this experience entry belongs to.
     cv_id: int = Field(
         foreign_key="cv.id",
         index=True,
     )
 
+    # Name of the company or organization.
     company: str = Field(
         max_length=200,
     )
 
+    # Job title or position held by the user.
     position: str = Field(
         max_length=200,
     )
 
+    # Location where the user worked.
     location: str | None = Field(
         default=None,
         max_length=150,
     )
 
+    # Date when the employment started.
     start_date: date
 
+    # Date when the employment ended.
+    # A missing value means the position may still be active.
     end_date: date | None = None
 
+    # Indicates whether the user currently holds this position.
     is_current: bool = False
 
+    # Optional description of the user's responsibilities and achievements.
     description: str | None = None
 
+    # Position used to preserve the order of experience entries in the CV.
     sort_order: int = 0

@@ -1,3 +1,4 @@
+# Standard library imports used for JSON serialization and pagination.
 import json
 from math import ceil
 
@@ -8,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import User
 from app.models.cv import CV, utc_now
 
+# Repositories used to access PostgreSQL and Redis.
 from app.repositories import (
     CacheRepository,
     CVCertificationRepository,
@@ -21,6 +23,7 @@ from app.repositories import (
     UserRepository,
 )
 
+# Schemas used for request validation and API responses.
 from app.schemas import (
     CVCertificationRead,
     CVCreate,
@@ -38,9 +41,12 @@ from app.schemas import (
 
 
 class CVService:
-    """Provide application logic for CV management."""
+    """Handle business logic for CV operations."""
 
+    # Cache entries expire after five minutes.
     CACHE_TTL = 300
+
+    # Limit the maximum number of items returned in one page.
     MAX_PAGE_SIZE = 100
 
     def __init__(
@@ -48,7 +54,7 @@ class CVService:
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the CV service."""
+        """Initialize the service dependencies."""
         self.session = session
 
         self.repository = CVRepository(
@@ -105,15 +111,11 @@ class CVService:
             redis
         )
 
-    # -------------------------------------------------------------------------
-    # Cache keys
-    # -------------------------------------------------------------------------
-
     def _detail_cache_key(
         self,
         cv_id: int,
     ) -> str:
-        """Return the cache key for a CV detail."""
+        """Build the cache key for a CV detail."""
         return f"cv:{cv_id}:detail"
 
     def _search_cache_key(
@@ -123,7 +125,7 @@ class CVService:
         page: int,
         page_size: int,
     ) -> str:
-        """Return the cache key for a user's CV search."""
+        """Build the cache key for a user's CV list."""
         normalized_query = (
             query.strip().lower()
             if query
@@ -141,24 +143,18 @@ class CVService:
         self,
         user_id: int,
     ) -> str:
-        """Return the cache pattern for all user CV lists."""
+        """Build a pattern for all cached CV lists of a user."""
         return f"user:{user_id}:cvs:*"
-
-    # -------------------------------------------------------------------------
-    # Cache invalidation
-    # -------------------------------------------------------------------------
 
     async def _invalidate_user_cache(
         self,
         user_id: int,
     ) -> None:
-        """Invalidate all cached CV lists for a user."""
-        pattern = self._user_cache_pattern(
-            user_id
-        )
-
+        """Remove all cached CV lists for a user."""
         await self.cache.delete_pattern(
-            pattern
+            self._user_cache_pattern(
+                user_id
+            )
         )
 
     async def _invalidate_cv_cache(
@@ -166,31 +162,29 @@ class CVService:
         cv_id: int,
         user_id: int,
     ) -> None:
-        """Invalidate detail and list caches affected by a CV."""
+        """Remove cached data affected by a CV change."""
         await self.cache.delete(
             self._detail_cache_key(
                 cv_id
             )
         )
 
+        # The user's cached CV lists are also affected.
         await self._invalidate_user_cache(
             user_id
         )
-
-    # -------------------------------------------------------------------------
-    # User
-    # -------------------------------------------------------------------------
 
     async def _ensure_user(
         self,
         user_id: int,
     ) -> User:
-        """Return an existing user or create a local user reference."""
+        """Ensure that a local user reference exists."""
         user = await self.user_repository.get_by_id(
             user_id
         )
 
         if user is None:
+            # The ID comes from the authenticated user's JWT.
             user = User(
                 id=user_id
             )
@@ -201,15 +195,11 @@ class CVService:
 
         return user
 
-    # -------------------------------------------------------------------------
-    # Build detail response
-    # -------------------------------------------------------------------------
-
     async def _build_detail_response(
         self,
         cv: CV,
     ) -> CVDetailRead:
-        """Build a detailed CV response from related entities."""
+        """Build a detailed CV response from its related data."""
         cv_id = cv.id
 
         if cv_id is None:
@@ -317,17 +307,12 @@ class CVService:
             ],
         )
 
-    # -------------------------------------------------------------------------
-    # Create
-    # -------------------------------------------------------------------------
-
     async def create(
         self,
         user_id: int,
         data: CVCreate,
     ) -> CVRead:
-        """Create a CV for a user."""
-        # Make sure the local user reference exists before creating the CV.
+        """Create a new CV for a user."""
         await self._ensure_user(
             user_id
         )
@@ -346,6 +331,7 @@ class CVService:
             cv
         )
 
+        # Creating a CV invalidates the cached CV lists.
         await self._invalidate_user_cache(
             user_id
         )
@@ -354,16 +340,12 @@ class CVService:
             cv
         )
 
-    # -------------------------------------------------------------------------
-    # Get detail
-    # -------------------------------------------------------------------------
-
     async def get_by_id(
         self,
         cv_id: int,
         user_id: int,
     ) -> CVDetailRead:
-        """Return a CV with all associated data."""
+        """Return a CV with all related data."""
         cache_key = self._detail_cache_key(
             cv_id
         )
@@ -377,6 +359,8 @@ class CVService:
                 cached
             )
 
+            # The detail cache is shared by CV ID, so ownership must still
+            # be checked before returning the cached response.
             if data["user_id"] != user_id:
                 raise HTTPException(
                     status_code=404,
@@ -414,10 +398,6 @@ class CVService:
 
         return detail
 
-    # -------------------------------------------------------------------------
-    # Search
-    # -------------------------------------------------------------------------
-
     async def search(
         self,
         user_id: int,
@@ -425,7 +405,7 @@ class CVService:
         page: int = 1,
         page_size: int = 10,
     ) -> CVPageRead:
-        """Search a user's CVs with pagination."""
+        """Return a paginated list of a user's CVs."""
         if page < 1:
             page = 1
 
@@ -435,6 +415,7 @@ class CVService:
         if page_size > self.MAX_PAGE_SIZE:
             page_size = self.MAX_PAGE_SIZE
 
+        # Normalize the query so equivalent searches use the same cache key.
         if query is not None:
             query = query.strip()
 
@@ -503,10 +484,6 @@ class CVService:
 
         return response
 
-    # -------------------------------------------------------------------------
-    # Update
-    # -------------------------------------------------------------------------
-
     async def update(
         self,
         cv_id: int,
@@ -555,10 +532,6 @@ class CVService:
         return CVRead.model_validate(
             cv
         )
-
-    # -------------------------------------------------------------------------
-    # Delete
-    # -------------------------------------------------------------------------
 
     async def delete(
         self,

@@ -1,5 +1,7 @@
+# Used for storing the time when the user reference was created.
 from datetime import datetime, timezone
 
+# Field definitions and the base class for SQLModel models.
 from sqlmodel import Field, SQLModel
 
 
@@ -13,31 +15,21 @@ def utc_now() -> datetime:
 
 
 class User(SQLModel, table=True):
-    """Application user who can own CVs."""
+    """
+    Store a local reference to an authenticated user.
+
+    The user ID is obtained from the JWT token and is used to associate
+    application data, such as CVs, with the corresponding user.
+    """
 
     __tablename__ = "user"
 
-    id: int | None = Field(
-        default=None,
+    # User ID received from the authentication service through the JWT.
+    id: int = Field(
         primary_key=True,
     )
 
-    username: str = Field(
-        max_length=100,
-        unique=True,
-        index=True,
-    )
-
-    email: str = Field(
-        max_length=255,
-        unique=True,
-        index=True,
-    )
-
-    password_hash: str = Field(
-        max_length=255,
-    )
-
+    # Store when the local user reference was first created.
     created_at: datetime = Field(
         default_factory=utc_now,
     )

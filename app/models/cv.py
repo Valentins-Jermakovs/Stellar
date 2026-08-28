@@ -1,5 +1,7 @@
+# Used for storing CV creation and update timestamps.
 from datetime import datetime, timezone
 
+# Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
 
@@ -13,28 +15,33 @@ def utc_now() -> datetime:
 
 
 class CV(SQLModel, table=True):
-    """Main CV entity belonging to a user."""
+    """Store a CV belonging to a user."""
 
     __tablename__ = "cv"
 
+    # Automatically generated primary key.
     id: int | None = Field(
         default=None,
         primary_key=True,
     )
 
+    # ID of the user who owns the CV.
     user_id: int = Field(
         foreign_key="user.id",
         index=True,
     )
 
+    # Title used to identify the CV.
     title: str = Field(
         max_length=150,
     )
 
+    # Time when the CV was created.
     created_at: datetime = Field(
         default_factory=utc_now,
     )
 
+    # Time when the CV was last updated.
     updated_at: datetime = Field(
         default_factory=utc_now,
     )
