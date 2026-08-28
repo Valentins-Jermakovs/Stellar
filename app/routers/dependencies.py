@@ -96,10 +96,12 @@ def get_skill_facade(
 
 def get_cv_skill_facade(
     session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
 ) -> CVSkillFacade:
-    """Create a CV skill facade."""
+    """Create a CV skill facade with database and Redis dependencies."""
     return CVSkillFacade(
-        session
+        session=session,
+        redis=redis,
     )
 
 

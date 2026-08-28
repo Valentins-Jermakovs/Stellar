@@ -1,8 +1,10 @@
 from fastapi import HTTPException
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CVSkill, Skill
 from app.repositories import (
+    CacheRepository,
     CVSkillRepository,
     SkillRepository,
 )
@@ -11,15 +13,19 @@ from app.schemas import (
     CVSkillUpdate,
     SkillCreate,
 )
+from app.utils import DataNormalizer
 
 from .ownership import CVOwnershipService
 
 
 class SkillService:
+    """Handle the global skill catalog."""
+
     def __init__(
         self,
         session: AsyncSession,
     ):
+        """Initialize the service dependencies."""
         self.session = session
 
         self.repository = SkillRepository(
@@ -30,15 +36,20 @@ class SkillService:
         self,
         data: SkillCreate,
     ) -> Skill:
+        """Create a skill or return an existing one."""
+        values = DataNormalizer.normalize_model(
+            data
+        )
+
         existing = await self.repository.get_by_name(
-            data.name
+            values["name"]
         )
 
         if existing is not None:
             return existing
 
         skill = Skill(
-            name=data.name
+            name=values["name"]
         )
 
         await self.repository.create(
@@ -46,7 +57,6 @@ class SkillService:
         )
 
         await self.session.commit()
-
         await self.session.refresh(
             skill
         )
@@ -57,6 +67,7 @@ class SkillService:
         self,
         skill_id: int,
     ) -> Skill:
+        """Return a global skill by ID."""
         skill = await self.repository.get_by_id(
             skill_id
         )
@@ -69,25 +80,38 @@ class SkillService:
 
         return skill
 
-    async def get_all(
-        self,
-    ) -> list[Skill]:
-        return await self.repository.get_all()
-
     async def get_by_name(
         self,
         name: str,
     ) -> Skill | None:
-        return await self.repository.get_by_name(
+        """Return a global skill by name."""
+        normalized_name = DataNormalizer.normalize_string(
             name
         )
 
+        if not normalized_name:
+            return None
+
+        return await self.repository.get_by_name(
+            normalized_name
+        )
+
+    async def get_all(
+        self,
+    ) -> list[Skill]:
+        """Return all global skills."""
+        return await self.repository.get_all()
+
 
 class CVSkillService:
+    """Handle skills associated with a CV."""
+
     def __init__(
         self,
         session: AsyncSession,
+        redis: Redis,
     ):
+        """Initialize the service dependencies."""
         self.session = session
 
         self.repository = CVSkillRepository(
@@ -102,12 +126,35 @@ class CVSkillService:
             session
         )
 
+        self.cache = CacheRepository(
+            redis
+        )
+
+    def _detail_cache_key(
+        self,
+        cv_id: int,
+    ) -> str:
+        """Build the cache key for a CV detail."""
+        return f"cv:{cv_id}:detail"
+
+    async def _invalidate_cv_cache(
+        self,
+        cv_id: int,
+    ) -> None:
+        """Remove the cached CV detail."""
+        await self.cache.delete(
+            self._detail_cache_key(
+                cv_id
+            )
+        )
+
     async def add(
         self,
         cv_id: int,
         user_id: int,
         data: CVSkillCreate,
     ) -> CVSkill:
+        """Add a global skill to a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -134,9 +181,13 @@ class CVSkillService:
                 detail="Skill already added to CV",
             )
 
+        values = DataNormalizer.normalize_model(
+            data
+        )
+
         cv_skill = CVSkill(
             cv_id=cv_id,
-            **data.model_dump(),
+            **values,
         )
 
         await self.repository.create(
@@ -145,21 +196,11 @@ class CVSkillService:
 
         await self.session.commit()
 
-        return cv_skill
-
-    async def get_by_cv_id(
-        self,
-        cv_id: int,
-        user_id: int,
-    ) -> list[CVSkill]:
-        await self.ownership.verify_cv(
-            cv_id,
-            user_id,
-        )
-
-        return await self.repository.get_by_cv_id(
+        await self._invalidate_cv_cache(
             cv_id
         )
+
+        return cv_skill
 
     async def update(
         self,
@@ -168,6 +209,7 @@ class CVSkillService:
         skill_id: int,
         data: CVSkillUpdate,
     ) -> CVSkill:
+        """Update a skill association in a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -184,9 +226,12 @@ class CVSkillService:
                 detail="CV skill not found",
             )
 
-        for field, value in data.model_dump(
-            exclude_unset=True
-        ).items():
+        values = DataNormalizer.normalize_model(
+            data,
+            exclude_unset=True,
+        )
+
+        for field, value in values.items():
             setattr(
                 cv_skill,
                 field,
@@ -198,6 +243,13 @@ class CVSkillService:
         )
 
         await self.session.commit()
+        await self.session.refresh(
+            cv_skill
+        )
+
+        await self._invalidate_cv_cache(
+            cv_id
+        )
 
         return cv_skill
 
@@ -207,6 +259,7 @@ class CVSkillService:
         user_id: int,
         skill_id: int,
     ) -> None:
+        """Remove a skill association from a CV."""
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -228,3 +281,7 @@ class CVSkillService:
         )
 
         await self.session.commit()
+
+        await self._invalidate_cv_cache(
+            cv_id
+        )
