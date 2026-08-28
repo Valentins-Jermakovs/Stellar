@@ -1,5 +1,10 @@
+# Base repository shared by database repositories.
 from .base import BaseRepository
+
+# Repository for Redis cache operations.
 from .cache import CacheRepository
+
+# Repositories for CV-related entities and associations.
 from .cv import (
     CVCertificationRepository,
     CVEducationRepository,
@@ -13,17 +18,6 @@ from .cv import (
     SkillRepository,
 )
 
-__all__ = [
-    "BaseRepository",
-    "CacheRepository",
-    "CVRepository",
-    "CVPersonalInfoRepository",
-    "CVExperienceRepository",
-    "CVEducationRepository",
-    "SkillRepository",
-    "CVSkillRepository",
-    "CVProjectRepository",
-    "LanguageRepository",
-    "CVLanguageRepository",
-    "CVCertificationRepository",
-]
+# Repository for application users.
+from .user import UserRepository
+

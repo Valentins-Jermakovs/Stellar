@@ -1,9 +1,17 @@
+# Generic typing is used to keep repository methods type-safe
+# for different SQLModel entities.
 from typing import Generic, TypeVar
 
+# AsyncSession provides asynchronous database access.
 from sqlalchemy.ext.asyncio import AsyncSession
+
+# SQLModel is the base class for database models, while `select`
+# is used to build database queries.
 from sqlmodel import SQLModel, select
 
 
+# Type used by the generic repository.
+# It can be any SQLModel-based entity.
 ModelType = TypeVar(
     "ModelType",
     bound=SQLModel,
@@ -11,18 +19,19 @@ ModelType = TypeVar(
 
 
 class BaseRepository(Generic[ModelType]):
+    """Provide common CRUD operations for SQLModel entities."""
+
     model: type[ModelType]
 
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
+    def __init__(self, session: AsyncSession):
+        """Initialize the repository with a database session."""
         self.session = session
 
     async def create(
         self,
         instance: ModelType,
     ) -> ModelType:
+        """Persist a new entity and return the refreshed instance."""
         self.session.add(instance)
         await self.session.flush()
         await self.session.refresh(instance)
@@ -33,9 +42,10 @@ class BaseRepository(Generic[ModelType]):
         self,
         instance_id: int,
     ) -> ModelType | None:
+        """Return an entity by primary key, if it exists."""
         result = await self.session.execute(
             select(self.model).where(
-                self.model.id == instance_id
+                self.model.id == instance_id,
             )
         )
 
@@ -45,6 +55,7 @@ class BaseRepository(Generic[ModelType]):
         self,
         instance: ModelType,
     ) -> ModelType:
+        """Flush changes and return the refreshed entity."""
         await self.session.flush()
         await self.session.refresh(instance)
 
@@ -54,5 +65,6 @@ class BaseRepository(Generic[ModelType]):
         self,
         instance: ModelType,
     ) -> None:
+        """Delete an entity from the database."""
         await self.session.delete(instance)
         await self.session.flush()

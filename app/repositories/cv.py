@@ -1,5 +1,8 @@
+# AsyncSession is used by repositories to execute database queries.
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select, func
+
+# SQL query helpers used to select records and calculate totals.
+from sqlmodel import func, select
 
 from app.models import (
     CV,
@@ -18,12 +21,15 @@ from .base import BaseRepository
 
 
 class CVRepository(BaseRepository[CV]):
+    """Repository for CV database operations."""
+
     model = CV
 
     async def get_by_user_id(
         self,
         user_id: int,
     ) -> list[CV]:
+        """Return all CVs belonging to a user."""
         result = await self.session.execute(
             select(CV)
             .where(CV.user_id == user_id)
@@ -37,6 +43,7 @@ class CVRepository(BaseRepository[CV]):
         cv_id: int,
         user_id: int,
     ) -> CV | None:
+        """Return a user's CV by ID."""
         result = await self.session.execute(
             select(CV).where(
                 CV.id == cv_id,
@@ -53,10 +60,12 @@ class CVRepository(BaseRepository[CV]):
         offset: int,
         limit: int,
     ) -> tuple[list[CV], int]:
+        """Search a user's CVs and return the results with total count."""
         filters = [
             CV.user_id == user_id,
         ]
 
+        # Apply title filtering only when a search query is provided.
         if query:
             filters.append(
                 CV.title.ilike(
@@ -64,22 +73,20 @@ class CVRepository(BaseRepository[CV]):
                 )
             )
 
+        # Get the total number of matching CVs for pagination.
         total_result = await self.session.execute(
-            select(
-                func.count()
-            )
+            select(func.count())
             .select_from(CV)
             .where(*filters)
         )
 
         total = total_result.scalar_one()
 
+        # Fetch the requested page of CVs.
         result = await self.session.execute(
             select(CV)
             .where(*filters)
-            .order_by(
-                CV.updated_at.desc()
-            )
+            .order_by(CV.updated_at.desc())
             .offset(offset)
             .limit(limit)
         )
@@ -94,12 +101,15 @@ class CVRepository(BaseRepository[CV]):
 class CVPersonalInfoRepository(
     BaseRepository[CVPersonalInfo]
 ):
+    """Repository for CV personal information."""
+
     model = CVPersonalInfo
 
     async def get_by_cv_id(
         self,
         cv_id: int,
     ) -> CVPersonalInfo | None:
+        """Return personal information for a CV."""
         result = await self.session.execute(
             select(CVPersonalInfo).where(
                 CVPersonalInfo.cv_id == cv_id
@@ -112,12 +122,15 @@ class CVPersonalInfoRepository(
 class CVExperienceRepository(
     BaseRepository[CVExperience]
 ):
+    """Repository for CV experience entries."""
+
     model = CVExperience
 
     async def get_by_cv_id(
         self,
         cv_id: int,
     ) -> list[CVExperience]:
+        """Return all experience entries for a CV."""
         result = await self.session.execute(
             select(CVExperience)
             .where(CVExperience.cv_id == cv_id)
@@ -130,12 +143,15 @@ class CVExperienceRepository(
 class CVEducationRepository(
     BaseRepository[CVEducation]
 ):
+    """Repository for CV education entries."""
+
     model = CVEducation
 
     async def get_by_cv_id(
         self,
         cv_id: int,
     ) -> list[CVEducation]:
+        """Return all education entries for a CV."""
         result = await self.session.execute(
             select(CVEducation)
             .where(CVEducation.cv_id == cv_id)
@@ -146,12 +162,15 @@ class CVEducationRepository(
 
 
 class SkillRepository(BaseRepository[Skill]):
+    """Repository for reusable skills."""
+
     model = Skill
 
     async def get_by_name(
         self,
         name: str,
     ) -> Skill | None:
+        """Return a skill by name."""
         result = await self.session.execute(
             select(Skill).where(
                 Skill.name == name
@@ -161,6 +180,7 @@ class SkillRepository(BaseRepository[Skill]):
         return result.scalar_one_or_none()
 
     async def get_all(self) -> list[Skill]:
+        """Return all skills ordered by name."""
         result = await self.session.execute(
             select(Skill).order_by(Skill.name)
         )
@@ -169,16 +189,20 @@ class SkillRepository(BaseRepository[Skill]):
 
 
 class CVSkillRepository:
+    """Repository for CV-to-skill associations."""
+
     def __init__(
         self,
         session: AsyncSession,
     ):
+        """Initialize the repository with a database session."""
         self.session = session
 
     async def create(
         self,
         cv_skill: CVSkill,
     ) -> CVSkill:
+        """Create a CV-to-skill association."""
         self.session.add(cv_skill)
         await self.session.flush()
 
@@ -189,6 +213,7 @@ class CVSkillRepository:
         cv_id: int,
         skill_id: int,
     ) -> CVSkill | None:
+        """Return a CV-to-skill association."""
         result = await self.session.execute(
             select(CVSkill).where(
                 CVSkill.cv_id == cv_id,
@@ -202,6 +227,7 @@ class CVSkillRepository:
         self,
         cv_id: int,
     ) -> list[CVSkill]:
+        """Return all skill associations for a CV."""
         result = await self.session.execute(
             select(CVSkill)
             .where(CVSkill.cv_id == cv_id)
@@ -214,6 +240,7 @@ class CVSkillRepository:
         self,
         cv_id: int,
     ) -> list[tuple[CVSkill, Skill]]:
+        """Return skill associations together with their skills."""
         result = await self.session.execute(
             select(
                 CVSkill,
@@ -237,6 +264,7 @@ class CVSkillRepository:
         self,
         cv_skill: CVSkill,
     ) -> CVSkill:
+        """Flush changes to a CV-to-skill association."""
         await self.session.flush()
 
         return cv_skill
@@ -245,6 +273,7 @@ class CVSkillRepository:
         self,
         cv_skill: CVSkill,
     ) -> None:
+        """Delete a CV-to-skill association."""
         await self.session.delete(cv_skill)
         await self.session.flush()
 
@@ -252,12 +281,15 @@ class CVSkillRepository:
 class CVProjectRepository(
     BaseRepository[CVProject]
 ):
+    """Repository for CV project entries."""
+
     model = CVProject
 
     async def get_by_cv_id(
         self,
         cv_id: int,
     ) -> list[CVProject]:
+        """Return all projects associated with a CV."""
         result = await self.session.execute(
             select(CVProject)
             .where(CVProject.cv_id == cv_id)
@@ -270,12 +302,15 @@ class CVProjectRepository(
 class LanguageRepository(
     BaseRepository[Language]
 ):
+    """Repository for reusable languages."""
+
     model = Language
 
     async def get_by_name(
         self,
         name: str,
     ) -> Language | None:
+        """Return a language by name."""
         result = await self.session.execute(
             select(Language).where(
                 Language.name == name
@@ -285,6 +320,7 @@ class LanguageRepository(
         return result.scalar_one_or_none()
 
     async def get_all(self) -> list[Language]:
+        """Return all languages ordered by name."""
         result = await self.session.execute(
             select(Language).order_by(Language.name)
         )
@@ -293,16 +329,20 @@ class LanguageRepository(
 
 
 class CVLanguageRepository:
+    """Repository for CV-to-language associations."""
+
     def __init__(
         self,
         session: AsyncSession,
     ):
+        """Initialize the repository with a database session."""
         self.session = session
 
     async def create(
         self,
         cv_language: CVLanguage,
     ) -> CVLanguage:
+        """Create a CV-to-language association."""
         self.session.add(cv_language)
         await self.session.flush()
 
@@ -313,6 +353,7 @@ class CVLanguageRepository:
         cv_id: int,
         language_id: int,
     ) -> CVLanguage | None:
+        """Return a CV-to-language association."""
         result = await self.session.execute(
             select(CVLanguage).where(
                 CVLanguage.cv_id == cv_id,
@@ -326,6 +367,7 @@ class CVLanguageRepository:
         self,
         cv_id: int,
     ) -> list[CVLanguage]:
+        """Return all language associations for a CV."""
         result = await self.session.execute(
             select(CVLanguage)
             .where(CVLanguage.cv_id == cv_id)
@@ -338,6 +380,7 @@ class CVLanguageRepository:
         self,
         cv_id: int,
     ) -> list[tuple[CVLanguage, Language]]:
+        """Return language associations together with their languages."""
         result = await self.session.execute(
             select(
                 CVLanguage,
@@ -361,6 +404,7 @@ class CVLanguageRepository:
         self,
         cv_language: CVLanguage,
     ) -> CVLanguage:
+        """Flush changes to a CV-to-language association."""
         await self.session.flush()
 
         return cv_language
@@ -369,6 +413,7 @@ class CVLanguageRepository:
         self,
         cv_language: CVLanguage,
     ) -> None:
+        """Delete a CV-to-language association."""
         await self.session.delete(cv_language)
         await self.session.flush()
 
@@ -376,12 +421,15 @@ class CVLanguageRepository:
 class CVCertificationRepository(
     BaseRepository[CVCertification]
 ):
+    """Repository for CV certification entries."""
+
     model = CVCertification
 
     async def get_by_cv_id(
         self,
         cv_id: int,
     ) -> list[CVCertification]:
+        """Return all certifications associated with a CV."""
         result = await self.session.execute(
             select(CVCertification)
             .where(CVCertification.cv_id == cv_id)
