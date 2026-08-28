@@ -11,9 +11,7 @@ from .project import router as project_router
 from .skill import router as skill_router
 
 
-main_router = APIRouter(
-    prefix="/api/v1"
-)
+main_router = APIRouter()
 
 
 main_router.include_router(
