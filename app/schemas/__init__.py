@@ -27,6 +27,10 @@ from .cv import (
     CVCertificationCreate,
     CVCertificationUpdate,
     CVCertificationRead,
+    CVSkillDetailRead,
+    CVLanguageDetailRead,
+    CVDetailRead,
+    CVPageRead
 )
 
 from .document import (
@@ -40,38 +44,3 @@ from .template import (
     CVTemplate,
 )
 
-__all__ = [
-    "CVDocument",
-    "CVDocumentSkill",
-    "CVDocumentLanguage",
-    "CVTemplate",
-    "CVGenerateRequest",
-    "CVCreate",
-    "CVUpdate",
-    "CVRead",
-    "CVPersonalInfoCreate",
-    "CVPersonalInfoUpdate",
-    "CVPersonalInfoRead",
-    "CVExperienceCreate",
-    "CVExperienceUpdate",
-    "CVExperienceRead",
-    "CVEducationCreate",
-    "CVEducationUpdate",
-    "CVEducationRead",
-    "SkillCreate",
-    "SkillRead",
-    "CVSkillCreate",
-    "CVSkillUpdate",
-    "CVSkillRead",
-    "CVProjectCreate",
-    "CVProjectUpdate",
-    "CVProjectRead",
-    "LanguageCreate",
-    "LanguageRead",
-    "CVLanguageCreate",
-    "CVLanguageUpdate",
-    "CVLanguageRead",
-    "CVCertificationCreate",
-    "CVCertificationUpdate",
-    "CVCertificationRead",
-]

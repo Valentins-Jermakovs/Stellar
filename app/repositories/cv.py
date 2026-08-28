@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
+from sqlmodel import select, func
 
 from app.models import (
     CV,
@@ -45,6 +45,50 @@ class CVRepository(BaseRepository[CV]):
         )
 
         return result.scalar_one_or_none()
+
+    async def search_by_user(
+        self,
+        user_id: int,
+        query: str | None,
+        offset: int,
+        limit: int,
+    ) -> tuple[list[CV], int]:
+        filters = [
+            CV.user_id == user_id,
+        ]
+
+        if query:
+            filters.append(
+                CV.title.ilike(
+                    f"%{query}%"
+                )
+            )
+
+        total_result = await self.session.execute(
+            select(
+                func.count()
+            )
+            .select_from(CV)
+            .where(*filters)
+        )
+
+        total = total_result.scalar_one()
+
+        result = await self.session.execute(
+            select(CV)
+            .where(*filters)
+            .order_by(
+                CV.updated_at.desc()
+            )
+            .offset(offset)
+            .limit(limit)
+        )
+
+        cvs = list(
+            result.scalars().all()
+        )
+
+        return cvs, total
 
 
 class CVPersonalInfoRepository(

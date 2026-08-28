@@ -342,3 +342,60 @@ class CVCertificationRead(BaseModel):
     credential_url: str | None
 
     sort_order: int
+
+
+
+class CVSkillDetailRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+
+    level: str | None
+    sort_order: int
+
+
+class CVLanguageDetailRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+
+    proficiency: str
+    sort_order: int
+
+
+class CVDetailRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    title: str
+
+    created_at: datetime
+    updated_at: datetime
+
+    personal_info: CVPersonalInfoRead | None
+
+    experience: list[CVExperienceRead]
+
+    education: list[CVEducationRead]
+
+    skills: list[CVSkillDetailRead]
+
+    projects: list[CVProjectRead]
+
+    languages: list[CVLanguageDetailRead]
+
+    certifications: list[CVCertificationRead]
+
+
+class CVPageRead(BaseModel):
+    items: list[CVRead]
+
+    total: int
+
+    page: int
+    page_size: int
+
+    pages: int

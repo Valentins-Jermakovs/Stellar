@@ -12,29 +12,32 @@ def utc_now() -> datetime:
     )
 
 
-class CV(SQLModel, table=True):
-    """Main CV entity belonging to a user."""
+class User(SQLModel, table=True):
+    """Application user who can own CVs."""
 
-    __tablename__ = "cv"
+    __tablename__ = "user"
 
     id: int | None = Field(
         default=None,
         primary_key=True,
     )
 
-    user_id: int = Field(
-        foreign_key="user.id",
+    username: str = Field(
+        max_length=100,
+        unique=True,
         index=True,
     )
 
-    title: str = Field(
-        max_length=150,
+    email: str = Field(
+        max_length=255,
+        unique=True,
+        index=True,
+    )
+
+    password_hash: str = Field(
+        max_length=255,
     )
 
     created_at: datetime = Field(
-        default_factory=utc_now,
-    )
-
-    updated_at: datetime = Field(
         default_factory=utc_now,
     )

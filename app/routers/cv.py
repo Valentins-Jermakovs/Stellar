@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.facades import CVFacade
+
 from app.schemas import (
     CVCreate,
+    CVDetailRead,
+    CVPageRead,
     CVRead,
     CVUpdate,
 )
@@ -18,6 +21,10 @@ router = APIRouter(
     tags=["CV"],
 )
 
+
+# ==========================================
+# Create
+# ==========================================
 
 @router.post(
     "",
@@ -39,11 +46,28 @@ async def create_cv(
     )
 
 
+# ==========================================
+# Search / List
+# ==========================================
+
 @router.get(
     "",
-    response_model=list[CVRead],
+    response_model=CVPageRead,
 )
-async def get_my_cvs(
+async def search_cvs(
+    query: str | None = Query(
+        default=None,
+        description="Search CVs by title",
+    ),
+    page: int = Query(
+        default=1,
+        ge=1,
+    ),
+    page_size: int = Query(
+        default=10,
+        ge=1,
+        le=100,
+    ),
     current_user: dict = Depends(
         jwt_auth.get_current_user
     ),
@@ -51,14 +75,21 @@ async def get_my_cvs(
         get_cv_facade
     ),
 ):
-    return await facade.get_by_user_id(
+    return await facade.search(
         user_id=int(current_user["sub"]),
+        query=query,
+        page=page,
+        page_size=page_size,
     )
 
 
+# ==========================================
+# Get Detail
+# ==========================================
+
 @router.get(
     "/{cv_id}",
-    response_model=CVRead,
+    response_model=CVDetailRead,
 )
 async def get_cv(
     cv_id: int,
@@ -74,6 +105,10 @@ async def get_cv(
         user_id=int(current_user["sub"]),
     )
 
+
+# ==========================================
+# Update
+# ==========================================
 
 @router.patch(
     "/{cv_id}",
@@ -95,6 +130,10 @@ async def update_cv(
         data=data,
     )
 
+
+# ==========================================
+# Delete
+# ==========================================
 
 @router.delete(
     "/{cv_id}",
