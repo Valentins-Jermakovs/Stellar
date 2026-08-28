@@ -1,0 +1,128 @@
+// Stellar — схема базы данных
+// Вставьте этот файл целиком на https://dbdiagram.io для интерактивной ER-диаграммы
+
+Table user {
+  id         int       [pk, note: 'ID пользователя, полученный из JWT']
+  created_at datetime  [not null, default: `now()`]
+}
+
+Table cv {
+  id         int       [pk, increment]
+  user_id    int       [not null, ref: > user.id]
+  title      varchar(150) [not null, unique]
+  created_at datetime  [not null]
+  updated_at datetime  [not null]
+}
+
+Table cv_personal_info {
+  id         int       [pk, increment]
+  cv_id      int       [not null, unique, ref: - cv.id, note: 'ON DELETE CASCADE']
+  first_name varchar(100) [not null]
+  last_name  varchar(100) [not null]
+  headline   varchar(200)
+  email      varchar(255)
+  phone      varchar(50)
+  location   varchar(150)
+  website    varchar(500)
+  linkedin   varchar(500)
+  github     varchar(500)
+  summary    text
+}
+
+Table cv_experience {
+  id          int      [pk, increment]
+  cv_id       int      [not null, ref: > cv.id, note: 'ON DELETE CASCADE']
+  company     varchar(200) [not null]
+  position    varchar(200) [not null]
+  location    varchar(150)
+  start_date  date     [not null]
+  end_date    date
+  is_current  bool     [not null, default: false]
+  description text
+  sort_order  int      [not null, default: 0]
+
+  indexes {
+    (cv_id, company, position, start_date) [unique, name: 'uq_cv_experience']
+  }
+}
+
+Table cv_education {
+  id             int      [pk, increment]
+  cv_id          int      [not null, ref: > cv.id, note: 'ON DELETE CASCADE']
+  institution    varchar(250) [not null]
+  degree         varchar(200)
+  field_of_study varchar(200)
+  location       varchar(150)
+  start_date     date
+  end_date       date
+  description    text
+  sort_order     int      [not null, default: 0]
+
+  indexes {
+    (cv_id, institution, degree, field_of_study, start_date) [unique, name: 'uq_cv_education']
+  }
+}
+
+Table cv_project {
+  id          int      [pk, increment]
+  cv_id       int      [not null, ref: > cv.id, note: 'ON DELETE CASCADE']
+  name        varchar(200) [not null]
+  description text
+  url         varchar(500)
+  github_url  varchar(500)
+  start_date  date
+  end_date    date
+  sort_order  int      [not null, default: 0]
+
+  indexes {
+    (cv_id, name) [unique, name: 'uq_cv_project']
+  }
+}
+
+Table cv_certification {
+  id              int      [pk, increment]
+  cv_id           int      [not null, ref: > cv.id, note: 'ON DELETE CASCADE']
+  name            varchar(250) [not null]
+  organization    varchar(250)
+  issue_date      date
+  expiration_date date
+  credential_id   varchar(150)
+  credential_url  varchar(500)
+  sort_order      int      [not null, default: 0]
+
+  indexes {
+    (cv_id, name) [unique, name: 'uq_cv_certification']
+  }
+}
+
+Table skill {
+  id   int          [pk, increment]
+  name varchar(100) [not null, unique]
+}
+
+Table cv_skill {
+  cv_id      int  [not null, ref: > cv.id, note: 'ON DELETE CASCADE']
+  skill_id   int  [not null, ref: > skill.id]
+  level      varchar(50)
+  sort_order int  [not null, default: 0]
+
+  indexes {
+    (cv_id, skill_id) [pk]
+  }
+}
+
+Table language {
+  id   int          [pk, increment]
+  name varchar(100) [not null, unique]
+}
+
+Table cv_language {
+  cv_id       int  [not null, ref: > cv.id, note: 'ON DELETE CASCADE']
+  language_id int  [not null, ref: > language.id]
+  proficiency varchar(50) [not null]
+  sort_order  int  [not null, default: 0]
+
+  indexes {
+    (cv_id, language_id) [pk]
+  }
+}
