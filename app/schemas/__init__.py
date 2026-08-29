@@ -1,3 +1,7 @@
+# ==============================
+# CV schemas
+# ==============================
+
 from .cv import (
     CVCreate,
     CVUpdate,
@@ -30,8 +34,13 @@ from .cv import (
     CVSkillDetailRead,
     CVLanguageDetailRead,
     CVDetailRead,
-    CVPageRead
+    CVPageRead,
 )
+
+
+# ==============================
+# Document schemas
+# ==============================
 
 from .document import (
     CVDocument,
@@ -39,10 +48,20 @@ from .document import (
     CVDocumentSkill,
 )
 
+
+# ==============================
+# Template schemas
+# ==============================
+
 from .template import (
     CVGenerateRequest,
     CVTemplate,
-    CVLocale
+    CVLocale,
 )
+
+
+# ==============================
+# Statistics schemas
+# ==============================
 
 from .statistics import CVStatistics

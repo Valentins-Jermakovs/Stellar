@@ -1,4 +1,13 @@
+# ==============================
+# Library imports
+# ==============================
+
 from pydantic import BaseModel
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from .cv import (
     CVCertificationRead,
@@ -7,8 +16,13 @@ from .cv import (
     CVPersonalInfoRead,
     CVProjectRead,
 )
+
 from .template import CVTemplate
 
+
+# ==============================
+# CV document schemas
+# ==============================
 
 class CVDocumentSkill(BaseModel):
     id: int
@@ -30,11 +44,17 @@ class CVDocument(BaseModel):
     title: str
 
     personal_info: CVPersonalInfoRead | None
+
     experience: list[CVExperienceRead]
+
     education: list[CVEducationRead]
+
     skills: list[CVDocumentSkill]
+
     projects: list[CVProjectRead]
+
     languages: list[CVDocumentLanguage]
+
     certifications: list[CVCertificationRead]
 
     template: CVTemplate

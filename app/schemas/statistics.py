@@ -1,8 +1,15 @@
+# ==============================
+# Library imports
+# ==============================
+
 from pydantic import BaseModel
 
 
+# ==============================
+# CV statistics schemas
+# ==============================
+
 class CVStatistics(BaseModel):
-    """Return statistics for a user's CV data."""
 
     total_cvs: int
 

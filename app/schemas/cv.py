@@ -1,10 +1,20 @@
-from datetime import date, datetime
+# ==============================
+# Library imports
+# ==============================
 
-from pydantic import BaseModel, ConfigDict
+from datetime import (
+    date,
+    datetime,
+)
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+)
 
 
 # ==============================
-# CV Schemas
+# CV schemas
 # ==============================
 
 class CVCreate(BaseModel):
@@ -16,7 +26,9 @@ class CVUpdate(BaseModel):
 
 
 class CVRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     user_id: int
@@ -26,7 +38,7 @@ class CVRead(BaseModel):
 
 
 # ==============================
-# Personal Information Schemas
+# Personal information schemas
 # ==============================
 
 class CVPersonalInfoCreate(BaseModel):
@@ -62,7 +74,9 @@ class CVPersonalInfoUpdate(BaseModel):
 
 
 class CVPersonalInfoRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     cv_id: int
@@ -83,7 +97,7 @@ class CVPersonalInfoRead(BaseModel):
 
 
 # ==============================
-# Experience Schemas
+# Experience schemas
 # ==============================
 
 class CVExperienceCreate(BaseModel):
@@ -113,7 +127,9 @@ class CVExperienceUpdate(BaseModel):
 
 
 class CVExperienceRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     cv_id: int
@@ -131,7 +147,7 @@ class CVExperienceRead(BaseModel):
 
 
 # ==============================
-# Education Schemas
+# Education schemas
 # ==============================
 
 class CVEducationCreate(BaseModel):
@@ -161,7 +177,9 @@ class CVEducationUpdate(BaseModel):
 
 
 class CVEducationRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     cv_id: int
@@ -179,7 +197,7 @@ class CVEducationRead(BaseModel):
 
 
 # ==============================
-# Skill Schemas
+# Skill schemas
 # ==============================
 
 class SkillCreate(BaseModel):
@@ -187,7 +205,9 @@ class SkillCreate(BaseModel):
 
 
 class SkillRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     name: str
@@ -205,7 +225,9 @@ class CVSkillUpdate(BaseModel):
 
 
 class CVSkillRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     cv_id: int
     skill_id: int
@@ -214,7 +236,7 @@ class CVSkillRead(BaseModel):
 
 
 # ==============================
-# Project Schemas
+# Project schemas
 # ==============================
 
 class CVProjectCreate(BaseModel):
@@ -244,7 +266,9 @@ class CVProjectUpdate(BaseModel):
 
 
 class CVProjectRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     cv_id: int
@@ -262,7 +286,7 @@ class CVProjectRead(BaseModel):
 
 
 # ==============================
-# Language Schemas
+# Language schemas
 # ==============================
 
 class LanguageCreate(BaseModel):
@@ -270,7 +294,9 @@ class LanguageCreate(BaseModel):
 
 
 class LanguageRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     name: str
@@ -288,7 +314,9 @@ class CVLanguageUpdate(BaseModel):
 
 
 class CVLanguageRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     cv_id: int
     language_id: int
@@ -297,7 +325,7 @@ class CVLanguageRead(BaseModel):
 
 
 # ==============================
-# Certification Schemas
+# Certification schemas
 # ==============================
 
 class CVCertificationCreate(BaseModel):
@@ -327,7 +355,9 @@ class CVCertificationUpdate(BaseModel):
 
 
 class CVCertificationRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     cv_id: int
@@ -344,9 +374,14 @@ class CVCertificationRead(BaseModel):
     sort_order: int
 
 
+# ==============================
+# CV detail schemas
+# ==============================
 
 class CVSkillDetailRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     name: str
@@ -356,7 +391,9 @@ class CVSkillDetailRead(BaseModel):
 
 
 class CVLanguageDetailRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     name: str
@@ -366,7 +403,9 @@ class CVLanguageDetailRead(BaseModel):
 
 
 class CVDetailRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
     id: int
     user_id: int
@@ -389,6 +428,10 @@ class CVDetailRead(BaseModel):
 
     certifications: list[CVCertificationRead]
 
+
+# ==============================
+# CV pagination schemas
+# ==============================
 
 class CVPageRead(BaseModel):
     items: list[CVRead]
