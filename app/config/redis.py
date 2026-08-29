@@ -1,16 +1,34 @@
-# Async Redis client used by the application.
+# ==============================
+# Library imports
+# ==============================
+
 from redis.asyncio import Redis
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from .settings import settings
 
 
-# Redis client is created during application startup.
-# Until then, it remains uninitialized.
+# ==============================
+# Redis client
+# ==============================
+
+# Redis client is initialized during application startup.
 redis: Redis | None = None
 
 
+# ==============================
+# Redis lifecycle
+# ==============================
+
 async def init_redis() -> None:
-    """Initialize the Redis client using application settings."""
+    """
+    Initialize the Redis client using application settings.
+    """
+
     global redis
 
     redis = Redis(
@@ -23,7 +41,10 @@ async def init_redis() -> None:
 
 
 async def get_redis() -> Redis:
-    """Return the initialized Redis client."""
+    """
+    Return the initialized Redis client.
+    """
+
     if redis is None:
         raise RuntimeError(
             "Redis has not been initialized"
@@ -33,10 +54,12 @@ async def get_redis() -> Redis:
 
 
 async def close_redis() -> None:
-    """Close the Redis connection and release the client."""
+    """
+    Close the Redis connection and release the client.
+    """
+
     global redis
 
     if redis is not None:
         await redis.aclose()
         redis = None
-

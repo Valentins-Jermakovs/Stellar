@@ -1,4 +1,7 @@
-# Database utilities and session management.
+# ==============================
+# Database utilities
+# ==============================
+
 from .database import (
     async_session,
     engine,
@@ -6,13 +9,20 @@ from .database import (
     init_db,
 )
 
-# Redis client and its lifecycle helpers.
+
+# ==============================
+# Redis utilities
+# ==============================
+
 from .redis import (
     close_redis,
     get_redis,
     redis,
 )
 
-# Application configuration.
-from .settings import settings
 
+# ==============================
+# Application settings
+# ==============================
+
+from .settings import settings
