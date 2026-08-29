@@ -1,12 +1,24 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, Query, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    Query,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import (
     CVSkillFacade,
     SkillFacade,
 )
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVSkillCreate,
     CVSkillRead,
@@ -15,7 +27,11 @@ from app.schemas import (
     SkillRead,
 )
 
-# Dependencies shared by skill endpoints.
+
+# ==============================
+# Router dependencies
+# ==============================
+
 from .dependencies import (
     get_cv_skill_facade,
     get_skill_facade,
@@ -23,11 +39,16 @@ from .dependencies import (
 )
 
 
+# ==============================
+# Skill router
+# ==============================
+
 router = APIRouter(
     tags=["Skills"],
 )
 
 
+# Create a new global skill.
 @router.post(
     "/skills",
     response_model=SkillRead,
@@ -42,12 +63,16 @@ async def create_skill(
         get_skill_facade
     ),
 ):
-    """Create a global skill."""
+    """
+    Create a global skill.
+    """
+
     return await facade.create(
         data
     )
 
 
+# Search global skills.
 @router.get(
     "/skills",
     response_model=list[SkillRead],
@@ -64,12 +89,16 @@ async def search_skills(
         get_skill_facade
     ),
 ):
-    """Return up to ten global skills matching the query."""
+    """
+    Return up to ten global skills matching the query.
+    """
+
     return await facade.search(
         query=query
     )
 
 
+# Return a global skill by ID.
 @router.get(
     "/skills/{skill_id}",
     response_model=SkillRead,
@@ -83,12 +112,16 @@ async def get_skill(
         get_skill_facade
     ),
 ):
-    """Return a global skill by ID."""
+    """
+    Return a global skill by ID.
+    """
+
     return await facade.get_by_id(
         skill_id
     )
 
 
+# Add a global skill to a CV.
 @router.post(
     "/cvs/{cv_id}/skills",
     response_model=CVSkillRead,
@@ -104,7 +137,10 @@ async def add_skill_to_cv(
         get_cv_skill_facade
     ),
 ):
-    """Add a global skill to a CV."""
+    """
+    Add a global skill to a CV.
+    """
+
     return await facade.add(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -112,6 +148,7 @@ async def add_skill_to_cv(
     )
 
 
+# Update a skill association in a CV.
 @router.patch(
     "/cvs/{cv_id}/skills/{skill_id}",
     response_model=CVSkillRead,
@@ -127,7 +164,10 @@ async def update_cv_skill(
         get_cv_skill_facade
     ),
 ):
-    """Update a skill association in a CV."""
+    """
+    Update a skill association in a CV.
+    """
+
     return await facade.update(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -136,6 +176,7 @@ async def update_cv_skill(
     )
 
 
+# Delete a skill association from a CV.
 @router.delete(
     "/cvs/{cv_id}/skills/{skill_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -150,7 +191,10 @@ async def delete_cv_skill(
         get_cv_skill_facade
     ),
 ):
-    """Delete a skill association from a CV."""
+    """
+    Delete a skill association from a CV.
+    """
+
     await facade.delete(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),

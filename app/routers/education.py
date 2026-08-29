@@ -1,21 +1,40 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import CVEducationFacade
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVEducationCreate,
     CVEducationRead,
     CVEducationUpdate,
 )
 
-# Dependencies shared by CV education endpoints.
+
+# ==============================
+# Router dependencies
+# ==============================
+
 from .dependencies import (
     get_education_facade,
     jwt_auth,
 )
 
+
+# ==============================
+# CV education router
+# ==============================
 
 router = APIRouter(
     prefix="/cvs/{cv_id}/education",
@@ -23,6 +42,7 @@ router = APIRouter(
 )
 
 
+# Create a new education entry for a CV.
 @router.post(
     "",
     response_model=CVEducationRead,
@@ -38,7 +58,10 @@ async def create_education(
         get_education_facade
     ),
 ):
-    """Create a new education entry for a CV."""
+    """
+    Create a new education entry for a CV.
+    """
+
     return await facade.create(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -46,6 +69,7 @@ async def create_education(
     )
 
 
+# Update an existing education entry.
 @router.patch(
     "/{education_id}",
     response_model=CVEducationRead,
@@ -61,7 +85,10 @@ async def update_education(
         get_education_facade
     ),
 ):
-    """Update an existing education entry."""
+    """
+    Update an existing education entry.
+    """
+
     return await facade.update(
         education_id=education_id,
         user_id=int(current_user["sub"]),
@@ -69,6 +96,7 @@ async def update_education(
     )
 
 
+# Delete an existing education entry.
 @router.delete(
     "/{education_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -83,7 +111,10 @@ async def delete_education(
         get_education_facade
     ),
 ):
-    """Delete an existing education entry."""
+    """
+    Delete an existing education entry.
+    """
+
     await facade.delete(
         education_id=education_id,
         user_id=int(current_user["sub"]),

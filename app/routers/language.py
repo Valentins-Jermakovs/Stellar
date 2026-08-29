@@ -1,12 +1,24 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, Query, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    Query,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import (
     CVLanguageFacade,
     LanguageFacade,
 )
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVLanguageCreate,
     CVLanguageRead,
@@ -15,7 +27,11 @@ from app.schemas import (
     LanguageRead,
 )
 
-# Dependencies shared by language endpoints.
+
+# ==============================
+# Router dependencies
+# ==============================
+
 from .dependencies import (
     get_cv_language_facade,
     get_language_facade,
@@ -23,11 +39,16 @@ from .dependencies import (
 )
 
 
+# ==============================
+# Language router
+# ==============================
+
 router = APIRouter(
     tags=["Languages"],
 )
 
 
+# Create a new language in the global catalog.
 @router.post(
     "/languages",
     response_model=LanguageRead,
@@ -42,12 +63,19 @@ async def create_language(
         get_language_facade
     ),
 ):
-    """Create a global language."""
+    """
+    Create a new global language.
+
+    The language is stored in the shared language catalog
+    and can later be associated with CVs.
+    """
+
     return await facade.create(
         data
     )
 
 
+# Search languages in the global catalog.
 @router.get(
     "/languages",
     response_model=list[LanguageRead],
@@ -64,12 +92,19 @@ async def search_languages(
         get_language_facade
     ),
 ):
-    """Return up to ten global languages matching the query."""
+    """
+    Search the global language catalog.
+
+    The optional query is used to find languages
+    whose names match the specified search term.
+    """
+
     return await facade.search(
         query=query
     )
 
 
+# Return a language from the global catalog by ID.
 @router.get(
     "/languages/{language_id}",
     response_model=LanguageRead,
@@ -83,12 +118,19 @@ async def get_language(
         get_language_facade
     ),
 ):
-    """Return a global language by ID."""
+    """
+    Return a global language by ID.
+
+    The language ID is passed to the facade
+    to retrieve the corresponding catalog entry.
+    """
+
     return await facade.get_by_id(
         language_id
     )
 
 
+# Add a language from the global catalog to a CV.
 @router.post(
     "/cvs/{cv_id}/languages",
     response_model=CVLanguageRead,
@@ -104,7 +146,13 @@ async def add_language_to_cv(
         get_cv_language_facade
     ),
 ):
-    """Add a global language to a CV."""
+    """
+    Add a language to a CV.
+
+    The authenticated user's ID is passed to the facade
+    to verify ownership of the specified CV.
+    """
+
     return await facade.add(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -112,6 +160,7 @@ async def add_language_to_cv(
     )
 
 
+# Update a language association in a CV.
 @router.patch(
     "/cvs/{cv_id}/languages/{language_id}",
     response_model=CVLanguageRead,
@@ -127,7 +176,13 @@ async def update_cv_language(
         get_cv_language_facade
     ),
 ):
-    """Update a language association in a CV."""
+    """
+    Update a language association in a CV.
+
+    The authenticated user's ID is passed to the facade
+    to verify ownership of the specified CV.
+    """
+
     return await facade.update(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -136,6 +191,7 @@ async def update_cv_language(
     )
 
 
+# Delete a language association from a CV.
 @router.delete(
     "/cvs/{cv_id}/languages/{language_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -150,9 +206,15 @@ async def delete_cv_language(
         get_cv_language_facade
     ),
 ):
-    """Delete a language association from a CV."""
+    """
+    Delete a language association from a CV.
+
+    The authenticated user's ID is passed to the facade
+    to verify ownership of the specified CV.
+    """
+
     await facade.delete(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
         language_id=language_id,
-        )
+    )

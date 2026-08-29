@@ -1,27 +1,45 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import CVExperienceFacade
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVExperienceCreate,
     CVExperienceRead,
     CVExperienceUpdate,
 )
 
-# Dependencies shared by CV experience endpoints.
 from .dependencies import (
     get_experience_facade,
     jwt_auth,
 )
 
 
+# ==============================
+# Router configuration
+# ==============================
+
 router = APIRouter(
     prefix="/cvs/{cv_id}/experiences",
     tags=["CV Experience"],
 )
 
+
+# ==============================
+# Create experience
+# ==============================
 
 @router.post(
     "",
@@ -38,13 +56,22 @@ async def create_experience(
         get_experience_facade
     ),
 ):
-    """Create a new work experience entry for a CV."""
+    """
+    Create a new work experience entry for a CV.
+
+    The authenticated user's ID is extracted from the JWT token
+    and passed to the facade together with the CV ID and request data.
+    """
     return await facade.create(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
         data=data,
     )
 
+
+# ==============================
+# Update experience
+# ==============================
 
 @router.patch(
     "/{experience_id}",
@@ -61,13 +88,22 @@ async def update_experience(
         get_experience_facade
     ),
 ):
-    """Update an existing work experience entry."""
+    """
+    Update an existing work experience entry.
+
+    The authenticated user's ID is passed to the facade
+    to ensure that the experience entry belongs to the user.
+    """
     return await facade.update(
         experience_id=experience_id,
         user_id=int(current_user["sub"]),
         data=data,
     )
 
+
+# ==============================
+# Delete experience
+# ==============================
 
 @router.delete(
     "/{experience_id}",
@@ -83,7 +119,12 @@ async def delete_experience(
         get_experience_facade
     ),
 ):
-    """Delete an existing work experience entry."""
+    """
+    Delete an existing work experience entry.
+
+    The authenticated user's ID is passed to the facade
+    to ensure that the experience entry belongs to the user.
+    """
     await facade.delete(
         experience_id=experience_id,
         user_id=int(current_user["sub"]),

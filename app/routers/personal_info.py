@@ -1,21 +1,40 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import CVPersonalInfoFacade
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoRead,
     CVPersonalInfoUpdate,
 )
 
-# Dependencies shared by CV personal information endpoints.
+
+# ==============================
+# Router dependencies
+# ==============================
+
 from .dependencies import (
     get_personal_info_facade,
     jwt_auth,
 )
 
+
+# ==============================
+# CV personal information router
+# ==============================
 
 router = APIRouter(
     prefix="/cvs/{cv_id}/personal-info",
@@ -23,6 +42,7 @@ router = APIRouter(
 )
 
 
+# Create personal information for a CV.
 @router.post(
     "",
     response_model=CVPersonalInfoRead,
@@ -38,7 +58,13 @@ async def create_personal_info(
         get_personal_info_facade
     ),
 ):
-    """Create personal information for a CV."""
+    """
+    Create personal information for a CV.
+
+    The authenticated user's ID is passed to the facade
+    to verify ownership of the specified CV.
+    """
+
     return await facade.create(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -46,6 +72,7 @@ async def create_personal_info(
     )
 
 
+# Update personal information for a CV.
 @router.patch(
     "",
     response_model=CVPersonalInfoRead,
@@ -60,7 +87,13 @@ async def update_personal_info(
         get_personal_info_facade
     ),
 ):
-    """Update personal information for a CV."""
+    """
+    Update personal information for a CV.
+
+    The authenticated user's ID is passed to the facade
+    to verify ownership of the specified CV.
+    """
+
     return await facade.update(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -68,6 +101,7 @@ async def update_personal_info(
     )
 
 
+# Delete personal information from a CV.
 @router.delete(
     "",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -81,7 +115,13 @@ async def delete_personal_info(
         get_personal_info_facade
     ),
 ):
-    """Delete personal information from a CV."""
+    """
+    Delete personal information from a CV.
+
+    The authenticated user's ID is passed to the facade
+    to verify ownership of the specified CV.
+    """
+
     await facade.delete(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),

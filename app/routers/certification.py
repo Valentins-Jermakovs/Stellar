@@ -1,21 +1,40 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import CVCertificationFacade
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVCertificationCreate,
     CVCertificationRead,
     CVCertificationUpdate,
 )
 
-# Dependencies shared by CV certification endpoints.
+
+# ==============================
+# Router dependencies
+# ==============================
+
 from .dependencies import (
     get_certification_facade,
     jwt_auth,
 )
 
+
+# ==============================
+# CV certification router
+# ==============================
 
 router = APIRouter(
     prefix="/cvs/{cv_id}/certifications",
@@ -23,6 +42,7 @@ router = APIRouter(
 )
 
 
+# Create a new certification for a CV.
 @router.post(
     "",
     response_model=CVCertificationRead,
@@ -38,7 +58,10 @@ async def create_certification(
         get_certification_facade
     ),
 ):
-    """Create a certification for a CV."""
+    """
+    Create a certification for a CV.
+    """
+
     return await facade.create(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -46,6 +69,7 @@ async def create_certification(
     )
 
 
+# Update an existing certification.
 @router.patch(
     "/{certification_id}",
     response_model=CVCertificationRead,
@@ -60,7 +84,10 @@ async def update_certification(
         get_certification_facade
     ),
 ):
-    """Update an existing certification."""
+    """
+    Update an existing certification.
+    """
+
     return await facade.update(
         certification_id=certification_id,
         user_id=int(current_user["sub"]),
@@ -68,6 +95,7 @@ async def update_certification(
     )
 
 
+# Delete an existing certification.
 @router.delete(
     "/{certification_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -81,7 +109,10 @@ async def delete_certification(
         get_certification_facade
     ),
 ):
-    """Delete an existing certification."""
+    """
+    Delete an existing certification.
+    """
+
     await facade.delete(
         certification_id=certification_id,
         user_id=int(current_user["sub"]),

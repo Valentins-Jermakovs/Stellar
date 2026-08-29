@@ -1,4 +1,13 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import APIRouter
+
+
+# ==============================
+# Router imports
+# ==============================
 
 from .certification import router as certification_router
 from .cv import router as cv_router
@@ -11,9 +20,15 @@ from .project import router as project_router
 from .skill import router as skill_router
 from .statistics import router as statistics_router
 
+
+# ==============================
+# Main application router
+# ==============================
+
 main_router = APIRouter()
 
 
+# Register CV-related routers.
 main_router.include_router(
     cv_router
 )

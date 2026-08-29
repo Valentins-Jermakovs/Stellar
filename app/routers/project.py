@@ -1,21 +1,40 @@
-# FastAPI routing and dependency injection.
-from fastapi import APIRouter, Depends, status
+# ==============================
+# Library imports
+# ==============================
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.facades import CVProjectFacade
 
-# Request and response schemas used by the endpoints.
 from app.schemas import (
     CVProjectCreate,
     CVProjectRead,
     CVProjectUpdate,
 )
 
-# Dependencies shared by CV project endpoints.
+
+# ==============================
+# Router dependencies
+# ==============================
+
 from .dependencies import (
     get_project_facade,
     jwt_auth,
 )
 
+
+# ==============================
+# CV project router
+# ==============================
 
 router = APIRouter(
     prefix="/cvs/{cv_id}/projects",
@@ -23,6 +42,7 @@ router = APIRouter(
 )
 
 
+# Create a new project for a CV.
 @router.post(
     "",
     response_model=CVProjectRead,
@@ -38,7 +58,10 @@ async def create_project(
         get_project_facade
     ),
 ):
-    """Create a new project for a CV."""
+    """
+    Create a new project for a CV.
+    """
+
     return await facade.create(
         cv_id=cv_id,
         user_id=int(current_user["sub"]),
@@ -46,6 +69,7 @@ async def create_project(
     )
 
 
+# Update an existing project.
 @router.patch(
     "/{project_id}",
     response_model=CVProjectRead,
@@ -61,7 +85,10 @@ async def update_project(
         get_project_facade
     ),
 ):
-    """Update an existing project."""
+    """
+    Update an existing project.
+    """
+
     return await facade.update(
         project_id=project_id,
         user_id=int(current_user["sub"]),
@@ -69,6 +96,7 @@ async def update_project(
     )
 
 
+# Delete an existing project.
 @router.delete(
     "/{project_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -83,7 +111,10 @@ async def delete_project(
         get_project_facade
     ),
 ):
-    """Delete an existing project."""
+    """
+    Delete an existing project.
+    """
+
     await facade.delete(
         project_id=project_id,
         user_id=int(current_user["sub"]),
