@@ -1,5 +1,5 @@
 # ==============================
-# Library Imports
+# Library imports
 # ==============================
 
 from contextlib import asynccontextmanager
@@ -8,7 +8,7 @@ from fastapi import FastAPI
 
 
 # ==============================
-# Database Initialization
+# Database initialization
 # ==============================
 
 from app.config.database import init_db
@@ -18,46 +18,43 @@ from app.config.redis import (
 )
 
 
-
 # ==============================
-# Router Imports
+# Router imports
 # ==============================
 
 from app.routers import main_router
 
 
 # ==============================
-# Application Lifecycle
+# Application lifecycle
 # ==============================
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(
+    app: FastAPI,
+):
     """
-    Manages the FastAPI application lifecycle.
+    Manage the FastAPI application lifecycle.
 
-    Initializes the PostgreSQL database and Redis connection
-    when the application starts and closes the Redis connection
+    Initialize the PostgreSQL database and Redis connection
+    when the application starts, and close the Redis connection
     when the application shuts down.
-
-    Args:
-        app (FastAPI):
-            FastAPI application instance.
     """
 
-    # Initialize PostgreSQL
+    # Initialize PostgreSQL.
     await init_db()
 
-    # Initialize Redis
+    # Initialize Redis.
     await init_redis()
 
     yield
 
-    # Close the Redis connection
+    # Close the Redis connection.
     await close_redis()
 
 
 # ==============================
-# FastAPI Application
+# FastAPI application
 # ==============================
 
 app = FastAPI(
@@ -66,9 +63,9 @@ app = FastAPI(
 
 
 # ==============================
-# Router Registration
+# Router registration
 # ==============================
 
 app.include_router(
-    main_router
+    main_router,
 )

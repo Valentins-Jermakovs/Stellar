@@ -1,5 +1,13 @@
+# ==============================
+# Library imports
+# ==============================
+
 from datetime import date
 
+
+# ==============================
+# Month translations
+# ==============================
 
 MONTHS = {
     "en": {
@@ -46,6 +54,10 @@ MONTHS = {
     },
 }
 
+
+# ==============================
+# Date formatting
+# ==============================
 
 def format_month_year(
     value: date,

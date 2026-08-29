@@ -1,3 +1,7 @@
+/* ==============================
+   Page
+   ============================== */
+
 @page {
     size: A4;
     margin: 0;
@@ -6,6 +10,11 @@
 * {
     box-sizing: border-box;
 }
+
+
+/* ==============================
+   Global styles
+   ============================== */
 
 :root {
     --text: #171717;
@@ -38,9 +47,10 @@ body {
     line-height: 1.45;
 }
 
-/* =========================
+
+/* ==============================
    Header
-   ========================= */
+   ============================== */
 
 .header {
     display: grid;
@@ -59,13 +69,13 @@ body {
 .header h1 {
     margin: 0;
 
+    color: #111111;
+
     font-size: 30pt;
     line-height: 1.05;
 
     font-weight: 700;
     letter-spacing: -1px;
-
-    color: #111111;
 }
 
 .headline {
@@ -78,11 +88,12 @@ body {
 }
 
 .header-right {
-    max-width: 62mm;
-
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+
+    max-width: 62mm;
+
     gap: 2px;
 
     color: var(--muted);
@@ -95,6 +106,7 @@ body {
 
 .header-right .link {
     color: var(--accent);
+
     word-break: break-word;
     overflow-wrap: anywhere;
 }
@@ -103,13 +115,16 @@ body {
     font-weight: 600;
 }
 
-/* =========================
-   Page Layout
-   ========================= */
+
+/* ==============================
+   Page layout
+   ============================== */
 
 .page {
     display: table;
+
     width: 100%;
+
     table-layout: fixed;
 
     padding: 10mm 18mm 14mm;
@@ -117,6 +132,7 @@ body {
 
 .page main {
     display: table-cell;
+
     width: calc(100% - 59mm);
 
     padding-right: 12mm;
@@ -126,6 +142,7 @@ body {
 
 .page aside {
     display: table-cell;
+
     width: 47mm;
 
     padding-left: 9mm;
@@ -135,9 +152,10 @@ body {
     vertical-align: top;
 }
 
-/* =========================
+
+/* ==============================
    Sections
-   ========================= */
+   ============================== */
 
 section {
     margin-bottom: 13mm;
@@ -210,12 +228,14 @@ h3 {
 
 p {
     margin: 4px 0 0;
+
     white-space: pre-line;
 }
 
-/* =========================
+
+/* ==============================
    Summary
-   ========================= */
+   ============================== */
 
 .summary {
     margin: 0;
@@ -228,9 +248,10 @@ p {
     white-space: pre-line;
 }
 
-/* =========================
+
+/* ==============================
    Entries
-   ========================= */
+   ============================== */
 
 .entry {
     margin-bottom: 8mm;
@@ -242,6 +263,7 @@ p {
 
 .entry-top {
     display: flex;
+
     justify-content: space-between;
     align-items: flex-start;
 
@@ -280,9 +302,9 @@ p {
 }
 
 .dot {
-    color: #9ca3af;
-
     margin: 0 2px;
+
+    color: #9ca3af;
 }
 
 .entry p {
@@ -293,16 +315,18 @@ p {
     white-space: pre-line;
 }
 
-/* =========================
+
+/* ==============================
    Links
-   ========================= */
+   ============================== */
 
 .links {
-    margin-top: 2mm;
-
     display: flex;
     flex-direction: column;
+
     gap: 1mm;
+
+    margin-top: 2mm;
 
     color: var(--accent);
 
@@ -312,9 +336,10 @@ p {
     overflow-wrap: anywhere;
 }
 
-/* =========================
+
+/* ==============================
    Sidebar
-   ========================= */
+   ============================== */
 
 .side-heading {
     margin-bottom: 4mm;
@@ -332,18 +357,21 @@ aside section {
     margin-bottom: 10mm;
 }
 
-/* =========================
+
+/* ==============================
    Skills
-   ========================= */
+   ============================== */
 
 .skills {
     display: flex;
     flex-direction: column;
+
     gap: 2.5mm;
 }
 
 .skill {
     display: flex;
+
     justify-content: space-between;
     align-items: baseline;
 
@@ -372,19 +400,22 @@ aside section {
     text-align: right;
 }
 
-/* =========================
+
+/* ==============================
    Languages
-   ========================= */
+   ============================== */
 
 .languages {
     display: flex;
     flex-direction: column;
+
     gap: 3mm;
 }
 
 .language {
     display: flex;
     flex-direction: column;
+
     gap: 0.5mm;
 }
 
@@ -400,18 +431,20 @@ aside section {
     font-weight: 600;
 }
 
-/* =========================
+
+/* ==============================
    Utilities
-   ========================= */
+   ============================== */
 
 .break-word {
     word-break: break-word;
     overflow-wrap: anywhere;
 }
 
-/* =========================
-   Print
-   ========================= */
+
+/* ==============================
+   Print styles
+   ============================== */
 
 @media print {
 
@@ -445,4 +478,5 @@ aside section {
     .page aside {
         vertical-align: top;
     }
+
 }

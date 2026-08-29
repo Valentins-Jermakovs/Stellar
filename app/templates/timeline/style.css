@@ -1,7 +1,16 @@
+/* ==============================
+   Page
+   ============================== */
+
 @page {
     size: A4;
     margin: 14mm 16mm;
 }
+
+
+/* ==============================
+   Global styles
+   ============================== */
 
 * {
     box-sizing: border-box;
@@ -33,9 +42,9 @@ body {
 }
 
 
-/* =========================
+/* ==============================
    Header
-   ========================= */
+   ============================== */
 
 .header {
     padding-bottom: 13px;
@@ -95,9 +104,9 @@ body {
 
 .contact-label {
     color: var(--accent);
+    font-size: 7.2pt;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 7.2pt;
     letter-spacing: 0.6px;
     white-space: nowrap;
 }
@@ -112,9 +121,9 @@ body {
 }
 
 
-/* =========================
+/* ==============================
    Main sections
-   ========================= */
+   ============================== */
 
 main {
     width: 100%;
@@ -124,6 +133,7 @@ section {
     display: grid;
     grid-template-columns: 38px minmax(0, 1fr);
     gap: 14px;
+
     margin-top: 17px;
 
     break-inside: avoid;
@@ -132,7 +142,9 @@ section {
 
 .section-number {
     padding-top: 2px;
+
     color: var(--accent);
+
     font-size: 8pt;
     font-weight: 700;
     letter-spacing: 0.8px;
@@ -145,9 +157,11 @@ section {
 h2 {
     margin: 0 0 9px;
     padding-bottom: 5px;
+
     border-bottom: 1px solid var(--line);
 
     color: var(--accent-dark);
+
     font-size: 10.5pt;
     font-weight: 700;
 
@@ -157,7 +171,9 @@ h2 {
 
 h3 {
     margin: 0;
+
     color: #191d22;
+
     font-size: 10.6pt;
     line-height: 1.25;
     font-weight: 700;
@@ -165,14 +181,16 @@ h3 {
 
 p {
     margin: 5px 0 0;
-    white-space: pre-line;
+
     color: #424951;
+
+    white-space: pre-line;
 }
 
 
-/* =========================
+/* ==============================
    Profile
-   ========================= */
+   ============================== */
 
 .profile {
     margin-top: 15px;
@@ -184,9 +202,9 @@ p {
 }
 
 
-/* =========================
+/* ==============================
    Experience timeline
-   ========================= */
+   ============================== */
 
 .timeline {
     position: relative;
@@ -200,6 +218,7 @@ p {
     position: relative;
 
     min-height: 50px;
+
     margin-bottom: 12px;
 
     break-inside: avoid;
@@ -212,9 +231,12 @@ p {
 
 .timeline-date {
     padding-top: 1px;
+
     color: var(--muted);
+
     font-size: 8pt;
     line-height: 1.35;
+
     text-align: right;
 }
 
@@ -228,6 +250,7 @@ p {
 
 .timeline-marker {
     position: relative;
+
     width: 16px;
     min-height: 100%;
 }
@@ -236,9 +259,10 @@ p {
     content: "";
 
     position: absolute;
-    left: 7px;
+
     top: 7px;
     bottom: -12px;
+    left: 7px;
 
     width: 1px;
 
@@ -251,6 +275,7 @@ p {
 
 .timeline-marker span {
     position: absolute;
+
     top: 4px;
     left: 3px;
 
@@ -261,6 +286,7 @@ p {
     border-radius: 50%;
 
     background: var(--accent);
+
     box-shadow: 0 0 0 1px var(--accent);
 }
 
@@ -270,7 +296,9 @@ p {
 
 .company {
     margin-top: 2px;
+
     color: var(--accent);
+
     font-size: 8.7pt;
     font-weight: 700;
 }
@@ -285,9 +313,9 @@ p {
 }
 
 
-/* =========================
+/* ==============================
    Education
-   ========================= */
+   ============================== */
 
 .standard-item {
     display: grid;
@@ -316,7 +344,9 @@ p {
 
 .item-location {
     margin-top: 3px;
+
     color: #858d95;
+
     font-size: 7.8pt;
 }
 
@@ -326,12 +356,15 @@ p {
 
 .degree {
     margin-top: 3px;
+
     color: var(--accent);
+
     font-weight: 700;
 }
 
 .field {
     margin-top: 1px;
+
     color: #505861;
 }
 
@@ -340,13 +373,15 @@ p {
 }
 
 
-/* =========================
+/* ==============================
    Projects
-   ========================= */
+   ============================== */
 
 .project-grid {
     display: grid;
+
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
     gap: 9px 18px;
 }
 
@@ -358,6 +393,7 @@ p {
     padding: 8px 9px;
 
     background: var(--light);
+
     border-left: 3px solid var(--accent);
 
     break-inside: avoid;
@@ -366,6 +402,7 @@ p {
 
 .project-index {
     color: var(--accent);
+
     font-size: 7.8pt;
     font-weight: 700;
 }
@@ -376,33 +413,37 @@ p {
 
 .project p {
     margin-top: 4px;
+
     font-size: 8.5pt;
 }
 
 .project-url {
     margin-top: 4px;
+
     color: var(--accent);
+
     font-size: 7.8pt;
 }
 
 
-/* =========================
+/* ==============================
    Skills
-   ========================= */
+   ============================== */
 
 .skills {
     display: flex;
     flex-wrap: wrap;
+
     gap: 6px;
 }
 
 .skill {
     padding: 4px 8px;
 
+    background: #ffffff;
+
     border: 1px solid var(--line);
     border-radius: 2px;
-
-    background: #ffffff;
 }
 
 .skill-name {
@@ -412,23 +453,28 @@ p {
 
 .skill-level {
     margin-left: 4px;
+
     color: var(--muted);
+
     font-size: 7.8pt;
 }
 
 
-/* =========================
+/* ==============================
    Languages
-   ========================= */
+   ============================== */
 
 .languages {
     display: grid;
+
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
     gap: 6px 20px;
 }
 
 .language {
     display: flex;
+
     justify-content: space-between;
     align-items: baseline;
 
@@ -443,13 +489,14 @@ p {
 
 .language span {
     color: var(--muted);
+
     font-size: 8pt;
 }
 
 
-/* =========================
+/* ==============================
    Certifications
-   ========================= */
+   ============================== */
 
 .certification {
     margin-bottom: 9px;
@@ -461,14 +508,16 @@ p {
 
 .credential {
     margin-top: 3px;
+
     color: var(--muted);
+
     font-size: 7.8pt;
 }
 
 
-/* =========================
-   Print
-   ========================= */
+/* ==============================
+   Print styles
+   ============================== */
 
 @media print {
 
@@ -492,4 +541,5 @@ p {
         color: inherit;
         text-decoration: none;
     }
+
 }

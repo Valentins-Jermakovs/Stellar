@@ -1,3 +1,7 @@
+# ==============================
+# Translation strings
+# ==============================
+
 TRANSLATIONS = {
     "en": {
         "contact": "Contact",

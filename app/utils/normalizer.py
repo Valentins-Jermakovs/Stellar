@@ -1,14 +1,26 @@
+# ==============================
+# Library imports
+# ==============================
+
 from typing import Any
 
 from pydantic import BaseModel
 
 
+# ==============================
+# Data normalization
+# ==============================
+
 class DataNormalizer:
-    """Normalize user-provided data before processing."""
+    """
+    This class provides utilities for normalizing user-provided data.
+    """
 
     @staticmethod
-    def normalize_string(value: str) -> str:
-        """Remove leading and trailing whitespace."""
+    def normalize_string(
+        value: str,
+    ) -> str:
+        """Remove leading and trailing whitespace from a string."""
         return value.strip()
 
     @classmethod
@@ -23,6 +35,7 @@ class DataNormalizer:
             exclude_unset=exclude_unset
         )
 
+        # Normalize string values.
         for field, value in values.items():
             if isinstance(value, str):
                 values[field] = cls.normalize_string(

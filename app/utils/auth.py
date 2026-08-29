@@ -1,3 +1,7 @@
+# ==============================
+# Library imports
+# ==============================
+
 from collections.abc import Callable
 
 import jwt
@@ -11,11 +15,21 @@ from fastapi.security import (
 from .jwt import JWTManager
 
 
+# ==============================
+# JWT authentication
+# ==============================
+
 class JWTAuth:
+    """
+    This class provides JWT authentication and role-based
+    authorization dependencies for FastAPI endpoints.
+    """
+
     def __init__(
         self,
         jwt_manager: JWTManager,
     ):
+        """Initialize the JWT authentication dependencies."""
         self.jwt_manager = jwt_manager
         self.bearer = HTTPBearer()
 
@@ -25,6 +39,7 @@ class JWTAuth:
             HTTPBearer()
         ),
     ) -> dict:
+        """Validate the access token and return its payload."""
         token = credentials.credentials
 
         try:
@@ -48,11 +63,14 @@ class JWTAuth:
         self,
         roles: list[str],
     ) -> Callable:
+        """Create a dependency that requires specific user roles."""
+
         async def dependency(
             payload: dict = Depends(
                 self.get_current_user
             ),
         ) -> dict:
+            """Check whether the authenticated user has a required role."""
             user_roles = payload.get(
                 "roles",
                 [],
