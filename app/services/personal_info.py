@@ -1,30 +1,56 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import HTTPException
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
+# ==============================
+# Application imports
+# ==============================
+
 from app.models import CVPersonalInfo
+
 from app.repositories import (
     CacheRepository,
     CVPersonalInfoRepository,
 )
+
 from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
 )
+
 from app.utils import DataNormalizer
+
+
+# ==============================
+# Service dependencies
+# ==============================
 
 from .ownership import CVOwnershipService
 
 
+# ==============================
+# CV personal information service
+# ==============================
+
 class CVPersonalInfoService:
-    """Handle personal information associated with a CV."""
+    """
+    This class handles personal information associated with a CV.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the service dependencies."""
+        """
+        Initialize the service dependencies.
+        """
+
         self.session = session
 
         self.repository = CVPersonalInfoRepository(
@@ -39,31 +65,43 @@ class CVPersonalInfoService:
             redis
         )
 
+    # Build the cache key for a CV detail.
     def _detail_cache_key(
         self,
         cv_id: int,
     ) -> str:
-        """Build the cache key for a CV detail."""
+        """
+        Build the cache key for a CV detail.
+        """
+
         return f"cv:{cv_id}:detail"
 
+    # Invalidate the cached CV detail.
     async def _invalidate_cv_cache(
         self,
         cv_id: int,
     ) -> None:
-        """Remove the cached CV detail."""
+        """
+        Remove the cached CV detail.
+        """
+
         await self.cache.delete(
             self._detail_cache_key(
                 cv_id
             )
         )
 
+    # Create personal information.
     async def create(
         self,
         cv_id: int,
         user_id: int,
         data: CVPersonalInfoCreate,
     ) -> CVPersonalInfo:
-        """Create personal information for a CV."""
+        """
+        Create personal information for a CV.
+        """
+
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -104,13 +142,17 @@ class CVPersonalInfoService:
 
         return personal_info
 
+    # Update personal information.
     async def update(
         self,
         cv_id: int,
         user_id: int,
         data: CVPersonalInfoUpdate,
     ) -> CVPersonalInfo:
-        """Update personal information for a CV."""
+        """
+        Update personal information for a CV.
+        """
+
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -156,12 +198,16 @@ class CVPersonalInfoService:
 
         return personal_info
 
+    # Delete personal information.
     async def delete(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
-        """Delete personal information from a CV."""
+        """
+        Delete personal information from a CV.
+        """
+
         await self.ownership.verify_cv(
             cv_id,
             user_id,

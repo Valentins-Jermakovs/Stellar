@@ -1,5 +1,14 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+
+
+# ==============================
+# Repository imports
+# ==============================
 
 from app.repositories import (
     CVCertificationRepository,
@@ -10,11 +19,24 @@ from app.repositories import (
 )
 
 
+# ==============================
+# CV ownership service
+# ==============================
+
 class CVOwnershipService:
+    """
+    This class handles ownership verification for CVs
+    and their related entities.
+    """
+
     def __init__(
         self,
         session: AsyncSession,
     ):
+        """
+        Initialize the service dependencies.
+        """
+
         self.cv_repository = CVRepository(
             session
         )
@@ -43,11 +65,16 @@ class CVOwnershipService:
             )
         )
 
+    # Verify CV ownership.
     async def verify_cv(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify that a CV belongs to the current user.
+        """
+
         cv = await self.cv_repository.get_by_id_for_user(
             cv_id=cv_id,
             user_id=user_id,
@@ -59,11 +86,16 @@ class CVOwnershipService:
                 detail="CV not found",
             )
 
+    # Verify work experience ownership.
     async def verify_experience(
         self,
         experience_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify that a work experience entry belongs to the current user.
+        """
+
         experience = (
             await self.experience_repository.get_by_id(
                 experience_id
@@ -81,11 +113,16 @@ class CVOwnershipService:
             user_id=user_id,
         )
 
+    # Verify education ownership.
     async def verify_education(
         self,
         education_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify that an education entry belongs to the current user.
+        """
+
         education = (
             await self.education_repository.get_by_id(
                 education_id
@@ -103,11 +140,16 @@ class CVOwnershipService:
             user_id=user_id,
         )
 
+    # Verify project ownership.
     async def verify_project(
         self,
         project_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify that a project belongs to the current user.
+        """
+
         project = (
             await self.project_repository.get_by_id(
                 project_id
@@ -125,11 +167,16 @@ class CVOwnershipService:
             user_id=user_id,
         )
 
+    # Verify certification ownership.
     async def verify_certification(
         self,
         certification_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify that a certification belongs to the current user.
+        """
+
         certification = (
             await self.certification_repository.get_by_id(
                 certification_id
@@ -147,31 +194,46 @@ class CVOwnershipService:
             user_id=user_id,
         )
 
+    # Verify personal information ownership.
     async def verify_personal_info(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify ownership of the CV personal information.
+        """
+
         await self.verify_cv(
             cv_id=cv_id,
             user_id=user_id,
         )
 
+    # Verify CV skill ownership.
     async def verify_skill(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify ownership of a CV skill.
+        """
+
         await self.verify_cv(
             cv_id=cv_id,
             user_id=user_id,
         )
 
+    # Verify CV language ownership.
     async def verify_language(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
+        """
+        Verify ownership of a CV language.
+        """
+
         await self.verify_cv(
             cv_id=cv_id,
             user_id=user_id,

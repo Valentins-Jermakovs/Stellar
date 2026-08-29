@@ -1,30 +1,56 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import HTTPException
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
+# ==============================
+# Application imports
+# ==============================
+
 from app.models import CVProject
+
 from app.repositories import (
     CacheRepository,
     CVProjectRepository,
 )
+
 from app.schemas import (
     CVProjectCreate,
     CVProjectUpdate,
 )
+
 from app.utils import DataNormalizer
+
+
+# ==============================
+# Service dependencies
+# ==============================
 
 from .ownership import CVOwnershipService
 
 
+# ==============================
+# CV project service
+# ==============================
+
 class CVProjectService:
-    """Handle projects associated with a CV."""
+    """
+    This class handles projects associated with a CV.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the service dependencies."""
+        """
+        Initialize the service dependencies.
+        """
+
         self.session = session
 
         self.repository = CVProjectRepository(
@@ -39,31 +65,43 @@ class CVProjectService:
             redis
         )
 
+    # Build the cache key for a CV detail.
     def _detail_cache_key(
         self,
         cv_id: int,
     ) -> str:
-        """Build the cache key for a CV detail."""
+        """
+        Build the cache key for a CV detail.
+        """
+
         return f"cv:{cv_id}:detail"
 
+    # Invalidate the cached CV detail.
     async def _invalidate_cv_cache(
         self,
         cv_id: int,
     ) -> None:
-        """Remove the cached CV detail."""
+        """
+        Remove the cached CV detail.
+        """
+
         await self.cache.delete(
             self._detail_cache_key(
                 cv_id
             )
         )
 
+    # Create a new project.
     async def create(
         self,
         cv_id: int,
         user_id: int,
         data: CVProjectCreate,
     ) -> CVProject:
-        """Create a project for a CV."""
+        """
+        Create a project for a CV.
+        """
+
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -73,6 +111,7 @@ class CVProjectService:
             data
         )
 
+        # Check whether a project with the same name already exists.
         existing = await self.repository.get_duplicate(
             cv_id=cv_id,
             name=values["name"],
@@ -104,13 +143,17 @@ class CVProjectService:
 
         return project
 
+    # Update an existing project.
     async def update(
         self,
         project_id: int,
         user_id: int,
         data: CVProjectUpdate,
     ) -> CVProject:
-        """Update an existing project."""
+        """
+        Update an existing project.
+        """
+
         project = await self.repository.get_by_id(
             project_id
         )
@@ -136,6 +179,7 @@ class CVProjectService:
             project.name,
         )
 
+        # Check whether another project already uses the new name.
         existing = await self.repository.get_duplicate(
             cv_id=project.cv_id,
             name=new_name,
@@ -170,12 +214,16 @@ class CVProjectService:
 
         return project
 
+    # Delete an existing project.
     async def delete(
         self,
         project_id: int,
         user_id: int,
     ) -> None:
-        """Delete an existing project."""
+        """
+        Delete an existing project.
+        """
+
         project = await self.repository.get_by_id(
             project_id
         )

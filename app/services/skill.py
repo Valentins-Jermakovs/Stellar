@@ -1,6 +1,15 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import HTTPException
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.models import CVSkill, Skill
 from app.repositories import (
@@ -18,8 +27,17 @@ from app.utils import DataNormalizer
 from .ownership import CVOwnershipService
 
 
+# ==============================
+# Global skill service
+# ==============================
+
 class SkillService:
-    """Handle the global skill catalog."""
+    """
+    This class handles operations with the global skill catalog.
+
+    It provides methods for creating, retrieving, and searching
+    skills that can be reused across multiple CVs.
+    """
 
     def __init__(
         self,
@@ -28,6 +46,7 @@ class SkillService:
         """Initialize the service dependencies."""
         self.session = session
 
+        # Repository for global skill operations
         self.repository = SkillRepository(
             session
         )
@@ -67,7 +86,7 @@ class SkillService:
         self,
         skill_id: int,
     ) -> Skill:
-        """Return a global skill by ID."""
+        """Return a global skill by its ID."""
         skill = await self.repository.get_by_id(
             skill_id
         )
@@ -99,8 +118,17 @@ class SkillService:
         )
 
 
+# ==============================
+# CV skill service
+# ==============================
+
 class CVSkillService:
-    """Handle skills associated with a CV."""
+    """
+    This class handles skills associated with a CV.
+
+    It provides methods for adding, updating, and removing skills,
+    while also validating CV ownership and maintaining the cache.
+    """
 
     def __init__(
         self,
@@ -110,18 +138,22 @@ class CVSkillService:
         """Initialize the service dependencies."""
         self.session = session
 
+        # Repository for CV skill associations
         self.repository = CVSkillRepository(
             session
         )
 
+        # Repository for global skill operations
         self.skill_repository = SkillRepository(
             session
         )
 
+        # Service for CV ownership validation
         self.ownership = CVOwnershipService(
             session
         )
 
+        # Repository for Redis cache operations
         self.cache = CacheRepository(
             redis
         )
@@ -192,6 +224,7 @@ class CVSkillService:
 
         await self.session.commit()
 
+        # Invalidate cached CV data after modification
         await self._invalidate_cv_cache(
             cv_id
         )
@@ -243,6 +276,7 @@ class CVSkillService:
             cv_skill
         )
 
+        # Invalidate cached CV data after modification
         await self._invalidate_cv_cache(
             cv_id
         )
@@ -278,6 +312,7 @@ class CVSkillService:
 
         await self.session.commit()
 
+        # Invalidate cached CV data after modification
         await self._invalidate_cv_cache(
             cv_id
         )

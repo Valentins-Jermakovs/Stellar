@@ -1,79 +1,141 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import HTTPException
-from redis.asyncio import Redis
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from redis.asyncio import (
+    Redis,
+)
+
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.models import CVExperience
+
 from app.repositories import (
     CacheRepository,
     CVExperienceRepository,
 )
+
 from app.schemas import (
     CVExperienceCreate,
     CVExperienceUpdate,
 )
+
 from app.utils import DataNormalizer
+
+
+# ==============================
+# Service dependencies
+# ==============================
 
 from .ownership import CVOwnershipService
 
 
+# ==============================
+# CV experience service
+# ==============================
+
 class CVExperienceService:
-    """Handle work experience entries associated with a CV."""
+    """
+    This service handles work experience entries associated with a CV.
+
+    It provides operations for creating, updating, and deleting
+    work experience entries while verifying CV ownership and
+    maintaining the CV detail cache.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the service dependencies."""
+        """
+        Initialize the CV experience service.
+
+        The service uses repositories for database operations,
+        an ownership service for authorization, and a cache
+        repository for invalidating cached CV details.
+        """
+
+        # Database session used by the service.
         self.session = session
 
+        # Repository used to manage work experience entries.
         self.repository = CVExperienceRepository(
             session
         )
 
+        # Service used to verify CV ownership.
         self.ownership = CVOwnershipService(
             session
         )
 
+        # Repository used to manage cached CV data.
         self.cache = CacheRepository(
             redis
         )
 
+    # Build the cache key for a CV detail.
     def _detail_cache_key(
         self,
         cv_id: int,
     ) -> str:
-        """Build the cache key for a CV detail."""
+        """
+        Build the cache key for a CV detail.
+        """
+
         return f"cv:{cv_id}:detail"
 
+    # Invalidate cached CV details.
     async def _invalidate_cv_cache(
         self,
         cv_id: int,
     ) -> None:
-        """Remove the cached CV detail."""
+        """
+        Remove the cached CV detail.
+        """
+
         await self.cache.delete(
             self._detail_cache_key(
                 cv_id
             )
         )
 
+    # Create a new work experience entry.
     async def create(
         self,
         cv_id: int,
         user_id: int,
         data: CVExperienceCreate,
     ) -> CVExperience:
-        """Create a work experience entry for a CV."""
+        """
+        Create a work experience entry for a CV.
+
+        The CV ownership is verified before creating the entry.
+        Duplicate work experience entries are not allowed within
+        the same CV.
+        """
+
+        # Verify that the user owns the CV.
         await self.ownership.verify_cv(
             cv_id,
             user_id,
         )
 
+        # Normalize the input data.
         values = DataNormalizer.normalize_model(
             data
         )
 
-        # Check whether the same experience already exists in this CV.
+        # Check whether the same work experience already exists.
         existing = await self.repository.get_duplicate(
             cv_id=cv_id,
             company=values["company"],
@@ -87,6 +149,7 @@ class CVExperienceService:
                 detail="This work experience already exists",
             )
 
+        # Create the work experience model.
         experience = CVExperience(
             cv_id=cv_id,
             **values,
@@ -96,29 +159,42 @@ class CVExperienceService:
             experience
         )
 
+        # Commit and refresh the created entity.
         await self.session.commit()
+
         await self.session.refresh(
             experience
         )
 
+        # Invalidate the cached CV detail.
         await self._invalidate_cv_cache(
             cv_id
         )
 
         return experience
 
+    # Update an existing work experience entry.
     async def update(
         self,
         experience_id: int,
         user_id: int,
         data: CVExperienceUpdate,
     ) -> CVExperience:
-        """Update an existing work experience entry."""
+        """
+        Update an existing work experience entry.
+
+        The entry ownership is verified before applying changes.
+        The updated values are also checked against existing
+        work experience entries to prevent duplicates.
+        """
+
+        # Verify that the user owns the experience entry.
         await self.ownership.verify_experience(
             experience_id,
             user_id,
         )
 
+        # Retrieve the work experience entry.
         experience = await self.repository.get_by_id(
             experience_id
         )
@@ -129,12 +205,13 @@ class CVExperienceService:
                 detail="Experience not found",
             )
 
+        # Normalize only fields provided by the client.
         values = DataNormalizer.normalize_model(
             data,
             exclude_unset=True,
         )
 
-        # Use existing values for fields that were not provided.
+        # Use existing values for fields that were not updated.
         company = values.get(
             "company",
             experience.company,
@@ -150,7 +227,7 @@ class CVExperienceService:
             experience.start_date,
         )
 
-        # Ignore the current entry when checking for duplicates.
+        # Check for duplicate work experience entries.
         existing = await self.repository.get_duplicate(
             cv_id=experience.cv_id,
             company=company,
@@ -165,6 +242,7 @@ class CVExperienceService:
                 detail="This work experience already exists",
             )
 
+        # Apply the updated values.
         for field, value in values.items():
             setattr(
                 experience,
@@ -176,28 +254,40 @@ class CVExperienceService:
             experience
         )
 
+        # Commit and refresh the updated entity.
         await self.session.commit()
+
         await self.session.refresh(
             experience
         )
 
+        # Invalidate the cached CV detail.
         await self._invalidate_cv_cache(
             experience.cv_id
         )
 
         return experience
 
+    # Delete an existing work experience entry.
     async def delete(
         self,
         experience_id: int,
         user_id: int,
     ) -> None:
-        """Delete an existing work experience entry."""
+        """
+        Delete an existing work experience entry.
+
+        The entry ownership is verified before deletion,
+        and the related CV cache is invalidated afterwards.
+        """
+
+        # Verify that the user owns the experience entry.
         await self.ownership.verify_experience(
             experience_id,
             user_id,
         )
 
+        # Retrieve the work experience entry.
         experience = await self.repository.get_by_id(
             experience_id
         )
@@ -208,6 +298,7 @@ class CVExperienceService:
                 detail="Experience not found",
             )
 
+        # Save the CV ID before deleting the entry.
         cv_id = experience.cv_id
 
         await self.repository.delete(
@@ -216,6 +307,7 @@ class CVExperienceService:
 
         await self.session.commit()
 
+        # Invalidate the cached CV detail.
         await self._invalidate_cv_cache(
             cv_id
         )

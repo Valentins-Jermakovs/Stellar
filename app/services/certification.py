@@ -1,30 +1,57 @@
+# ==============================
+# Library imports
+# ==============================
+
 from fastapi import HTTPException
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
+# ==============================
+# Application imports
+# ==============================
+
 from app.models import CVCertification
+
 from app.repositories import (
     CacheRepository,
     CVCertificationRepository,
 )
+
 from app.schemas import (
     CVCertificationCreate,
     CVCertificationUpdate,
 )
+
 from app.utils import DataNormalizer
+
+
+# ==============================
+# Service imports
+# ==============================
 
 from .ownership import CVOwnershipService
 
 
-class CVCertificationService:
-    """Handle certifications associated with a CV."""
+# ==============================
+# CV certification service
+# ==============================
 
+class CVCertificationService:
+    """
+    Handle certifications associated with a CV.
+    """
+
+    # Initialize service dependencies.
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the service dependencies."""
+        """
+        Initialize the service dependencies.
+        """
+
         self.session = session
 
         self.repository = CVCertificationRepository(
@@ -39,31 +66,43 @@ class CVCertificationService:
             redis
         )
 
+    # Build the cache key for a CV detail.
     def _detail_cache_key(
         self,
         cv_id: int,
     ) -> str:
-        """Build the cache key for a CV detail."""
+        """
+        Build the cache key for a CV detail.
+        """
+
         return f"cv:{cv_id}:detail"
 
+    # Remove the cached CV detail.
     async def _invalidate_cv_cache(
         self,
         cv_id: int,
     ) -> None:
-        """Remove the cached CV detail."""
+        """
+        Remove the cached CV detail.
+        """
+
         await self.cache.delete(
             self._detail_cache_key(
                 cv_id
             )
         )
 
+    # Create a new certification.
     async def create(
         self,
         cv_id: int,
         user_id: int,
         data: CVCertificationCreate,
     ) -> CVCertification:
-        """Create a certification for a CV."""
+        """
+        Create a certification for a CV.
+        """
+
         await self.ownership.verify_cv(
             cv_id,
             user_id,
@@ -104,13 +143,17 @@ class CVCertificationService:
 
         return certification
 
+    # Update an existing certification.
     async def update(
         self,
         certification_id: int,
         user_id: int,
         data: CVCertificationUpdate,
     ) -> CVCertification:
-        """Update an existing certification."""
+        """
+        Update an existing certification.
+        """
+
         certification = await self.repository.get_by_id(
             certification_id
         )
@@ -170,12 +213,16 @@ class CVCertificationService:
 
         return certification
 
+    # Delete an existing certification.
     async def delete(
         self,
         certification_id: int,
         user_id: int,
     ) -> None:
-        """Delete an existing certification."""
+        """
+        Delete an existing certification.
+        """
+
         certification = await self.repository.get_by_id(
             certification_id
         )
@@ -202,4 +249,3 @@ class CVCertificationService:
         await self._invalidate_cv_cache(
             cv_id
         )
-

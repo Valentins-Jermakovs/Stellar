@@ -1,4 +1,7 @@
-# Standard library imports used for JSON serialization and pagination.
+# ==============================
+# Library imports
+# ==============================
+
 import json
 from math import ceil
 
@@ -6,10 +9,14 @@ from fastapi import HTTPException
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
+# ==============================
+# Application imports
+# ==============================
+
 from app.models import User
 from app.models.cv import CV, utc_now
 
-# Repositories used to access PostgreSQL and Redis.
 from app.repositories import (
     CacheRepository,
     CVCertificationRepository,
@@ -23,7 +30,6 @@ from app.repositories import (
     UserRepository,
 )
 
-# Schemas used for request validation and API responses.
 from app.schemas import (
     CVCertificationRead,
     CVCreate,
@@ -39,12 +45,17 @@ from app.schemas import (
     CVUpdate,
 )
 
-# Utility used to normalize user-provided values.
 from app.utils import DataNormalizer
 
 
+# ==============================
+# CV service
+# ==============================
+
 class CVService:
-    """Handle business logic for CV operations."""
+    """
+    Handle business logic for CV operations.
+    """
 
     # Cache entries expire after five minutes.
     CACHE_TTL = 300
@@ -52,12 +63,16 @@ class CVService:
     # Limit the maximum number of items returned in one page.
     MAX_PAGE_SIZE = 100
 
+    # Initialize service dependencies.
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the service dependencies."""
+        """
+        Initialize the service dependencies.
+        """
+
         self.session = session
 
         self.repository = CVRepository(
@@ -114,13 +129,18 @@ class CVService:
             redis
         )
 
+    # Build the cache key for a CV detail.
     def _detail_cache_key(
         self,
         cv_id: int,
     ) -> str:
-        """Build the cache key for a CV detail."""
+        """
+        Build the cache key for a CV detail.
+        """
+
         return f"cv:{cv_id}:detail"
 
+    # Build the cache key for a user's CV list.
     def _search_cache_key(
         self,
         user_id: int,
@@ -128,7 +148,10 @@ class CVService:
         page: int,
         page_size: int,
     ) -> str:
-        """Build the cache key for a user's CV list."""
+        """
+        Build the cache key for a user's CV list.
+        """
+
         normalized_query = (
             query.strip().lower()
             if query
@@ -142,30 +165,42 @@ class CVService:
             f"{page_size}"
         )
 
+    # Build a pattern for all cached CV lists of a user.
     def _user_cache_pattern(
         self,
         user_id: int,
     ) -> str:
-        """Build a pattern for all cached CV lists of a user."""
+        """
+        Build a pattern for all cached CV lists of a user.
+        """
+
         return f"user:{user_id}:cvs:*"
 
+    # Remove all cached CV lists for a user.
     async def _invalidate_user_cache(
         self,
         user_id: int,
     ) -> None:
-        """Remove all cached CV lists for a user."""
+        """
+        Remove all cached CV lists for a user.
+        """
+
         await self.cache.delete_pattern(
             self._user_cache_pattern(
                 user_id
             )
         )
 
+    # Remove cached data affected by a CV change.
     async def _invalidate_cv_cache(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
-        """Remove cached data affected by a CV change."""
+        """
+        Remove cached data affected by a CV change.
+        """
+
         await self.cache.delete(
             self._detail_cache_key(
                 cv_id
@@ -177,11 +212,15 @@ class CVService:
             user_id
         )
 
+    # Ensure that a local user reference exists.
     async def _ensure_user(
         self,
         user_id: int,
     ) -> User:
-        """Ensure that a local user reference exists."""
+        """
+        Ensure that a local user reference exists.
+        """
+
         user = await self.user_repository.get_by_id(
             user_id
         )
@@ -198,11 +237,15 @@ class CVService:
 
         return user
 
+    # Build a detailed CV response from its related data.
     async def _build_detail_response(
         self,
         cv: CV,
     ) -> CVDetailRead:
-        """Build a detailed CV response from its related data."""
+        """
+        Build a detailed CV response from its related data.
+        """
+
         cv_id = cv.id
 
         if cv_id is None:
@@ -310,12 +353,16 @@ class CVService:
             ],
         )
 
+    # Create a new CV for a user.
     async def create(
         self,
         user_id: int,
         data: CVCreate,
     ) -> CVRead:
-        """Create a new CV for a user."""
+        """
+        Create a new CV for a user.
+        """
+
         await self._ensure_user(
             user_id
         )
@@ -358,12 +405,16 @@ class CVService:
             cv
         )
 
+    # Return a CV with all related data.
     async def get_by_id(
         self,
         cv_id: int,
         user_id: int,
     ) -> CVDetailRead:
-        """Return a CV with all related data."""
+        """
+        Return a CV with all related data.
+        """
+
         cache_key = self._detail_cache_key(
             cv_id
         )
@@ -416,6 +467,7 @@ class CVService:
 
         return detail
 
+    # Return a paginated list of a user's CVs.
     async def search(
         self,
         user_id: int,
@@ -423,7 +475,10 @@ class CVService:
         page: int = 1,
         page_size: int = 10,
     ) -> CVPageRead:
-        """Return a paginated list of a user's CVs."""
+        """
+        Return a paginated list of a user's CVs.
+        """
+
         if page < 1:
             page = 1
 
@@ -504,13 +559,17 @@ class CVService:
 
         return response
 
+    # Update a user's CV.
     async def update(
         self,
         cv_id: int,
         user_id: int,
         data: CVUpdate,
     ) -> CVRead:
-        """Update a user's CV."""
+        """
+        Update a user's CV.
+        """
+
         cv = await self.repository.get_by_id_for_user(
             cv_id=cv_id,
             user_id=user_id,
@@ -527,7 +586,9 @@ class CVService:
             exclude_unset=True,
         )
 
-        new_title = values.get("title")
+        new_title = values.get(
+            "title"
+        )
 
         if new_title is not None:
             # Check whether another CV already uses the new title.
@@ -572,12 +633,16 @@ class CVService:
             cv
         )
 
+    # Delete a user's CV.
     async def delete(
         self,
         cv_id: int,
         user_id: int,
     ) -> None:
-        """Delete a user's CV."""
+        """
+        Delete a user's CV.
+        """
+
         cv = await self.repository.get_by_id_for_user(
             cv_id=cv_id,
             user_id=user_id,

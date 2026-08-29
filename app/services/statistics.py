@@ -1,7 +1,16 @@
+# ==============================
+# Library imports
+# ==============================
+
 import json
 
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.repositories import (
     CacheRepository,
@@ -10,9 +19,19 @@ from app.repositories import (
 from app.schemas import CVStatistics
 
 
-class StatisticsService:
-    """Handle CV statistics operations."""
+# ==============================
+# Statistics service
+# ==============================
 
+class StatisticsService:
+    """
+    This class handles CV statistics operations.
+
+    It retrieves aggregated user statistics and uses Redis
+    to cache the results for a short period of time.
+    """
+
+    # Cache expiration time in seconds
     CACHE_EXPIRE = 60
 
     def __init__(
@@ -21,10 +40,13 @@ class StatisticsService:
         redis: Redis,
     ):
         """Initialize the service dependencies."""
+
+        # Repository for statistics operations
         self.repository = StatisticsRepository(
             session
         )
 
+        # Repository for Redis cache operations
         self.cache = CacheRepository(
             redis
         )
@@ -40,7 +62,13 @@ class StatisticsService:
         self,
         user_id: int,
     ) -> CVStatistics:
-        """Return aggregated statistics for the current user."""
+        """
+        Return aggregated statistics for the current user.
+
+        Cached statistics are returned when available.
+        Otherwise, the statistics are loaded from the database,
+        cached in Redis, and returned to the caller.
+        """
         cache_key = self._get_cache_key(
             user_id
         )
@@ -62,6 +90,7 @@ class StatisticsService:
             **statistics
         )
 
+        # Cache the serialized statistics for future requests
         await self.cache.set(
             cache_key,
             json.dumps(
@@ -71,4 +100,3 @@ class StatisticsService:
         )
 
         return result
-
