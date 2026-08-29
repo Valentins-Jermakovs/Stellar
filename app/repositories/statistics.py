@@ -1,32 +1,56 @@
+# ==============================
+# Library imports
+# ==============================
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import func, select
+
+from sqlmodel import (
+    func,
+    select,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.models import (
+    CV,
     CVCertification,
     CVEducation,
     CVExperience,
     CVLanguage,
     CVProject,
     CVSkill,
-    CV,
 )
 
 
+# ==============================
+# Statistics repository
+# ==============================
+
 class StatisticsRepository:
-    """Repository for calculating CV statistics."""
+    """
+    Provide database operations for CV statistics.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
     ):
-        """Initialize the repository with a database session."""
+        """
+        Initialize the repository with a database session.
+        """
+
         self.session = session
 
     async def get_user_statistics(
         self,
         user_id: int,
     ) -> dict[str, int]:
-        """Return aggregated statistics for a user's CVs."""
+        """
+        Return aggregated statistics for a user's CVs.
+        """
 
         total_cvs_result = await self.session.execute(
             select(func.count(CV.id))

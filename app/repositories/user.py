@@ -1,16 +1,29 @@
-# Async database session used by the repository.
+# ==============================
+# Library imports
+# ==============================
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# SQL query builder for retrieving database records.
 from sqlmodel import select
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.models import User
 
 from .base import BaseRepository
 
 
+# ==============================
+# User repository
+# ==============================
+
 class UserRepository(BaseRepository[User]):
-    """Repository for User-related database operations."""
+    """
+    Provide database operations for User entities.
+    """
 
     model = User
 
@@ -18,7 +31,10 @@ class UserRepository(BaseRepository[User]):
         self,
         user_id: int,
     ) -> User | None:
-        """Return a user by ID, or None if the user does not exist."""
+        """
+        Return a user by ID, if the user exists.
+        """
+
         result = await self.session.execute(
             select(User).where(
                 User.id == user_id

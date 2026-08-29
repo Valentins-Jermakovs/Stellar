@@ -1,10 +1,20 @@
-# AsyncSession is used by repositories to execute database queries.
+# ==============================
+# Library imports
+# ==============================
+
 from datetime import date
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# SQL query helpers used to select records and calculate totals.
-from sqlmodel import func, select
+from sqlmodel import (
+    func,
+    select,
+)
+
+
+# ==============================
+# Application imports
+# ==============================
 
 from app.models import (
     CV,
@@ -22,8 +32,14 @@ from app.models import (
 from .base import BaseRepository
 
 
+# ==============================
+# CV repository
+# ==============================
+
 class CVRepository(BaseRepository[CV]):
-    """Repository for CV database operations."""
+    """
+    Provide database operations for CV entities.
+    """
 
     model = CV
 
@@ -31,7 +47,10 @@ class CVRepository(BaseRepository[CV]):
         self,
         user_id: int,
     ) -> list[CV]:
-        """Return all CVs belonging to a user."""
+        """
+        Return all CVs belonging to a user.
+        """
+
         result = await self.session.execute(
             select(CV)
             .where(
@@ -50,7 +69,10 @@ class CVRepository(BaseRepository[CV]):
         self,
         title: str,
     ) -> CV | None:
-        """Return a CV by title, if it exists."""
+        """
+        Return a CV by title, if it exists.
+        """
+
         result = await self.session.execute(
             select(CV).where(
                 CV.title == title
@@ -64,7 +86,10 @@ class CVRepository(BaseRepository[CV]):
         cv_id: int,
         user_id: int,
     ) -> CV | None:
-        """Return a user's CV by ID."""
+        """
+        Return a user's CV by ID.
+        """
+
         result = await self.session.execute(
             select(CV).where(
                 CV.id == cv_id,
@@ -81,7 +106,10 @@ class CVRepository(BaseRepository[CV]):
         offset: int,
         limit: int,
     ) -> tuple[list[CV], int]:
-        """Search a user's CVs and return the results with total count."""
+        """
+        Search a user's CVs and return the results with total count.
+        """
+
         filters = [
             CV.user_id == user_id,
         ]
@@ -118,10 +146,16 @@ class CVRepository(BaseRepository[CV]):
         return cvs, total
 
 
+# ==============================
+# CV personal information repository
+# ==============================
+
 class CVPersonalInfoRepository(
     BaseRepository[CVPersonalInfo]
 ):
-    """Repository for CV personal information."""
+    """
+    Provide database operations for CV personal information.
+    """
 
     model = CVPersonalInfo
 
@@ -129,7 +163,10 @@ class CVPersonalInfoRepository(
         self,
         cv_id: int,
     ) -> CVPersonalInfo | None:
-        """Return personal information for a CV."""
+        """
+        Return personal information for a CV.
+        """
+
         result = await self.session.execute(
             select(CVPersonalInfo).where(
                 CVPersonalInfo.cv_id == cv_id
@@ -139,10 +176,16 @@ class CVPersonalInfoRepository(
         return result.scalar_one_or_none()
 
 
+# ==============================
+# CV experience repository
+# ==============================
+
 class CVExperienceRepository(
     BaseRepository[CVExperience]
 ):
-    """Repository for CV experience entries."""
+    """
+    Provide database operations for CV experience entries.
+    """
 
     model = CVExperience
 
@@ -150,7 +193,10 @@ class CVExperienceRepository(
         self,
         cv_id: int,
     ) -> list[CVExperience]:
-        """Return all experience entries for a CV."""
+        """
+        Return all experience entries for a CV.
+        """
+
         result = await self.session.execute(
             select(CVExperience)
             .where(
@@ -173,7 +219,10 @@ class CVExperienceRepository(
         start_date: date,
         exclude_id: int | None = None,
     ) -> CVExperience | None:
-        """Return a duplicate experience entry, if one exists."""
+        """
+        Return a duplicate experience entry, if one exists.
+        """
+
         filters = [
             CVExperience.cv_id == cv_id,
             CVExperience.company == company,
@@ -194,10 +243,16 @@ class CVExperienceRepository(
         return result.scalar_one_or_none()
 
 
+# ==============================
+# CV education repository
+# ==============================
+
 class CVEducationRepository(
     BaseRepository[CVEducation]
 ):
-    """Repository for CV education entries."""
+    """
+    Provide database operations for CV education entries.
+    """
 
     model = CVEducation
 
@@ -205,7 +260,10 @@ class CVEducationRepository(
         self,
         cv_id: int,
     ) -> list[CVEducation]:
-        """Return all education entries for a CV."""
+        """
+        Return all education entries for a CV.
+        """
+
         result = await self.session.execute(
             select(CVEducation)
             .where(
@@ -229,7 +287,10 @@ class CVEducationRepository(
         start_date: date | None,
         exclude_id: int | None = None,
     ) -> CVEducation | None:
-        """Return a duplicate education entry, if one exists."""
+        """
+        Return a duplicate education entry, if one exists.
+        """
+
         filters = [
             CVEducation.cv_id == cv_id,
             CVEducation.institution == institution,
@@ -251,8 +312,14 @@ class CVEducationRepository(
         return result.scalar_one_or_none()
 
 
+# ==============================
+# Skill repository
+# ==============================
+
 class SkillRepository(BaseRepository[Skill]):
-    """Repository for reusable skills."""
+    """
+    Provide database operations for reusable skills.
+    """
 
     model = Skill
 
@@ -260,7 +327,10 @@ class SkillRepository(BaseRepository[Skill]):
         self,
         name: str,
     ) -> Skill | None:
-        """Return a skill by name."""
+        """
+        Return a skill by name.
+        """
+
         result = await self.session.execute(
             select(Skill).where(
                 Skill.name == name
@@ -274,7 +344,10 @@ class SkillRepository(BaseRepository[Skill]):
         query: str | None = None,
         limit: int = 10,
     ) -> list[Skill]:
-        """Return up to ten skills matching the search query."""
+        """
+        Return skills matching the search query.
+        """
+
         filters = []
 
         if query:
@@ -298,21 +371,33 @@ class SkillRepository(BaseRepository[Skill]):
         )
 
 
+# ==============================
+# CV skill repository
+# ==============================
+
 class CVSkillRepository:
-    """Repository for CV-to-skill associations."""
+    """
+    Provide database operations for CV-to-skill associations.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
     ):
-        """Initialize the repository with a database session."""
+        """
+        Initialize the repository with a database session.
+        """
+
         self.session = session
 
     async def create(
         self,
         cv_skill: CVSkill,
     ) -> CVSkill:
-        """Create a CV-to-skill association."""
+        """
+        Create a CV-to-skill association.
+        """
+
         self.session.add(cv_skill)
         await self.session.flush()
 
@@ -323,7 +408,10 @@ class CVSkillRepository:
         cv_id: int,
         skill_id: int,
     ) -> CVSkill | None:
-        """Return a CV-to-skill association."""
+        """
+        Return a CV-to-skill association.
+        """
+
         result = await self.session.execute(
             select(CVSkill).where(
                 CVSkill.cv_id == cv_id,
@@ -337,7 +425,10 @@ class CVSkillRepository:
         self,
         cv_id: int,
     ) -> list[CVSkill]:
-        """Return all skill associations for a CV."""
+        """
+        Return all skill associations for a CV.
+        """
+
         result = await self.session.execute(
             select(CVSkill)
             .where(
@@ -356,7 +447,10 @@ class CVSkillRepository:
         self,
         cv_id: int,
     ) -> list[tuple[CVSkill, Skill]]:
-        """Return skill associations together with their skills."""
+        """
+        Return skill associations together with their skills.
+        """
+
         result = await self.session.execute(
             select(
                 CVSkill,
@@ -382,7 +476,10 @@ class CVSkillRepository:
         self,
         cv_skill: CVSkill,
     ) -> CVSkill:
-        """Flush changes to a CV-to-skill association."""
+        """
+        Flush changes to a CV-to-skill association.
+        """
+
         await self.session.flush()
 
         return cv_skill
@@ -391,15 +488,24 @@ class CVSkillRepository:
         self,
         cv_skill: CVSkill,
     ) -> None:
-        """Delete a CV-to-skill association."""
+        """
+        Delete a CV-to-skill association.
+        """
+
         await self.session.delete(cv_skill)
         await self.session.flush()
 
 
+# ==============================
+# CV project repository
+# ==============================
+
 class CVProjectRepository(
     BaseRepository[CVProject]
 ):
-    """Repository for CV project entries."""
+    """
+    Provide database operations for CV project entries.
+    """
 
     model = CVProject
 
@@ -407,7 +513,10 @@ class CVProjectRepository(
         self,
         cv_id: int,
     ) -> list[CVProject]:
-        """Return all projects associated with a CV."""
+        """
+        Return all projects associated with a CV.
+        """
+
         result = await self.session.execute(
             select(CVProject)
             .where(
@@ -428,7 +537,10 @@ class CVProjectRepository(
         name: str,
         exclude_id: int | None = None,
     ) -> CVProject | None:
-        """Return a duplicate project in a CV, if one exists."""
+        """
+        Return a duplicate project in a CV, if one exists.
+        """
+
         filters = [
             CVProject.cv_id == cv_id,
             CVProject.name == name,
@@ -447,10 +559,16 @@ class CVProjectRepository(
         return result.scalar_one_or_none()
 
 
+# ==============================
+# Language repository
+# ==============================
+
 class LanguageRepository(
     BaseRepository[Language]
 ):
-    """Repository for reusable languages."""
+    """
+    Provide database operations for reusable languages.
+    """
 
     model = Language
 
@@ -458,7 +576,10 @@ class LanguageRepository(
         self,
         name: str,
     ) -> Language | None:
-        """Return a language by name."""
+        """
+        Return a language by name.
+        """
+
         result = await self.session.execute(
             select(Language).where(
                 Language.name == name
@@ -472,7 +593,10 @@ class LanguageRepository(
         query: str | None = None,
         limit: int = 10,
     ) -> list[Language]:
-        """Return up to ten languages matching the search query."""
+        """
+        Return languages matching the search query.
+        """
+
         filters = []
 
         if query:
@@ -496,21 +620,33 @@ class LanguageRepository(
         )
 
 
+# ==============================
+# CV language repository
+# ==============================
+
 class CVLanguageRepository:
-    """Repository for CV-to-language associations."""
+    """
+    Provide database operations for CV-to-language associations.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
     ):
-        """Initialize the repository with a database session."""
+        """
+        Initialize the repository with a database session.
+        """
+
         self.session = session
 
     async def create(
         self,
         cv_language: CVLanguage,
     ) -> CVLanguage:
-        """Create a CV-to-language association."""
+        """
+        Create a CV-to-language association.
+        """
+
         self.session.add(cv_language)
         await self.session.flush()
 
@@ -521,7 +657,10 @@ class CVLanguageRepository:
         cv_id: int,
         language_id: int,
     ) -> CVLanguage | None:
-        """Return a CV-to-language association."""
+        """
+        Return a CV-to-language association.
+        """
+
         result = await self.session.execute(
             select(CVLanguage).where(
                 CVLanguage.cv_id == cv_id,
@@ -535,7 +674,10 @@ class CVLanguageRepository:
         self,
         cv_id: int,
     ) -> list[CVLanguage]:
-        """Return all language associations for a CV."""
+        """
+        Return all language associations for a CV.
+        """
+
         result = await self.session.execute(
             select(CVLanguage)
             .where(
@@ -554,7 +696,10 @@ class CVLanguageRepository:
         self,
         cv_id: int,
     ) -> list[tuple[CVLanguage, Language]]:
-        """Return language associations together with their languages."""
+        """
+        Return language associations together with their languages.
+        """
+
         result = await self.session.execute(
             select(
                 CVLanguage,
@@ -580,7 +725,10 @@ class CVLanguageRepository:
         self,
         cv_language: CVLanguage,
     ) -> CVLanguage:
-        """Flush changes to a CV-to-language association."""
+        """
+        Flush changes to a CV-to-language association.
+        """
+
         await self.session.flush()
 
         return cv_language
@@ -589,15 +737,24 @@ class CVLanguageRepository:
         self,
         cv_language: CVLanguage,
     ) -> None:
-        """Delete a CV-to-language association."""
+        """
+        Delete a CV-to-language association.
+        """
+
         await self.session.delete(cv_language)
         await self.session.flush()
 
 
+# ==============================
+# CV certification repository
+# ==============================
+
 class CVCertificationRepository(
     BaseRepository[CVCertification]
 ):
-    """Repository for CV certification entries."""
+    """
+    Provide database operations for CV certification entries.
+    """
 
     model = CVCertification
 
@@ -605,7 +762,10 @@ class CVCertificationRepository(
         self,
         cv_id: int,
     ) -> list[CVCertification]:
-        """Return all certifications associated with a CV."""
+        """
+        Return all certifications associated with a CV.
+        """
+
         result = await self.session.execute(
             select(CVCertification)
             .where(
@@ -626,7 +786,10 @@ class CVCertificationRepository(
         name: str,
         exclude_id: int | None = None,
     ) -> CVCertification | None:
-        """Return a duplicate certification in a CV, if one exists."""
+        """
+        Return a duplicate certification in a CV, if one exists.
+        """
+
         filters = [
             CVCertification.cv_id == cv_id,
             CVCertification.name == name,

@@ -1,10 +1,21 @@
-# Base repository shared by database repositories.
+# ==============================
+# Base repository
+# ==============================
+
 from .base import BaseRepository
 
-# Repository for Redis cache operations.
+
+# ==============================
+# Cache repository
+# ==============================
+
 from .cache import CacheRepository
 
-# Repositories for CV-related entities and associations.
+
+# ==============================
+# CV repositories
+# ==============================
+
 from .cv import (
     CVCertificationRepository,
     CVEducationRepository,
@@ -18,7 +29,16 @@ from .cv import (
     SkillRepository,
 )
 
-# Repository for application users.
+
+# ==============================
+# User repository
+# ==============================
+
 from .user import UserRepository
+
+
+# ==============================
+# Statistics repository
+# ==============================
 
 from .statistics import StatisticsRepository
