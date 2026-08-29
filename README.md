@@ -111,7 +111,7 @@ The full specification is available in `openapi.json` or at `/docs` on the runni
 
 <div align="center">
 
-![ER diagram](./erd.png)
+![ER diagram](./erd1.png)
 
 </div>
 
