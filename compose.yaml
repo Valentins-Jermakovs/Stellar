@@ -1,32 +1,49 @@
 services:
 
   stellar:
+
     build:
       context: .
       dockerfile: Dockerfile
+
     container_name: stellar
+
     env_file:
       - .env
+
     ports:
       - "8001:8001"
+
     depends_on:
       stellar_db:
         condition: service_healthy
+
       stellar_redis:
         condition: service_healthy
+
     restart: unless-stopped
 
+    networks:
+      - back_end
+
+
   stellar_db:
+
     image: postgres:18
+
     container_name: stellar_db
+
     environment:
       POSTGRES_DB: stellar
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
+
     ports:
       - "5440:5432"
+
     volumes:
       - stellar_db_data:/var/lib/postgresql
+
     healthcheck:
       test:
         [
@@ -36,21 +53,32 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
     restart: unless-stopped
 
+    networks:
+      - back_end
+
+
   stellar_redis:
+
     image: redis:8-alpine
+
     container_name: stellar_redis
+
     ports:
       - "6380:6379"
+
     volumes:
       - stellar_redis_data:/data
+
     command:
       [
         "redis-server",
         "--appendonly",
         "yes"
       ]
+
     healthcheck:
       test:
         [
@@ -61,8 +89,21 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
     restart: unless-stopped
 
+    networks:
+      - back_end
+
+
 volumes:
+
   stellar_db_data:
+
   stellar_redis_data:
+
+
+networks:
+
+  back_end:
+    external: true

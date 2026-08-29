@@ -56,10 +56,32 @@ and one of three resume languages: English, Russian, or Latvian.
 
 ## Quick Start
 
+### Example .env
+
+```txt
+POSTGRES_HOST=stellar_db
+POSTGRES_PORT=5432
+POSTGRES_DB=stellar
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin123
+
+REDIS_HOST=stellar_redis
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=
+
+JWT_SECRET_KEY=change-this-secret-key
+JWT_ALGORITHM=HS256
+```
+
+### Launch
+
+> Be sure, you have an docker network `back_end`,
+> and .env file in project root.
+
 ```bash
 git clone <repo-url> stellar
 cd stellar
-cp .env.example .env   # fill in the environment variables, see table below
 docker compose up --build -d
 ```
 
