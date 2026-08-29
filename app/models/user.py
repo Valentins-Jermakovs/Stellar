@@ -1,18 +1,34 @@
-# Used for storing the time when the user reference was created.
-from datetime import datetime, timezone
+# ==============================
+# Library imports
+# ==============================
 
-# Field definitions and the base class for SQLModel models.
+from datetime import (
+    datetime,
+    timezone,
+)
+
 from sqlmodel import Field, SQLModel
 
 
+# ==============================
+# Date and time utilities
+# ==============================
+
 def utc_now() -> datetime:
-    """Return the current UTC time without timezone information."""
+    """
+    Return the current UTC time without timezone information.
+    """
+
     return datetime.now(
         timezone.utc
     ).replace(
         tzinfo=None
     )
 
+
+# ==============================
+# User model
+# ==============================
 
 class User(SQLModel, table=True):
     """
@@ -24,10 +40,18 @@ class User(SQLModel, table=True):
 
     __tablename__ = "user"
 
+    # ==============================
+    # Primary key
+    # ==============================
+
     # User ID received from the authentication service through the JWT.
     id: int = Field(
         primary_key=True,
     )
+
+    # ==============================
+    # Timestamps
+    # ==============================
 
     # Store when the local user reference was first created.
     created_at: datetime = Field(

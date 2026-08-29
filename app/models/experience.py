@@ -1,15 +1,26 @@
-# Used for storing employment start and end dates.
+# ==============================
+# Library imports
+# ==============================
+
 from datetime import date
 
-# SQLAlchemy column and foreign key definitions.
-from sqlalchemy import Column, ForeignKey, UniqueConstraint
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    UniqueConstraint,
+)
 
-# Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
 
+# ==============================
+# CV experience model
+# ==============================
+
 class CVExperience(SQLModel, table=True):
-    """Store a work experience entry included in a CV."""
+    """
+    Store a work experience entry included in a CV.
+    """
 
     __tablename__ = "cv_experience"
 
@@ -23,14 +34,22 @@ class CVExperience(SQLModel, table=True):
         ),
     )
 
+    # ==============================
+    # Primary key
+    # ==============================
+
     # Automatically generated primary key.
     id: int | None = Field(
         default=None,
         primary_key=True,
     )
 
+    # ==============================
+    # CV relationship
+    # ==============================
+
     # ID of the CV this experience entry belongs to.
-    # Delete the experience entry automatically when the CV is deleted.
+    # The experience entry is deleted when the CV is deleted.
     cv_id: int = Field(
         sa_column=Column(
             ForeignKey(
@@ -41,6 +60,10 @@ class CVExperience(SQLModel, table=True):
             index=True,
         ),
     )
+
+    # ==============================
+    # Employment information
+    # ==============================
 
     # Name of the company or organization.
     company: str = Field(
@@ -69,6 +92,10 @@ class CVExperience(SQLModel, table=True):
 
     # Optional description of the user's responsibilities and achievements.
     description: str | None = None
+
+    # ==============================
+    # Display settings
+    # ==============================
 
     # Position used to preserve the order of experience entries in the CV.
     sort_order: int = 0

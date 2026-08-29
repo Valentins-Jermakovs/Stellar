@@ -1,15 +1,26 @@
-# Used for storing education start and end dates.
+# ==============================
+# Library imports
+# ==============================
+
 from datetime import date
 
-# SQLAlchemy column and foreign key definitions.
-from sqlalchemy import Column, ForeignKey, UniqueConstraint
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    UniqueConstraint,
+)
 
-# Field definitions and the base class for SQLModel database models.
 from sqlmodel import Field, SQLModel
 
 
+# ==============================
+# CV education model
+# ==============================
+
 class CVEducation(SQLModel, table=True):
-    """Store an education entry included in a CV."""
+    """
+    Store an education entry included in a CV.
+    """
 
     __tablename__ = "cv_education"
 
@@ -24,14 +35,22 @@ class CVEducation(SQLModel, table=True):
         ),
     )
 
+    # ==============================
+    # Primary key
+    # ==============================
+
     # Automatically generated primary key.
     id: int | None = Field(
         default=None,
         primary_key=True,
     )
 
+    # ==============================
+    # CV relationship
+    # ==============================
+
     # ID of the CV this education entry belongs to.
-    # Delete the education entry automatically when the CV is deleted.
+    # The education entry is deleted when the CV is deleted.
     cv_id: int = Field(
         sa_column=Column(
             ForeignKey(
@@ -42,6 +61,10 @@ class CVEducation(SQLModel, table=True):
             index=True,
         ),
     )
+
+    # ==============================
+    # Education information
+    # ==============================
 
     # Name of the educational institution.
     institution: str = Field(
@@ -74,6 +97,10 @@ class CVEducation(SQLModel, table=True):
 
     # Optional description of the education or related achievements.
     description: str | None = None
+
+    # ==============================
+    # Display settings
+    # ==============================
 
     # Position used to preserve the order of education entries in the CV.
     sort_order: int = 0

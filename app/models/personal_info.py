@@ -1,14 +1,29 @@
-# SQLAlchemy column and foreign key definitions.
-from sqlalchemy import Column, ForeignKey
+# ==============================
+# Library imports
+# ==============================
 
-# Field definitions and the base class for SQLModel database models.
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+)
+
 from sqlmodel import Field, SQLModel
 
 
+# ==============================
+# CV personal information model
+# ==============================
+
 class CVPersonalInfo(SQLModel, table=True):
-    """Store personal information displayed on a CV."""
+    """
+    Store personal information displayed on a CV.
+    """
 
     __tablename__ = "cv_personal_info"
+
+    # ==============================
+    # Primary key
+    # ==============================
 
     # Automatically generated primary key.
     id: int | None = Field(
@@ -16,8 +31,12 @@ class CVPersonalInfo(SQLModel, table=True):
         primary_key=True,
     )
 
+    # ==============================
+    # CV relationship
+    # ==============================
+
     # ID of the CV this information belongs to.
-    # Delete the personal information when the CV is deleted.
+    # The personal information is deleted when the CV is deleted.
     cv_id: int = Field(
         sa_column=Column(
             ForeignKey(
@@ -29,6 +48,10 @@ class CVPersonalInfo(SQLModel, table=True):
             index=True,
         ),
     )
+
+    # ==============================
+    # Personal information
+    # ==============================
 
     # User's first name.
     first_name: str = Field(
@@ -45,6 +68,10 @@ class CVPersonalInfo(SQLModel, table=True):
         default=None,
         max_length=200,
     )
+
+    # ==============================
+    # Contact information
+    # ==============================
 
     # Contact email displayed on the CV.
     email: str | None = Field(
@@ -64,6 +91,10 @@ class CVPersonalInfo(SQLModel, table=True):
         max_length=150,
     )
 
+    # ==============================
+    # Online profiles
+    # ==============================
+
     # Personal or professional website.
     website: str | None = Field(
         default=None,
@@ -81,6 +112,10 @@ class CVPersonalInfo(SQLModel, table=True):
         default=None,
         max_length=500,
     )
+
+    # ==============================
+    # Professional summary
+    # ==============================
 
     # Optional professional summary.
     summary: str | None = None

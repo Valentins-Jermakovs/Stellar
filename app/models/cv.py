@@ -1,12 +1,24 @@
-# Used for storing CV creation and update timestamps.
-from datetime import datetime, timezone
+# ==============================
+# Library imports
+# ==============================
 
-# Field definitions and the base class for SQLModel database models.
+from datetime import (
+    datetime,
+    timezone,
+)
+
 from sqlmodel import Field, SQLModel
 
 
+# ==============================
+# Date and time utilities
+# ==============================
+
 def utc_now() -> datetime:
-    """Return the current UTC time without timezone information."""
+    """
+    Return the current UTC time without timezone information.
+    """
+
     return datetime.now(
         timezone.utc
     ).replace(
@@ -14,10 +26,20 @@ def utc_now() -> datetime:
     )
 
 
+# ==============================
+# CV model
+# ==============================
+
 class CV(SQLModel, table=True):
-    """Store a CV belonging to a user."""
+    """
+    Store a CV belonging to a user.
+    """
 
     __tablename__ = "cv"
+
+    # ==============================
+    # Primary key
+    # ==============================
 
     # Automatically generated primary key.
     id: int | None = Field(
@@ -25,11 +47,19 @@ class CV(SQLModel, table=True):
         primary_key=True,
     )
 
+    # ==============================
+    # User relationship
+    # ==============================
+
     # ID of the user who owns the CV.
     user_id: int = Field(
         foreign_key="user.id",
         index=True,
     )
+
+    # ==============================
+    # CV information
+    # ==============================
 
     # Unique CV title.
     title: str = Field(
@@ -37,6 +67,10 @@ class CV(SQLModel, table=True):
         unique=True,
         index=True,
     )
+
+    # ==============================
+    # Timestamps
+    # ==============================
 
     # Time when the CV was created.
     created_at: datetime = Field(
