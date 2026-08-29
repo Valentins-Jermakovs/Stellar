@@ -1,9 +1,17 @@
-# Async database session and Redis client used by the service.
+# ==============================
+# Library imports
+# ==============================
+
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# Model and schemas used by the facade.
+
+# ==============================
+# Application imports
+# ==============================
+
 from app.models import CVPersonalInfo
+
 from app.schemas import (
     CVPersonalInfoCreate,
     CVPersonalInfoUpdate,
@@ -12,15 +20,24 @@ from app.schemas import (
 from app.services import CVPersonalInfoService
 
 
+# ==============================
+# CV personal information facade
+# ==============================
+
 class CVPersonalInfoFacade:
-    """Provide a simplified interface for CV personal information."""
+    """
+    Provide a simplified interface for CV personal information.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the facade with service dependencies."""
+        """
+        Initialize the facade with service dependencies.
+        """
+
         self.service = CVPersonalInfoService(
             session=session,
             redis=redis,
@@ -32,7 +49,10 @@ class CVPersonalInfoFacade:
         user_id: int,
         data: CVPersonalInfoCreate,
     ) -> CVPersonalInfo:
-        """Create personal information for a CV."""
+        """
+        Create personal information for a CV.
+        """
+
         return await self.service.create(
             cv_id=cv_id,
             user_id=user_id,
@@ -45,7 +65,10 @@ class CVPersonalInfoFacade:
         user_id: int,
         data: CVPersonalInfoUpdate,
     ) -> CVPersonalInfo:
-        """Update personal information for a CV."""
+        """
+        Update personal information for a CV.
+        """
+
         return await self.service.update(
             cv_id=cv_id,
             user_id=user_id,
@@ -57,7 +80,10 @@ class CVPersonalInfoFacade:
         cv_id: int,
         user_id: int,
     ) -> None:
-        """Delete personal information from a CV."""
+        """
+        Delete personal information from a CV.
+        """
+
         await self.service.delete(
             cv_id=cv_id,
             user_id=user_id,

@@ -1,9 +1,20 @@
-# Async database session and Redis client used by the services.
+# ==============================
+# Library imports
+# ==============================
+
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# Models and schemas used by the facades.
-from app.models import CVSkill, Skill
+
+# ==============================
+# Application imports
+# ==============================
+
+from app.models import (
+    CVSkill,
+    Skill,
+)
+
 from app.schemas import (
     CVSkillCreate,
     CVSkillUpdate,
@@ -16,14 +27,23 @@ from app.services import (
 )
 
 
+# ==============================
+# Skill facade
+# ==============================
+
 class SkillFacade:
-    """Provide a simplified interface for the global skill catalog."""
+    """
+    Provide a simplified interface for the global skill catalog.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
     ):
-        """Initialize the facade with service dependencies."""
+        """
+        Initialize the facade with service dependencies.
+        """
+
         self.service = SkillService(
             session
         )
@@ -32,7 +52,10 @@ class SkillFacade:
         self,
         data: SkillCreate,
     ) -> Skill:
-        """Create a skill or return an existing one."""
+        """
+        Create a skill or return an existing one.
+        """
+
         return await self.service.create(
             data
         )
@@ -41,7 +64,10 @@ class SkillFacade:
         self,
         skill_id: int,
     ) -> Skill:
-        """Return a global skill by ID."""
+        """
+        Return a global skill by ID.
+        """
+
         return await self.service.get_by_id(
             skill_id
         )
@@ -50,21 +76,33 @@ class SkillFacade:
         self,
         query: str | None = None,
     ) -> list[Skill]:
-        """Search the global skill catalog."""
+        """
+        Search the global skill catalog.
+        """
+
         return await self.service.search(
             query
         )
 
 
+# ==============================
+# CV skill facade
+# ==============================
+
 class CVSkillFacade:
-    """Provide a simplified interface for CV skill operations."""
+    """
+    Provide a simplified interface for CV skill operations.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the facade with service dependencies."""
+        """
+        Initialize the facade with service dependencies.
+        """
+
         self.service = CVSkillService(
             session=session,
             redis=redis,
@@ -76,7 +114,10 @@ class CVSkillFacade:
         user_id: int,
         data: CVSkillCreate,
     ) -> CVSkill:
-        """Add a skill to a CV."""
+        """
+        Add a skill to a CV.
+        """
+
         return await self.service.add(
             cv_id=cv_id,
             user_id=user_id,
@@ -90,7 +131,10 @@ class CVSkillFacade:
         skill_id: int,
         data: CVSkillUpdate,
     ) -> CVSkill:
-        """Update a skill association in a CV."""
+        """
+        Update a skill association in a CV.
+        """
+
         return await self.service.update(
             cv_id=cv_id,
             user_id=user_id,
@@ -104,7 +148,10 @@ class CVSkillFacade:
         user_id: int,
         skill_id: int,
     ) -> None:
-        """Delete a skill association from a CV."""
+        """
+        Delete a skill association from a CV.
+        """
+
         await self.service.delete(
             cv_id=cv_id,
             user_id=user_id,

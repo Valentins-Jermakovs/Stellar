@@ -1,9 +1,17 @@
-# Async database session and Redis client used by the service.
+# ==============================
+# Library imports
+# ==============================
+
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# Model and schemas used by the facade.
+
+# ==============================
+# Application imports
+# ==============================
+
 from app.models import CVProject
+
 from app.schemas import (
     CVProjectCreate,
     CVProjectUpdate,
@@ -12,15 +20,24 @@ from app.schemas import (
 from app.services import CVProjectService
 
 
+# ==============================
+# CV project facade
+# ==============================
+
 class CVProjectFacade:
-    """Provide a simplified interface for CV project operations."""
+    """
+    Provide a simplified interface for CV project operations.
+    """
 
     def __init__(
         self,
         session: AsyncSession,
         redis: Redis,
     ):
-        """Initialize the facade with service dependencies."""
+        """
+        Initialize the facade with service dependencies.
+        """
+
         self.service = CVProjectService(
             session=session,
             redis=redis,
@@ -32,7 +49,10 @@ class CVProjectFacade:
         user_id: int,
         data: CVProjectCreate,
     ) -> CVProject:
-        """Create a project for a CV."""
+        """
+        Create a project for a CV.
+        """
+
         return await self.service.create(
             cv_id=cv_id,
             user_id=user_id,
@@ -45,7 +65,10 @@ class CVProjectFacade:
         user_id: int,
         data: CVProjectUpdate,
     ) -> CVProject:
-        """Update an existing project."""
+        """
+        Update an existing project.
+        """
+
         return await self.service.update(
             project_id=project_id,
             user_id=user_id,
@@ -57,7 +80,10 @@ class CVProjectFacade:
         project_id: int,
         user_id: int,
     ) -> None:
-        """Delete an existing project."""
+        """
+        Delete an existing project.
+        """
+
         await self.service.delete(
             project_id=project_id,
             user_id=user_id,
