@@ -74,6 +74,21 @@ def format_month_year(
     return f"{months[value.month]} {value.year}"
 
 
+def format_full_date(
+    value: date,
+    language: str,
+) -> str:
+    """Format a date with day, month, and year in the selected language."""
+    months = MONTHS.get(language)
+
+    if months is None:
+        raise ValueError(
+            f"Unsupported language: {language}"
+        )
+
+    return f"{value.day} {months[value.month]} {value.year}"
+
+
 def format_year(
     value: date,
 ) -> str:

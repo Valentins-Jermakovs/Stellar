@@ -25,6 +25,7 @@ from app.schemas import (
 
 from app.utils import (
     TRANSLATIONS,
+    format_full_date,
     format_month_year,
     format_year,
 )
@@ -65,6 +66,10 @@ class CVGeneratorService:
         )
 
         # Register the month and year formatting filter.
+        self.environment.filters[
+            "full_date"
+        ] = format_full_date
+
         self.environment.filters[
             "month_year"
         ] = format_month_year

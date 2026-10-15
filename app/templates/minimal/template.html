@@ -99,7 +99,7 @@
 
                 <div class="dates">
 
-                    {{ item.start_date | year }}
+                    {{ item.start_date | full_date(language) }}
 
                     –
 
@@ -107,7 +107,7 @@
                     {{ translations.present }}
 
                     {% elif item.end_date %}
-                    {{ item.end_date | year }}
+                    {{ item.end_date | full_date(language) }}
                     {% endif %}
 
                 </div>
@@ -162,12 +162,12 @@
                 {% if item.start_date %}
                 <div class="dates">
 
-                    {{ item.start_date | year }}
+                    {{ item.start_date | full_date(language) }}
 
                     –
 
                     {% if item.end_date %}
-                    {{ item.end_date | year }}
+                    {{ item.end_date | full_date(language) }}
                     {% endif %}
 
                 </div>
@@ -305,12 +305,12 @@
             <div class="certification-date">
 
                 {{ translations.issued }}
-                {{ item.issue_date | month_year(language) }}
+                {{ item.issue_date | full_date(language) }}
 
                 {% if item.expiration_date %}
                 ·
                 {{ translations.expires }}
-                {{ item.expiration_date | month_year(language) }}
+                {{ item.expiration_date | full_date(language) }}
                 {% endif %}
 
             </div>

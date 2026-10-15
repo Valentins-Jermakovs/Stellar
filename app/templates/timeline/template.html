@@ -164,7 +164,7 @@
                         <div class="timeline-date">
 
                             <span>
-                                {{ item.start_date | year }}
+                                {{ item.start_date | full_date(language) }}
                             </span>
 
                             <span class="date-separator">
@@ -175,7 +175,7 @@
                                 {% if item.is_current %}
                                 {{ translations.present }}
                                 {% elif item.end_date %}
-                                {{ item.end_date | year }}
+                                {{ item.end_date | full_date(language) }}
                                 {% endif %}
                             </span>
 
@@ -243,10 +243,10 @@
                         {% if item.start_date %}
                         <div class="item-date">
 
-                            {{ item.start_date | year }}
+                            {{ item.start_date | full_date(language) }}
 
                             {% if item.end_date %}
-                            — {{ item.end_date | year }}
+                            — {{ item.end_date | full_date(language) }}
                             {% endif %}
 
                         </div>
@@ -460,7 +460,7 @@
 
                         {% if item.issue_date %}
                         <div class="item-date">
-                            {{ item.issue_date | month_year(language) }}
+                            {{ item.issue_date | full_date(language) }}
                         </div>
                         {% endif %}
 

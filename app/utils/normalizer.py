@@ -17,8 +17,8 @@ class DataNormalizer:
     """
 
 
+    @staticmethod
     def normalize_string(
-        self,
         value: str,
     ) -> str:
         
@@ -27,8 +27,8 @@ class DataNormalizer:
         return value.strip()
 
 
+    @staticmethod
     def normalize_model(
-        self,
         model: BaseModel,
         *,
         exclude_unset: bool = False,
@@ -43,7 +43,7 @@ class DataNormalizer:
         # Normalize string values.
         for field, value in values.items():
             if isinstance(value, str):
-                values[field] = self.normalize_string(
+                values[field] = DataNormalizer.normalize_string(
                     value
                 )
 
