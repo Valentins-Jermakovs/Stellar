@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 /* ==============================
    Page
    ============================== */
@@ -18,13 +20,21 @@
 
 /* Theme tokens */
 :root {
-    --color-text: #202020;
-    --color-heading: #102a43;
-    --color-muted: #707070;
-    --color-accent: #17365d;
-    --color-accent-strong: #102a43;
-    --color-border: #d8d8d8;
-    --color-surface: #eeeeee;
+    --color-text: #161616;
+    --color-heading: #161616;
+    --color-muted: #525252;
+    --color-text-secondary: #393939;
+    --color-accent: #0f62fe;
+    --color-accent-strong: #0043ce;
+    --color-accent-light: #d0e2ff;
+    --color-border: #c6c6c6;
+    --color-surface: #f4f4f4;
+    --color-surface-strong: #e0e0e0;
+    --color-white: #ffffff;
+    --color-sidebar: #161616;
+    --color-sidebar-text: #f4f4f4;
+    --color-sidebar-muted: #c6c6c6;
+    --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
 
     --ink: var(--color-text);
     --dark: var(--color-heading);
@@ -37,11 +47,11 @@
 body {
     margin: 0;
     padding: 15mm 17mm;
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: var(--font-family);
     color: var(--ink);
     font-size: 9.5pt;
     line-height: 1.42;
-    background: #ffffff;
+    background: var(--color-white);
 }
 
 
@@ -63,7 +73,7 @@ body {
 
 .label {
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.5pt;
     font-weight: 700;
     letter-spacing: 2px;
@@ -99,7 +109,7 @@ body {
 .headline {
     margin-top: 6mm;
     color: var(--accent);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 10.5pt;
     font-weight: 700;
     letter-spacing: 0.4px;
@@ -110,7 +120,7 @@ body {
     padding-left: 7mm;
     border-left: 1px solid var(--light);
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 8pt;
     line-height: 1.65;
     overflow-wrap: anywhere;
@@ -169,7 +179,7 @@ section:last-child {
 .section-heading span,
 .side-heading span {
     color: var(--accent);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.5pt;
     font-weight: 700;
 }
@@ -177,7 +187,7 @@ section:last-child {
 h2 {
     margin: 0;
     color: var(--dark);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 10pt;
     font-weight: 700;
     text-transform: uppercase;
@@ -203,7 +213,7 @@ p {
 
 .profile {
     max-width: 100%;
-    color: #3f3f3f;
+    color: var(--color-text-secondary);
     font-size: 10pt;
     line-height: 1.55;
 }
@@ -228,7 +238,7 @@ p {
 
 .period {
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.8pt;
     line-height: 1.4;
 }
@@ -247,7 +257,7 @@ p {
 .company {
     margin-top: 2px;
     color: var(--accent);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
 }
@@ -258,25 +268,25 @@ p {
 }
 
 .entry p {
-    color: #444;
+    color: var(--color-text-secondary);
 }
 
 .degree {
     margin-top: 2px;
     color: var(--accent);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
 }
 
 .field {
-    color: #444;
+    color: var(--color-text-secondary);
 }
 
 .location {
     margin-top: 1px;
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 8pt;
 }
 
@@ -296,13 +306,13 @@ p {
 }
 
 .project-item p {
-    color: #444;
+    color: var(--color-text-secondary);
 }
 
 .project-link {
     margin-top: 3px;
     color: var(--accent);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.8pt;
 }
 
@@ -328,7 +338,7 @@ p {
 
 .skill-name {
     color: var(--dark);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
 }
@@ -336,7 +346,7 @@ p {
 .skill-level {
     margin-top: 1px;
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.5pt;
 }
 
@@ -365,14 +375,14 @@ p {
 
 .language-name {
     color: var(--dark);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
 }
 
 .language-level {
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.5pt;
 }
 
@@ -397,7 +407,7 @@ p {
 .certification-org {
     margin-top: 2px;
     color: var(--accent);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.8pt;
     font-weight: 700;
 }
@@ -405,7 +415,7 @@ p {
 .certification-date {
     margin-top: 2px;
     color: var(--muted);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     font-size: 7.5pt;
 }
 
@@ -426,8 +436,8 @@ p {
 
 .credential {
     margin-top: 2px;
-    color: #777;
-    font-family: Arial, Helvetica, sans-serif;
+    color: var(--color-muted);
+    font-family: var(--font-family);
     font-size: 7.2pt;
 }
 
@@ -449,7 +459,7 @@ p {
 @media print {
 
     body {
-        background: #ffffff;
+        background: var(--color-white);
     }
 
     section,

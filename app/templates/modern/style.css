@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 /* ==============================
    Page: dark sidebar strip is painted on every page
    ============================== */
@@ -6,11 +8,11 @@
     size: A4;
     margin: 8mm 0;
     background: linear-gradient(to right,
-            #0f172a 0,
-            #0f172a 68mm,
-            #14b8a6 68mm,
-            #14b8a6 69.6mm,
-            #ffffff 69.6mm);
+            var(--color-sidebar) 0,
+            var(--color-sidebar) 68mm,
+            var(--color-accent) 68mm,
+            var(--color-accent) 69.6mm,
+            var(--color-white) 69.6mm);
 }
 
 @page :first {
@@ -22,15 +24,31 @@
 }
 
 :root {
-    --ink: #1e293b;
-    --heading: #0f172a;
-    --muted: #64748b;
-    --soft: #f1f5f9;
-    --line: #e2e8f0;
-    --accent: #0f766e;
-    --accent-light: #2dd4bf;
-    --side-text: #e2e8f0;
-    --side-muted: #94a3b8;
+    --color-text: #161616;
+    --color-heading: #161616;
+    --color-muted: #525252;
+    --color-text-secondary: #393939;
+    --color-accent: #0f62fe;
+    --color-accent-strong: #0043ce;
+    --color-accent-light: #d0e2ff;
+    --color-border: #c6c6c6;
+    --color-surface: #f4f4f4;
+    --color-surface-strong: #e0e0e0;
+    --color-white: #ffffff;
+    --color-sidebar: #161616;
+    --color-sidebar-text: #f4f4f4;
+    --color-sidebar-muted: #c6c6c6;
+    --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
+
+    --ink: var(--color-text);
+    --heading: var(--color-heading);
+    --muted: var(--color-muted);
+    --soft: var(--color-surface);
+    --line: var(--color-border);
+    --accent: var(--color-accent);
+    --accent-light: var(--color-accent-light);
+    --side-text: var(--color-sidebar-text);
+    --side-muted: var(--color-sidebar-muted);
 }
 
 html,
@@ -41,7 +59,7 @@ body {
 }
 
 body {
-    font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     color: var(--ink);
     font-size: 8.3pt;
     line-height: 1.3;
@@ -102,7 +120,7 @@ h3 {
     margin: 0 0 6mm;
     border-radius: 50%;
     border: 0.9mm solid var(--accent-light);
-    background: #1e293b;
+    background: var(--color-sidebar);
     color: var(--accent-light);
     font-size: 19pt;
     font-weight: 800;
@@ -144,7 +162,7 @@ h3 {
 .contact .value {
     display: block;
     margin-top: 0.3mm;
-    color: #ffffff;
+    color: var(--color-white);
     font-size: 7.6pt;
     line-height: 1.25;
 }
@@ -161,10 +179,10 @@ h3 {
     display: inline-block;
     margin: 0 1.2mm 1.6mm 0;
     padding: 1.1mm 2.4mm;
-    border: 0.25mm solid rgba(45, 212, 191, 0.55);
+    border: 0.25mm solid rgba(15, 98, 254, 0.55);
     border-radius: 3mm;
     background: rgba(255, 255, 255, 0.07);
-    color: #ffffff;
+    color: var(--color-white);
     font-size: 7.2pt;
     font-weight: 600;
     line-height: 1.1;
@@ -197,7 +215,7 @@ h3 {
 
 .lang span:first-child {
     font-weight: 600;
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 .lang span:last-child {
@@ -235,7 +253,7 @@ h3 {
     padding: 1mm 3mm;
     border-radius: 3mm;
     background: var(--heading);
-    color: #ffffff;
+    color: var(--color-white);
     font-size: 7.6pt;
     font-weight: 700;
     letter-spacing: 1px;
@@ -246,7 +264,7 @@ h3 {
     margin: 4mm 0 0;
     padding: 0.5mm 0 0.5mm 4mm;
     border-left: 0.9mm solid var(--accent-light);
-    color: #475569;
+    color: var(--color-text-secondary);
     font-size: 8.6pt;
     line-height: 1.4;
 }
@@ -333,7 +351,7 @@ section:last-child {
     height: 2.9mm;
     border: 0.6mm solid var(--accent);
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--color-white);
 }
 
 .tl-item.current::before {
@@ -359,7 +377,7 @@ section:last-child {
 
 .dot {
     margin: 0 1mm;
-    color: #94a3b8;
+    color: var(--color-muted);
 }
 
 .sub {
@@ -371,7 +389,7 @@ section:last-child {
 
 .tl-item p {
     margin-top: 1.4mm;
-    color: #475569;
+    color: var(--color-text-secondary);
     font-size: 8pt;
     line-height: 1.38;
 }
@@ -409,7 +427,7 @@ section:last-child {
 
 .card p {
     margin-top: 1.2mm;
-    color: #475569;
+    color: var(--color-text-secondary);
     font-size: 7.9pt;
     line-height: 1.35;
 }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 /* ==============================
    Page
    ============================== */
@@ -18,17 +20,25 @@
 
 /* Theme tokens */
 :root {
-    --color-text: #24282d;
-    --color-heading: #202833;
-    --color-muted: #737b84;
-    --color-accent: #315f8a;
-    --color-accent-strong: #244766;
-    --color-border: #d7dce1;
-    --color-surface: #f4f6f8;
+    --color-text: #161616;
+    --color-heading: #161616;
+    --color-muted: #525252;
+    --color-text-secondary: #393939;
+    --color-accent: #0f62fe;
+    --color-accent-strong: #0043ce;
+    --color-accent-light: #d0e2ff;
+    --color-border: #c6c6c6;
+    --color-surface: #f4f4f4;
+    --color-surface-strong: #e0e0e0;
+    --color-white: #ffffff;
+    --color-sidebar: #161616;
+    --color-sidebar-text: #f4f4f4;
+    --color-sidebar-muted: #c6c6c6;
+    --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
 
     --accent: var(--color-accent);
     --accent-dark: var(--color-accent-strong);
-    --accent-light: #e8eef4;
+    --accent-light: var(--color-accent-light);
     --text: var(--color-text);
     --muted: var(--color-muted);
     --line: var(--color-border);
@@ -42,11 +52,11 @@ body {
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
     color: var(--text);
     font-size: 9.3pt;
     line-height: 1.38;
-    background: #ffffff;
+    background: var(--color-white);
 }
 
 
@@ -81,7 +91,7 @@ body {
 
 .header h1 {
     margin: 0;
-    color: #171b20;
+    color: var(--color-heading);
     font-size: 30pt;
     line-height: 1;
     font-weight: 700;
@@ -98,7 +108,7 @@ body {
 .contacts {
     padding-left: 16px;
     border-left: 2px solid var(--accent-light);
-    color: #59616a;
+    color: var(--color-muted);
     font-size: 8.2pt;
     line-height: 1.5;
 }
@@ -180,7 +190,7 @@ h2 {
 h3 {
     margin: 0;
 
-    color: #191d22;
+    color: var(--color-heading);
 
     font-size: 10.6pt;
     line-height: 1.25;
@@ -190,7 +200,7 @@ h3 {
 p {
     margin: 5px 0 0;
 
-    color: #424951;
+    color: var(--color-text-secondary);
 
     white-space: pre-line;
 }
@@ -307,7 +317,7 @@ p {
     width: 9px;
     height: 9px;
 
-    border: 2px solid #ffffff;
+    border: 2px solid var(--color-white);
     border-radius: 50%;
 
     background: var(--accent);
@@ -375,7 +385,7 @@ p {
 .item-location {
     margin-top: 3px;
 
-    color: #858d95;
+    color: var(--color-muted);
 
     font-size: 7.8pt;
 }
@@ -395,7 +405,7 @@ p {
 .field {
     margin-top: 1px;
 
-    color: #505861;
+    color: var(--color-text-secondary);
 }
 
 .item-main p {
@@ -470,14 +480,14 @@ p {
 .skill {
     padding: 4px 8px;
 
-    background: #ffffff;
+    background: var(--color-white);
 
     border: 1px solid var(--line);
     border-radius: 2px;
 }
 
 .skill-name {
-    color: #252a30;
+    color: var(--color-heading);
     font-weight: 700;
 }
 
@@ -514,7 +524,7 @@ p {
 }
 
 .language strong {
-    color: #252a30;
+    color: var(--color-heading);
 }
 
 .language span {
@@ -552,7 +562,7 @@ p {
 @media print {
 
     body {
-        background: #ffffff;
+        background: var(--color-white);
     }
 
     section,
