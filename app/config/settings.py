@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     # JWT token settings.
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     # .env file configuration.
     model_config = SettingsConfigDict(

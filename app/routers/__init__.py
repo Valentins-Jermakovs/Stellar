@@ -19,7 +19,7 @@ from .personal_info import router as personal_info_router
 from .project import router as project_router
 from .skill import router as skill_router
 from .statistics import router as statistics_router
-
+from .metrics import router as metrics_router
 
 # ==============================
 # Main application router
@@ -67,4 +67,8 @@ main_router.include_router(
 
 main_router.include_router(
     statistics_router
+)
+
+main_router.include_router(
+    metrics_router
 )

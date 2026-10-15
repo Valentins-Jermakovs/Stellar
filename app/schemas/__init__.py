@@ -65,3 +65,9 @@ from .template import (
 # ==============================
 
 from .statistics import CVStatistics
+
+# ==============================
+# Metrics schemas
+# ==============================
+
+from .metrics import SystemMetricsResponse

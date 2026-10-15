@@ -39,6 +39,7 @@ and one of three resume languages: English, Russian, or Latvian.
 - **PDF generation** — 6 layout templates × 3 locales
 - **Statistics** on CV counts and section completeness
 - **JWT authentication** with local caching of user data extracted from the token
+- **Live server metrics** streamed to administrators over a WebSocket connection
 - **Redis** for caching and queues; all persistent data is stored in **PostgreSQL** via SQLModel
 
 ## Technology Stack
@@ -88,7 +89,7 @@ docker compose up --build -d
 Once running, the service is available at **http://localhost:8001**, with interactive
 documentation at **http://localhost:8001/docs**.
 
-PostgreSQL is exposed on host port `5440`, Redis on `6380` (see `docker-compose.yml`).
+PostgreSQL is exposed on host port `5440`, Redis on `6380` (see `compose.yaml`).
 
 ## Environment Variables
 
@@ -106,13 +107,14 @@ PostgreSQL is exposed on host port `5440`, Redis on `6380` (see `docker-compose.
 | `JWT_SECRET_KEY`         | Secret used to sign JWTs              | `••••••••`                |
 | `JWT_ALGORITHM`          | JWT signing algorithm                 | `HS256`                   |
 
-> **Note:** Do not use the sample values from `docker-compose.yml` in production — set your own
+> **Note:** Do not use the sample values from `compose.yaml` in production — set your own
 > strong secrets for `POSTGRES_PASSWORD` and `JWT_SECRET_KEY`.
 
 ## API Reference
 
-All endpoints (except `/statistics`, which defines its own security scheme) are protected via
-`HTTPBearer` — pass the JWT in the `Authorization: Bearer <token>` header.
+All HTTP API endpoints require a JWT access token in the
+`Authorization: Bearer <access_token>` header. The metrics WebSocket uses a query parameter
+instead; it is restricted to tokens that include the `admin` role.
 
 | Section | Methods | Base path |
 |---|---|---|
@@ -125,9 +127,65 @@ All endpoints (except `/statistics`, which defines its own security scheme) are 
 | **Languages** | `POST` `GET` `/languages`, `GET` `/languages/{id}`, `POST` `/cvs/{cv_id}/languages`, `PATCH` `DELETE` `/cvs/{cv_id}/languages/{id}` | languages reference catalog and CV linking |
 | **CV Certifications** | `POST` `/cvs/{cv_id}/certifications`, `PATCH` `DELETE` `/cvs/{cv_id}/certifications/{id}` | certifications |
 | **CV Generator** | `POST` `/cvs/{cv_id}/generate` | PDF generation by `template` and `language` |
-| **Statistics** | `GET` `/statistics` | aggregated statistics for the user's CVs |
+| **Statistics** | `GET` `/statistics` | aggregated statistics for the authenticated user's CVs |
+| **Server Metrics** | `WebSocket` `/metrics/ws/stats` | live process metrics; admin role required |
 
-The full specification is available in `openapi.json` or at `/docs` on the running service.
+The HTTP API specification is available at `/docs` on the running service. WebSocket endpoints
+are not listed in the OpenAPI specification; see the connection details below.
+
+### Server Metrics WebSocket
+
+Connect to `/metrics/ws/stats` using the WebSocket protocol (`ws://`, or `wss://` when served
+over TLS). Supply a valid JWT as the `token` query parameter. The token must contain the
+`admin` role; connections without a token, with an invalid token, or without that role are
+closed with WebSocket status `1008` (Policy Violation).
+
+For the local Docker setup, connect to:
+
+```text
+ws://localhost:8001/metrics/ws/stats?token=<access_token>
+```
+
+After connecting, the server sends a JSON message approximately once per second with metrics
+for the running FastAPI/Uvicorn process:
+
+```json
+{
+  "cpu_percent": 0.0,
+  "memory_percent": 0.12,
+  "memory_used_mb": 48
+}
+```
+
+`cpu_percent` is the process CPU usage, `memory_percent` is its share of system memory, and
+`memory_used_mb` is its resident memory in megabytes. The stream continues until the client
+disconnects. Since the access token is passed in the URL, avoid sharing or logging the complete
+connection URL.
+
+Example browser client:
+
+```javascript
+const token = "<access_token>";
+const socket = new WebSocket(
+  `ws://localhost:8001/metrics/ws/stats?token=${encodeURIComponent(token)}`
+);
+
+socket.onmessage = (event) => {
+  console.log(JSON.parse(event.data));
+};
+```
+
+### Authentication
+
+For HTTP requests, send the access token as a Bearer token:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+The metrics WebSocket authenticates separately with the `token` query parameter and requires
+the `admin` role. `/statistics` is also JWT-protected and returns data for the authenticated
+user.
 
 ## Database Schema
 
@@ -167,13 +225,18 @@ The file [`schema.dbml`](./schema.dbml) can be pasted directly into
 stellar/
 ├── app/
 │   ├── main.py
-│   ├── models/          # SQLModel models (User, CV, CVExperience, ...)
-│   ├── routers/          # FastAPI endpoints
-│   ├── schemas/          # Pydantic Create/Read/Update schemas
-│   └── ...
+│   ├── config/          # Settings, database, and Redis setup
+│   ├── facades/         # Application-level orchestration
+│   ├── models/          # SQLModel database models
+│   ├── repositories/    # Database and cache access
+│   ├── routers/         # HTTP and WebSocket endpoints
+│   ├── schemas/         # Pydantic request and response schemas
+│   ├── services/        # Business logic
+│   ├── templates/       # HTML/CSS templates for PDF export
+│   └── utils/           # Authentication and shared utilities
 ├── requirements.txt
 ├── Dockerfile
-├── docker-compose.yml
+├── compose.yaml
 └── .env
 ```
 
