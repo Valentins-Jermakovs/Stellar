@@ -16,12 +16,21 @@
    Global styles
    ============================== */
 
+/* Theme tokens */
 :root {
-    --text: #171717;
+    --color-text: #171717;
+    --color-heading: #111111;
+    --color-muted: #6b7280;
+    --color-accent: #2563eb;
+    --color-accent-strong: #1d4ed8;
+    --color-border: #e5e7eb;
+    --color-surface: #f3f4f6;
+
+    --text: var(--color-text);
     --muted: #6b7280;
     --secondary: #4b5563;
-    --accent: #2563eb;
-    --border: #e5e7eb;
+    --accent: var(--color-accent);
+    --border: var(--color-border);
 }
 
 html,
@@ -299,6 +308,27 @@ p {
     white-space: nowrap;
 
     text-align: right;
+}
+
+/* Date ranges */
+.date.date-stack {
+    align-items: flex-end;
+    min-width: 38mm;
+}
+
+.date-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.date-value {
+    display: block;
+    white-space: nowrap;
+}
+
+.date-end::before {
+    content: "– ";
 }
 
 .dot {

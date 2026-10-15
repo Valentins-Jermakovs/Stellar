@@ -97,19 +97,13 @@
                     </div>
                 </div>
 
-                <div class="dates">
-
-                    {{ item.start_date | full_date(language) }}
-
-                    –
-
+                <div class="dates date-stack">
+                    <span class="date-value">{{ item.start_date | full_date(language) }}</span>
                     {% if item.is_current %}
-                    {{ translations.present }}
-
+                    <span class="date-value date-end">{{ translations.present }}</span>
                     {% elif item.end_date %}
-                    {{ item.end_date | full_date(language) }}
+                    <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
                     {% endif %}
-
                 </div>
 
             </div>
@@ -160,16 +154,11 @@
                 </div>
 
                 {% if item.start_date %}
-                <div class="dates">
-
-                    {{ item.start_date | full_date(language) }}
-
-                    –
-
+                <div class="dates date-stack">
+                    <span class="date-value">{{ item.start_date | full_date(language) }}</span>
                     {% if item.end_date %}
-                    {{ item.end_date | full_date(language) }}
+                    <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
                     {% endif %}
-
                 </div>
                 {% endif %}
 
@@ -302,17 +291,11 @@
             {% endif %}
 
             {% if item.issue_date %}
-            <div class="certification-date">
-
-                {{ translations.issued }}
-                {{ item.issue_date | full_date(language) }}
-
+            <div class="certification-date date-stack">
+                <span class="date-value">{{ translations.issued }} {{ item.issue_date | full_date(language) }}</span>
                 {% if item.expiration_date %}
-                ·
-                {{ translations.expires }}
-                {{ item.expiration_date | full_date(language) }}
+                <span class="date-value">{{ translations.expires }} {{ item.expiration_date | full_date(language) }}</span>
                 {% endif %}
-
             </div>
             {% endif %}
 

@@ -18,18 +18,26 @@
     box-sizing: border-box;
 }
 
+/* Theme tokens */
 :root {
-    --accent: #3f6f9f;
-    --accent-dark: #294d70;
+    --color-text: #20252b;
+    --color-heading: #14181d;
+    --color-muted: #737d88;
+    --color-accent: #3f6f9f;
+    --color-accent-strong: #294d70;
+    --color-border: #e1e5e9;
+    --color-surface: #edf3f8;
+
+    --accent: var(--color-accent);
+    --accent-dark: var(--color-accent-strong);
     --accent-soft: #edf3f8;
 
     --sidebar: #f8fafc;
 
-    --text: #20252b;
-    --heading: #14181d;
-    --muted: #737d88;
-
-    --border: #e1e5e9;
+    --text: var(--color-text);
+    --heading: var(--color-heading);
+    --muted: var(--color-muted);
+    --border: var(--color-border);
     --border-dark: #cfd5db;
 }
 
@@ -656,6 +664,27 @@ h3 {
     font-weight: 600;
 
     white-space: nowrap;
+}
+
+/* Date ranges */
+.dates.date-stack {
+    align-items: flex-end;
+    min-width: 38mm;
+}
+
+.date-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.date-value {
+    display: block;
+    white-space: nowrap;
+}
+
+.date-end::before {
+    content: "– ";
 }
 
 .experience-content p {

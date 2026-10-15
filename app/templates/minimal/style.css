@@ -16,13 +16,22 @@
     box-sizing: border-box;
 }
 
+/* Theme tokens */
 :root {
-    --accent: #1769aa;
-    --accent-dark: #0f4f82;
-    --text: #202124;
-    --muted: #667085;
-    --border: #d9e1e8;
-    --light: #eef4f8;
+    --color-text: #202124;
+    --color-heading: #111827;
+    --color-muted: #667085;
+    --color-accent: #1769aa;
+    --color-accent-strong: #0f4f82;
+    --color-border: #d9e1e8;
+    --color-surface: #eef4f8;
+
+    --text: var(--color-text);
+    --accent-dark: var(--color-accent-strong);
+    --muted: var(--color-muted);
+    --accent: var(--color-accent);
+    --border: var(--color-border);
+    --light: var(--color-surface);
 }
 
 body {
@@ -183,6 +192,27 @@ p {
     color: var(--muted);
     font-size: 8.5pt;
     white-space: nowrap;
+}
+
+/* Date ranges */
+.dates.date-stack {
+    align-items: flex-end;
+    min-width: 38mm;
+}
+
+.date-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.date-value {
+    display: block;
+    white-space: nowrap;
+}
+
+.date-end::before {
+    content: "– ";
 }
 
 .experience-item p {

@@ -117,18 +117,13 @@
                 {% for item in cv.experience %}
                 <article class="experience-item">
 
-                    <div class="period">
-
-                        {{ item.start_date | full_date(language) }}
-
-                        —
-
+                    <div class="period date-stack">
+                        <span class="date-value">{{ item.start_date | full_date(language) }}</span>
                         {% if item.is_current %}
-                        {{ translations.present }}
+                        <span class="date-value date-end">{{ translations.present }}</span>
                         {% elif item.end_date %}
-                        {{ item.end_date | full_date(language) }}
+                        <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
                         {% endif %}
-
                     </div>
 
                     <div class="entry">
@@ -176,18 +171,13 @@
                 {% for item in cv.education %}
                 <article class="education-item">
 
-                    <div class="period">
-
+                    <div class="period date-stack">
                         {% if item.start_date %}
-                        {{ item.start_date | full_date(language) }}
-
-                        —
-
+                        <span class="date-value">{{ item.start_date | full_date(language) }}</span>
                         {% if item.end_date %}
-                        {{ item.end_date | full_date(language) }}
+                        <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
                         {% endif %}
                         {% endif %}
-
                     </div>
 
                     <div class="entry">
@@ -371,15 +361,11 @@
                     {% endif %}
 
                     {% if item.issue_date %}
-                    <div class="certification-date">
-
-                        {{ item.issue_date | full_date(language) }}
-
+                    <div class="certification-date date-stack">
+                        <span class="date-value">{{ item.issue_date | full_date(language) }}</span>
                         {% if item.expiration_date %}
-                        —
-                        {{ item.expiration_date | full_date(language) }}
+                        <span class="date-value date-end">{{ item.expiration_date | full_date(language) }}</span>
                         {% endif %}
-
                     </div>
                     {% endif %}
 

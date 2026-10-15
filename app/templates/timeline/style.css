@@ -16,15 +16,23 @@
     box-sizing: border-box;
 }
 
+/* Theme tokens */
 :root {
-    --accent: #315f8a;
-    --accent-dark: #244766;
-    --accent-light: #e8eef4;
+    --color-text: #24282d;
+    --color-heading: #202833;
+    --color-muted: #737b84;
+    --color-accent: #315f8a;
+    --color-accent-strong: #244766;
+    --color-border: #d7dce1;
+    --color-surface: #f4f6f8;
 
-    --text: #24282d;
-    --muted: #737b84;
-    --line: #d7dce1;
-    --light: #f4f6f8;
+    --accent: var(--color-accent);
+    --accent-dark: var(--color-accent-strong);
+    --accent-light: #e8eef4;
+    --text: var(--color-text);
+    --muted: var(--color-muted);
+    --line: var(--color-border);
+    --light: var(--color-surface);
 }
 
 html,
@@ -212,7 +220,7 @@ p {
 
 .timeline-item {
     display: grid;
-    grid-template-columns: 88px 16px minmax(0, 1fr);
+    grid-template-columns: 38mm 16px minmax(0, 1fr);
     gap: 9px;
 
     position: relative;
@@ -240,12 +248,29 @@ p {
     text-align: right;
 }
 
+/* Date ranges */
+.timeline-date.date-stack {
+    align-items: flex-end;
+    min-width: 38mm;
+}
+
 .timeline-date span {
     display: inline-block;
 }
 
-.date-separator {
-    padding: 0 2px;
+.date-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.date-value {
+    display: block;
+    white-space: nowrap;
+}
+
+.date-end::before {
+    content: "– ";
 }
 
 .timeline-marker {
@@ -319,7 +344,7 @@ p {
 
 .standard-item {
     display: grid;
-    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-columns: 38mm minmax(0, 1fr);
     gap: 18px;
 
     margin-bottom: 12px;
@@ -340,6 +365,11 @@ p {
     color: var(--muted);
     font-size: 8pt;
     font-weight: 600;
+}
+
+.item-date.date-stack {
+    align-items: flex-start;
+    min-width: 38mm;
 }
 
 .item-location {
