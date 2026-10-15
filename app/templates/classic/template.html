@@ -40,11 +40,11 @@
             <span>{{ cv.personal_info.location }}</span>
             {% endif %}
 
-            {% if cv.personal_info.linkedin %}
+            {% if cv.personal_info.linkedin and cv.personal_info.linkedin != '-' %}
             <span>{{ cv.personal_info.linkedin }}</span>
             {% endif %}
 
-            {% if cv.personal_info.github %}
+            {% if cv.personal_info.github and cv.personal_info.github != '-' %}
             <span>{{ cv.personal_info.github }}</span>
             {% endif %}
 

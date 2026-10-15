@@ -72,7 +72,7 @@
                 </div>
                 {% endif %}
 
-                {% if cv.personal_info.linkedin %}
+                {% if cv.personal_info.linkedin and cv.personal_info.linkedin != '-' %}
                 <div>
                     <span class="contact-label">
                         LinkedIn
@@ -84,7 +84,7 @@
                 </div>
                 {% endif %}
 
-                {% if cv.personal_info.github %}
+                {% if cv.personal_info.github and cv.personal_info.github != '-' %}
                 <div>
                     <span class="contact-label">
                         {{ translations.github }}
@@ -96,7 +96,7 @@
                 </div>
                 {% endif %}
 
-                {% if cv.personal_info.website %}
+                {% if cv.personal_info.website and cv.personal_info.website != '-' %}
                 <div>
                     <span class="contact-label">
                         {{ translations.website }}

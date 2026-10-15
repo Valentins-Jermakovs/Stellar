@@ -54,19 +54,19 @@
                 </div>
                 {% endif %}
 
-                {% if cv.personal_info.website %}
+                {% if cv.personal_info.website and cv.personal_info.website != '-' %}
                 <div class="break-word">
                     {{ cv.personal_info.website }}
                 </div>
                 {% endif %}
 
-                {% if cv.personal_info.linkedin %}
+                {% if cv.personal_info.linkedin and cv.personal_info.linkedin != '-' %}
                 <div class="break-word">
                     {{ cv.personal_info.linkedin }}
                 </div>
                 {% endif %}
 
-                {% if cv.personal_info.github %}
+                {% if cv.personal_info.github and cv.personal_info.github != '-' %}
                 <div class="break-word">
                     {{ cv.personal_info.github }}
                 </div>

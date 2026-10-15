@@ -42,7 +42,7 @@
             </div>
             {% endif %}
 
-            {% if pi.website %}
+            {% if pi.website and pi.website != '-' %}
             <div class="contact">
                 <span class="label">{{ translations.website }}</span>
                 <span class="value"><a href="{{ pi.website if pi.website.startswith('http') else 'https://' ~ pi.website }}">{{ pi.website }}</a></span>
