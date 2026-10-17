@@ -4,7 +4,7 @@
 
 # Stellar
 
-**Backend for a resume builder — full CRUD across all CV sections and PDF export using customizable templates.**
+**REST API for creating and managing resumes, with PDF export using customizable templates.**
 
 [![Python](https://img.shields.io/badge/Python-3.14-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -13,239 +13,39 @@
 [![Redis](https://img.shields.io/badge/Redis-8-DC382D?style=flat-square&logo=redis&logoColor=white)](https://redis.io/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 [![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-
-Templates: `classic` `modern` `minimal` `executive` `editorial` `timeline`
-Languages: `en` · `ru` · `lv`
 
 </div>
 
----
+## Description
 
-## Overview
+Stellar is a FastAPI service for creating and managing resumes, including personal information,
+work experience, education, skills, languages, projects, and certifications. It supports
+JWT authentication and PDF generation with six templates and English, Russian, and Latvian.
 
-**Stellar** is a REST API built on FastAPI for structured resume creation. Users populate a CV
-step by step — personal information, work experience, education, skills, languages, projects,
-and certifications — and then generate a finished PDF by selecting one of six visual templates
-and one of three resume languages: English, Russian, or Latvian.
+## Technology stack
 
-## Features
+Python 3.14 · FastAPI · SQLModel · PostgreSQL 18 · Redis 8 · JWT · WeasyPrint · Docker Compose
 
-- **CV CRUD** — creation, paginated search, updates, deletion
-- **Personal information** — name, contact details, social profiles, professional summary
-- **Work experience** and **education** with dates, descriptions, and custom ordering of entries
-- **Skills** and **languages** — reusable reference catalogs linked to a CV with proficiency levels
-- **Projects** and **certifications** with links to supporting credentials
-- **PDF generation** — 6 layout templates × 3 locales
-- **Statistics** on CV counts and section completeness
-- **JWT authentication** with local caching of user data extracted from the token
-- **Live server metrics** streamed to administrators over a WebSocket connection
-- **Redis** for caching and queues; all persistent data is stored in **PostgreSQL** via SQLModel
+## Run with Docker Compose
 
-## Technology Stack
-
-| Layer            | Technology                     |
-|-------------------|--------------------------------|
-| Language          | Python 3.14                    |
-| Web framework     | FastAPI + Uvicorn              |
-| ORM               | SQLModel (SQLAlchemy)          |
-| Database          | PostgreSQL 18                  |
-| Cache             | Redis 8                        |
-| Authentication    | JWT (HS256)                    |
-| PDF generation    | WeasyPrint (Pango/HarfBuzz)    |
-| Containerization  | Docker / Docker Compose        |
-
-## Quick Start
-
-### Example .env
-
-```txt
-POSTGRES_HOST=stellar_db
-POSTGRES_PORT=5432
-POSTGRES_DB=stellar
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=admin123
-
-REDIS_HOST=stellar_redis
-REDIS_PORT=6379
-REDIS_DB=0
-REDIS_PASSWORD=
-
-JWT_SECRET_KEY=change-this-secret-key
-JWT_ALGORITHM=HS256
-```
-
-### Launch
-
-> Be sure, you have an docker network `back_end`,
-> and .env file in project root.
+Create `.env` from the provided example and set your own secure values for
+`POSTGRES_PASSWORD` and `JWT_SECRET_KEY`:
 
 ```bash
-git clone <repo-url> stellar
-cd stellar
+cp .env.example .env
+```
+
+If it does not already exist, create the external Docker network required by Compose, then start:
+
+```bash
+docker network create back_end
 docker compose up --build -d
 ```
 
-Once running, the service is available at **http://localhost:8001**, with interactive
-documentation at **http://localhost:8001/docs**.
+The API and interactive documentation are available at [localhost:8001](http://localhost:8001)
+and [localhost:8001/docs](http://localhost:8001/docs). PostgreSQL is exposed on port `5440`;
+Redis is exposed on port `6380`.
 
-PostgreSQL is exposed on host port `5440`, Redis on `6380` (see `compose.yaml`).
+## Database schema
 
-## Environment Variables
-
-| Variable                | Description                          | Example                   |
-|--------------------------|----------------------------------------|---------------------------|
-| `POSTGRES_HOST`          | Database host                         | `stellar_db`              |
-| `POSTGRES_PORT`          | Database port                         | `5432`                    |
-| `POSTGRES_DB`            | Database name                         | `stellar`                 |
-| `POSTGRES_USER`          | Database user                         | `admin`                   |
-| `POSTGRES_PASSWORD`      | Database password                     | `••••••••`                |
-| `REDIS_HOST`             | Redis host                            | `stellar_redis`           |
-| `REDIS_PORT`             | Redis port                            | `6379`                    |
-| `REDIS_DB`               | Redis logical database number         | `0`                       |
-| `REDIS_PASSWORD`         | Redis password (if set)               | ` `                       |
-| `JWT_SECRET_KEY`         | Secret used to sign JWTs              | `••••••••`                |
-| `JWT_ALGORITHM`          | JWT signing algorithm                 | `HS256`                   |
-
-> **Note:** Do not use the sample values from `compose.yaml` in production — set your own
-> strong secrets for `POSTGRES_PASSWORD` and `JWT_SECRET_KEY`.
-
-## API Reference
-
-All HTTP API endpoints require a JWT access token in the
-`Authorization: Bearer <access_token>` header. The metrics WebSocket uses a query parameter
-instead; it is restricted to tokens that include the `admin` role.
-
-| Section | Methods | Base path |
-|---|---|---|
-| **CV** | `POST` `GET` `/cvs`, `GET` `PATCH` `DELETE` `/cvs/{cv_id}` | resumes and paginated search |
-| **CV Personal Info** | `POST` `PATCH` `DELETE` `/cvs/{cv_id}/personal-info` | CV personal information |
-| **CV Experience** | `POST` `/cvs/{cv_id}/experiences`, `PATCH` `DELETE` `/cvs/{cv_id}/experiences/{id}` | work experience |
-| **CV Education** | `POST` `/cvs/{cv_id}/education`, `PATCH` `DELETE` `/cvs/{cv_id}/education/{id}` | education |
-| **Skills** | `POST` `GET` `/skills`, `GET` `/skills/{id}`, `POST` `/cvs/{cv_id}/skills`, `PATCH` `DELETE` `/cvs/{cv_id}/skills/{id}` | skills reference catalog and CV linking |
-| **CV Projects** | `POST` `/cvs/{cv_id}/projects`, `PATCH` `DELETE` `/cvs/{cv_id}/projects/{id}` | projects |
-| **Languages** | `POST` `GET` `/languages`, `GET` `/languages/{id}`, `POST` `/cvs/{cv_id}/languages`, `PATCH` `DELETE` `/cvs/{cv_id}/languages/{id}` | languages reference catalog and CV linking |
-| **CV Certifications** | `POST` `/cvs/{cv_id}/certifications`, `PATCH` `DELETE` `/cvs/{cv_id}/certifications/{id}` | certifications |
-| **CV Generator** | `POST` `/cvs/{cv_id}/generate` | PDF generation by `template` and `language` |
-| **Statistics** | `GET` `/statistics` | aggregated statistics for the authenticated user's CVs |
-| **Server Metrics** | `WebSocket` `/metrics/ws/stats` | live process metrics; admin role required |
-
-The HTTP API specification is available at `/docs` on the running service. WebSocket endpoints
-are not listed in the OpenAPI specification; see the connection details below.
-
-### Server Metrics WebSocket
-
-Connect to `/metrics/ws/stats` using the WebSocket protocol (`ws://`, or `wss://` when served
-over TLS). Supply a valid JWT as the `token` query parameter. The token must contain the
-`admin` role; connections without a token, with an invalid token, or without that role are
-closed with WebSocket status `1008` (Policy Violation).
-
-For the local Docker setup, connect to:
-
-```text
-ws://localhost:8001/metrics/ws/stats?token=<access_token>
-```
-
-After connecting, the server sends a JSON message approximately once per second with metrics
-for the running FastAPI/Uvicorn process:
-
-```json
-{
-  "cpu_percent": 0.0,
-  "memory_percent": 0.12,
-  "memory_used_mb": 48
-}
-```
-
-`cpu_percent` is the process CPU usage, `memory_percent` is its share of system memory, and
-`memory_used_mb` is its resident memory in megabytes. The stream continues until the client
-disconnects. Since the access token is passed in the URL, avoid sharing or logging the complete
-connection URL.
-
-Example browser client:
-
-```javascript
-const token = "<access_token>";
-const socket = new WebSocket(
-  `ws://localhost:8001/metrics/ws/stats?token=${encodeURIComponent(token)}`
-);
-
-socket.onmessage = (event) => {
-  console.log(JSON.parse(event.data));
-};
-```
-
-### Authentication
-
-For HTTP requests, send the access token as a Bearer token:
-
-```http
-Authorization: Bearer <access_token>
-```
-
-The metrics WebSocket authenticates separately with the `token` query parameter and requires
-the `admin` role. `/statistics` is also JWT-protected and returns data for the authenticated
-user.
-
-## Database Schema
-
-<div align="center">
-
-![ER diagram](./erd1.png)
-
-</div>
-
-The schema is centered on the `cv` table, which references `user` and owns all child resume
-sections (`ON DELETE CASCADE`). `skill` and `language` are reusable reference catalogs, linked to
-a CV through the association tables `cv_skill` and `cv_language`, each using a composite primary key.
-
-The file [`schema.dbml`](./schema.dbml) can be pasted directly into
-**[dbdiagram.io](https://dbdiagram.io)** to produce an interactive, editable diagram.
-
-<details>
-<summary>Tables</summary>
-
-| Table | Purpose |
-|---|---|
-| `user` | local reference to the user, ID sourced from the JWT |
-| `cv` | user resumes; `title` is unique |
-| `cv_personal_info` | personal information, 1:1 with `cv` |
-| `cv_experience` | work experience |
-| `cv_education` | education |
-| `cv_project` | projects |
-| `cv_certification` | certifications |
-| `skill` / `cv_skill` | skills catalog and many-to-many relation with proficiency level |
-| `language` / `cv_language` | languages catalog and many-to-many relation with proficiency level |
-
-</details>
-
-## Project Structure
-
-```
-stellar/
-├── app/
-│   ├── main.py
-│   ├── config/          # Settings, database, and Redis setup
-│   ├── facades/         # Application-level orchestration
-│   ├── models/          # SQLModel database models
-│   ├── repositories/    # Database and cache access
-│   ├── routers/         # HTTP and WebSocket endpoints
-│   ├── schemas/         # Pydantic request and response schemas
-│   ├── services/        # Business logic
-│   ├── templates/       # HTML/CSS templates for PDF export
-│   └── utils/           # Authentication and shared utilities
-├── requirements.txt
-├── Dockerfile
-├── compose.yaml
-└── .env
-```
-
-## License
-
-This project is distributed under the **MIT License** — see the [`LICENSE`](LICENSE) file for details.
-
----
-
-<div align="center">
-<sub>Built with FastAPI</sub>
-</div>
+![Stellar database schema](./erd1.png)

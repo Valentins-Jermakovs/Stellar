@@ -1,7 +1,11 @@
+
 services:
 
-  stellar:
+  # ==============================
+  # Stellar API
+  # ==============================
 
+  stellar:
     build:
       context: .
       dockerfile: Dockerfile
@@ -17,18 +21,35 @@ services:
     depends_on:
       stellar_db:
         condition: service_healthy
-
       stellar_redis:
         condition: service_healthy
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "from urllib.request import urlopen; response = urlopen('http://127.0.0.1:8001/openapi.json', timeout=3); assert response.status == 200"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
     restart: unless-stopped
 
     networks:
-      - back_end
+      back_end:
+        aliases:
+          - stellar-api
 
+
+  # ==============================
+  # PostgreSQL
+  # ==============================
 
   stellar_db:
-
     image: postgres:18
 
     container_name: stellar_db
@@ -36,7 +57,7 @@ services:
     environment:
       POSTGRES_DB: stellar
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}"
 
     ports:
       - "5440:5432"
@@ -60,8 +81,11 @@ services:
       - back_end
 
 
-  stellar_redis:
+  # ==============================
+  # Redis
+  # ==============================
 
+  stellar_redis:
     image: redis:8-alpine
 
     container_name: stellar_redis
@@ -73,11 +97,9 @@ services:
       - stellar_redis_data:/data
 
     command:
-      [
-        "redis-server",
-        "--appendonly",
-        "yes"
-      ]
+      - redis-server
+      - --appendonly
+      - "yes"
 
     healthcheck:
       test:
@@ -96,14 +118,19 @@ services:
       - back_end
 
 
+# ==============================
+# Persistent Volumes
+# ==============================
+
 volumes:
-
   stellar_db_data:
-
   stellar_redis_data:
 
 
-networks:
+# ==============================
+# External Network
+# ==============================
 
+networks:
   back_end:
     external: true

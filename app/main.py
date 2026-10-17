@@ -1,5 +1,5 @@
 # ==============================
-# Library imports
+# Library Imports
 # ==============================
 
 from contextlib import asynccontextmanager
@@ -8,62 +8,60 @@ from fastapi import FastAPI
 
 
 # ==============================
-# Database initialization
+# Application Imports
 # ==============================
 
-from app.config.database import init_db
-from app.config.redis import (
-    init_redis,
-    close_redis,
+from app.config.database import (
+    engine,
+    init_db,
 )
 
-
-# ==============================
-# Router imports
-# ==============================
+from app.config.redis import (
+    close_redis,
+    init_redis,
+)
 
 from app.routers import main_router
 
 
 # ==============================
-# Application lifecycle
+# Application Lifecycle
 # ==============================
 
 @asynccontextmanager
-async def lifespan(
-    app: FastAPI,
-):
+async def lifespan(app: FastAPI):
     """
-    Manage the FastAPI application lifecycle.
-
-    Initialize the PostgreSQL database and Redis connection
-    when the application starts, and close the Redis connection
-    when the application shuts down.
+    Manage database and Redis connections during application startup
+    and shutdown.
     """
 
-    # Initialize PostgreSQL.
-    await init_db()
+    try:
+        # Initialize PostgreSQL and Redis.
+        await init_db()
+        await init_redis()
 
-    # Initialize Redis.
-    await init_redis()
+        yield
 
-    yield
-
-    # Close the Redis connection.
-    await close_redis()
+    finally:
+        # Close Redis and release database connections.
+        try:
+            await close_redis()
+        finally:
+            await engine.dispose()
 
 
 # ==============================
-# FastAPI application
+# FastAPI Application
 # ==============================
 
 app = FastAPI(
+    title="Stellar",
     lifespan=lifespan,
 )
 
 
 # ==============================
-# Router registration
+# Router Registration
 # ==============================
 
 app.include_router(

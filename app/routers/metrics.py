@@ -1,3 +1,4 @@
+
 # ==============================
 # Library Imports
 # ==============================
@@ -5,6 +6,7 @@
 import asyncio
 
 import psutil
+import jwt
 
 from fastapi import (
     APIRouter,
@@ -14,28 +16,13 @@ from fastapi import (
     status,
 )
 
-from config.settings import settings
-
-from schemas import SystemMetricsResponse
-
-from utils import (
-    JWTManager,
-    JWTAuth,
-)
-
 
 # ==============================
-# JWT Configuration
+# Application Imports
 # ==============================
 
-jwt_manager = JWTManager(
-    secret_key=settings.JWT_SECRET_KEY,
-    algorithm=settings.JWT_ALGORITHM,
-)
-
-jwt_auth = JWTAuth(
-    jwt_manager=jwt_manager,
-)
+from app.routers.dependencies import jwt_manager
+from app.schemas.metrics import SystemMetricsResponse
 
 
 # ==============================
@@ -58,80 +45,59 @@ async def metrics_websocket(
     token: str | None = Query(default=None),
 ):
     """
-    Sends server metrics over a WebSocket connection.
-
-    Args:
-        websocket (WebSocket): The WebSocket connection.
-        token (str | None): The access token. Defaults to None.
-
-    Returns:
-        None
+    Send server process metrics over a WebSocket connection.
     """
 
-    # Check whether an access token was provided
+    # Reject connections without an access token.
     if token is None:
         await websocket.close(
             code=status.WS_1008_POLICY_VIOLATION
         )
         return
 
-    # Validate the access token
+    # Validate the access token using the shared JWT manager.
     try:
-        payload = jwt_manager.validate_access_token(
-            token
-        )
+        payload = jwt_manager.validate_access_token(token)
 
-        # Check whether the user has the administrator role
-        roles = payload.get(
-            "roles",
-            []
-        )
-
-        if "admin" not in roles:
+        if "admin" not in payload.get("roles", []):
             await websocket.close(
                 code=status.WS_1008_POLICY_VIOLATION
             )
             return
 
+    except jwt.InvalidTokenError:
+        await websocket.close(
+            code=status.WS_1008_POLICY_VIOLATION
+        )
+        return
     except Exception:
         await websocket.close(
             code=status.WS_1008_POLICY_VIOLATION
         )
         return
 
-    # Accept the WebSocket connection
+    # Accept the connection after authorization.
     await websocket.accept()
 
-    # Get the current FastAPI/Uvicorn process
     process = psutil.Process()
 
     try:
         while True:
-            # Get CPU usage of the current process
             cpu_percent = process.cpu_percent()
-
-            # Get memory information of the current process
             memory = process.memory_info()
 
             data: SystemMetricsResponse = {
                 "cpu_percent": cpu_percent,
-
                 "memory_percent": round(
                     process.memory_percent(),
                     2,
                 ),
-
                 "memory_used_mb": round(
                     memory.rss / (1024 ** 2)
                 ),
             }
 
-            # Send metrics to the connected client
-            await websocket.send_json(
-                data
-            )
-
-            # Update metrics every second
+            await websocket.send_json(data)
             await asyncio.sleep(1)
 
     except WebSocketDisconnect:
