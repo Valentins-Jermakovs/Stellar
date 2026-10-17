@@ -2,14 +2,12 @@
 
 /* ==============================
    Page
-   Поля через @page: одинаковые на каждой странице.
    ============================== */
 
 @page {
     size: A4;
-    margin: 13mm 16mm 14mm;
+    margin: 14mm 16mm;
 }
-
 
 /* ==============================
    Global styles
@@ -36,6 +34,7 @@
     --color-sidebar: #161616;
     --color-sidebar-text: #f4f4f4;
     --color-sidebar-muted: #c6c6c6;
+
     --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
 
     --accent: var(--color-accent);
@@ -45,30 +44,33 @@
     --muted: var(--color-muted);
     --line: var(--color-border);
     --light: var(--color-surface);
+}
 
-    /* общая сетка для дат, маркера и текста */
-    --date-col: 30mm;
-    --marker-col: 13px;
-    --col-gap: 8px;
+html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 html,
 body {
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 body {
     background: var(--color-white);
     color: var(--text);
-
     font-family: var(--font-family);
-
     font-size: 9pt;
-    line-height: 1.4;
+    line-height: 1.45;
+}
 
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+a {
+    color: var(--accent);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 h1,
@@ -78,372 +80,422 @@ p {
     margin: 0;
 }
 
-p {
-    margin-top: 4px;
+h1,
+h2,
+h3 {
+    page-break-after: avoid;
+    break-after: avoid-page;
+}
 
-    color: var(--color-text-secondary);
-
-    white-space: pre-line;
-
+h3 {
+    color: var(--color-heading);
+    font-size: 10pt;
+    font-weight: 700;
+    line-height: 1.3;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
+p {
+    margin-top: 4px;
+    color: var(--color-text-secondary);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    orphans: 3;
+    widows: 3;
+}
 
 /* ==============================
    Header
    ============================== */
 
 .header {
-    display: grid;
+    padding: 0 0 5mm;
+    border-top: 3px solid var(--accent-dark);
+    border-bottom: 1px solid var(--line);
 
-    grid-template-columns: minmax(0, 1fr) minmax(80mm, 46%);
-    gap: 22px;
-    align-items: end;
-
-    padding-bottom: 12px;
-
-    border-bottom: 3px solid var(--accent-dark);
-
-    break-inside: avoid;
     page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.header-main {
+    padding-top: 5mm;
 }
 
 .identity {
     min-width: 0;
 }
 
-h1 {
+.name {
     color: var(--color-heading);
-
     font-size: 28pt;
-    line-height: 1.02;
-
+    line-height: 1.08;
     letter-spacing: -0.8px;
-
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
-h1 span {
+.name span {
     font-weight: 300;
 }
 
-h1 strong {
+.name strong {
     margin-left: 0.15em;
-
     font-weight: 700;
 }
 
 .headline {
-    margin-top: 6px;
-
+    margin-top: 5px;
     color: var(--accent-dark);
-
     font-size: 11pt;
     font-weight: 600;
-
     overflow-wrap: anywhere;
 }
 
+/* ==============================
+   Contacts
+   ============================== */
+
 .contacts {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
 
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px 16px;
+    margin-top: 5mm;
+    padding-top: 3mm;
 
-    padding-left: 14px;
-
-    border-left: 2px solid var(--accent-light);
+    border-top: 1px solid var(--color-surface-strong);
 }
 
 .contact {
     display: flex;
+    flex: 1 1 48mm;
     flex-direction: column;
+    gap: 2px;
 
     min-width: 0;
-
-    gap: 1px;
+    max-width: 100%;
 }
 
 .contact-label {
     color: var(--muted);
-
     font-size: 7pt;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .contact-value {
     color: var(--color-heading);
-
     font-size: 8.3pt;
     font-weight: 500;
-
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
+.contact-value a {
+    color: inherit;
+}
+
+.contact-value a:hover {
+    color: var(--accent);
+}
 
 /* ==============================
    Sections
-   Не задаём break-inside: avoid на секциях —
-   они свободно перетекают на следующую страницу,
-   а не оставляют пустое место внизу.
    ============================== */
 
 section {
     margin-top: 5mm;
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
-h2 {
-    position: relative;
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 2.5mm;
 
-    margin-bottom: 9px;
-    padding-bottom: 5px;
+    margin: 0 0 3mm;
+    padding-bottom: 2mm;
 
     border-bottom: 1px solid var(--line);
 
     color: var(--color-heading);
-
-    font-size: 10.5pt;
-    font-weight: 700;
-
-    break-after: avoid;
-    page-break-after: avoid;
-}
-
-h2::after {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    bottom: -1px;
-
-    width: 24px;
-    height: 2px;
-
-    background: var(--accent);
-}
-
-h3 {
-    color: var(--color-heading);
-
     font-size: 10pt;
     font-weight: 700;
-    line-height: 1.25;
+    letter-spacing: 1.3px;
+    line-height: 1.3;
+    text-transform: uppercase;
 
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: avoid;
+    break-after: avoid-page;
     overflow-wrap: anywhere;
-    word-break: break-word;
 }
+
+.section-title::before {
+    content: "";
+    flex: 0 0 auto;
+
+    width: 3mm;
+    height: 3mm;
+
+    border-radius: 0.8mm;
+    background: var(--accent-light);
+}
+
+.section-title::after {
+    content: "";
+    flex: 1 1 auto;
+
+    min-width: 5mm;
+    height: 0.3mm;
+
+    background: var(--line);
+}
+
+/* ==============================
+   Profile
+   ============================== */
 
 .profile {
     margin-top: 0;
-
+    color: var(--color-text-secondary);
     font-size: 9.2pt;
-    line-height: 1.52;
+    line-height: 1.55;
 }
-
-.sub {
-    margin-top: 2px;
-
-    color: var(--accent);
-
-    font-size: 8.6pt;
-    font-weight: 600;
-
-    overflow-wrap: anywhere;
-}
-
-.sub-muted {
-    color: var(--muted);
-
-    font-weight: 400;
-}
-
-.meta {
-    margin-top: 2px;
-
-    color: var(--muted);
-
-    font-size: 7.9pt;
-
-    overflow-wrap: anywhere;
-}
-
-.item-main {
-    min-width: 0;
-}
-
 
 /* ==============================
    Dates
    ============================== */
 
 .dates {
+    flex: 0 1 38mm;
+    min-width: 0;
+
+    padding-top: 1px;
     color: var(--muted);
-
-    font-size: 7.9pt;
+    font-size: 7.8pt;
     font-weight: 500;
-    line-height: 1.35;
-
+    line-height: 1.4;
     text-align: right;
+
+    overflow-wrap: anywhere;
 }
 
 .date-stack {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-
-    gap: 1px;
+    gap: 2px;
 }
 
 .date-value {
     display: block;
-
-    white-space: nowrap;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .date-end::before {
     content: "– ";
 }
 
-
 /* ==============================
    Experience timeline
    ============================== */
 
 .timeline-item {
-    display: grid;
+    position: relative;
+    margin: 0 0 4mm 1.5mm;
+    padding: 0 0 4mm 5mm;
 
-    grid-template-columns: var(--date-col) var(--marker-col) minmax(0, 1fr);
-    column-gap: var(--col-gap);
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--color-surface-strong);
 
-    margin-bottom: 11px;
-
-    break-inside: avoid;
-    page-break-inside: avoid;
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .timeline-item:last-child {
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
 }
 
-.timeline-item .dates {
-    padding-top: 1px;
-}
-
-.timeline-marker {
-    position: relative;
-}
-
-/* вертикальная линия тянется до следующего пункта */
-.timeline-marker::before {
+.timeline-item::before {
     content: "";
-
     position: absolute;
 
-    top: 8px;
-    bottom: -11px;
-    left: 6px;
+    top: 1.5mm;
+    left: -1.55mm;
 
-    width: 1px;
+    width: 2.6mm;
+    height: 2.6mm;
 
-    background: var(--line);
-}
-
-.timeline-item:last-child .timeline-marker::before {
-    display: none;
-}
-
-.timeline-marker span {
-    position: absolute;
-
-    top: 3px;
-    left: 2px;
-
-    width: 9px;
-    height: 9px;
-
-    border: 2px solid var(--color-white);
+    border: 0.6mm solid var(--accent);
     border-radius: 50%;
-
-    background: var(--accent);
-
-    box-shadow: 0 0 0 1px var(--accent);
+    background: var(--color-white);
 }
 
+.timeline-item.current::before {
+    background: var(--accent);
+}
+
+/* Keep dates and entry heading together. */
+
+.timeline-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.timeline-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.org {
+    margin-top: 2px;
+    color: var(--accent);
+    font-size: 8.5pt;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.dot {
+    margin: 0 1mm;
+    color: var(--muted);
+}
+
+.sub {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 8pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.timeline-item p {
+    margin-top: 1.5mm;
+    font-size: 8.5pt;
+    line-height: 1.5;
+}
 
 /* ==============================
-   Education / certifications
-   Выровнены по той же сетке, что и опыт.
+   Education
    ============================== */
 
-.row {
-    display: grid;
+.education-item {
+    position: relative;
+    margin: 0 0 4mm 1.5mm;
+    padding: 0 0 4mm 5mm;
 
-    grid-template-columns: var(--date-col) minmax(0, 1fr);
-    column-gap: calc(var(--marker-col) + var(--col-gap) * 2);
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--color-surface-strong);
 
-    margin-bottom: 10px;
-
-    break-inside: avoid;
-    page-break-inside: avoid;
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
-.row:last-child {
+.education-item:last-child {
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
 }
 
-.row-compact {
-    margin-bottom: 7px;
+.education-item::before {
+    content: "";
+    position: absolute;
+
+    top: 1.5mm;
+    left: -1.55mm;
+
+    width: 2.6mm;
+    height: 2.6mm;
+
+    border: 0.6mm solid var(--accent);
+    border-radius: 50%;
+    background: var(--color-white);
 }
 
-.row .dates {
-    padding-top: 1px;
+.degree {
+    margin-top: 2px;
+    color: var(--accent);
+    font-size: 8.5pt;
+    font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
+.field {
+    margin-top: 2px;
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.location {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 8pt;
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
    Skills
    ============================== */
 
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-
-    gap: 5px;
+.skills-list {
+    column-count: 2;
+    column-gap: 10mm;
+    column-fill: balance;
 }
 
-.tag {
-    display: inline-flex;
+.skill {
+    display: flex;
+    justify-content: space-between;
     align-items: baseline;
+    gap: 8px;
 
-    padding: 3px 8px;
-
-    background: var(--light);
+    width: 100%;
+    margin: 0;
+    padding: 5px 0;
 
     border-bottom: 1px solid var(--line);
 
-    break-inside: avoid;
     page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
 }
 
-.tag-name {
+.skill-name {
+    flex: 1 1 auto;
+    min-width: 0;
+
     color: var(--color-heading);
-
-    font-size: 8pt;
+    font-size: 8.5pt;
     font-weight: 600;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
-.tag-level {
-    margin-left: 6px;
+.skill-level {
+    flex: 0 1 auto;
+    max-width: 45%;
 
     color: var(--accent);
-
-    font-size: 7.2pt;
+    font-size: 7.5pt;
     font-weight: 600;
-}
+    text-align: right;
 
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
    Languages
@@ -452,85 +504,194 @@ h3 {
 .languages {
     display: flex;
     flex-wrap: wrap;
-
-    gap: 5px 26px;
+    gap: 0 8mm;
 }
 
 .language {
     display: flex;
+    flex: 0 0 calc(50% - 4mm);
+    justify-content: space-between;
     align-items: baseline;
-
     gap: 8px;
 
-    break-inside: avoid;
+    min-width: 0;
+    padding: 6px 0;
+
+    border-bottom: 1px solid var(--line);
+
     page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .language-name {
-    color: var(--color-heading);
+    flex: 1 1 auto;
+    min-width: 0;
 
-    font-size: 8.7pt;
+    color: var(--color-heading);
+    font-size: 8.5pt;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .language-level {
-    color: var(--accent);
+    flex: 0 1 auto;
 
+    color: var(--accent);
     font-size: 8pt;
     font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
 }
-
 
 /* ==============================
    Projects
    ============================== */
 
-.project-grid {
-    display: grid;
-
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-}
-
-.project {
-    min-width: 0;
-
-    padding: 8px 10px;
-
-    background: var(--color-white);
+.project-item {
+    margin: 0 0 4mm;
+    padding: 2.5mm 3mm;
 
     border: 1px solid var(--line);
     border-top: 2px solid var(--accent);
+    background: var(--color-white);
 
-    break-inside: avoid;
-    page-break-inside: avoid;
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
-.project p {
-    font-size: 8.5pt;
-    line-height: 1.42;
+.project-item:last-child {
+    margin-bottom: 0;
 }
 
-.project-url {
+.project-item h3 {
+    color: var(--color-heading);
+    font-size: 9.5pt;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.project-meta {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 7.8pt;
+}
+
+.project-item p {
+    margin-top: 1.5mm;
+    font-size: 8.3pt;
+    line-height: 1.48;
+}
+
+.project-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
     margin-top: 4px;
+}
 
-    color: var(--accent);
-
-    font-size: 7.6pt;
-
+.project-link {
+    max-width: 100%;
+    font-size: 7.8pt;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
+.project-link a {
+    color: var(--accent);
+}
+
+/* ==============================
+   Certifications
+   ============================== */
+
+.certification-item {
+    position: relative;
+    margin: 0 0 4mm 1.5mm;
+    padding: 0 0 4mm 5mm;
+
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--color-surface-strong);
+
+    page-break-inside: auto;
+    break-inside: auto;
+}
+
+.certification-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.certification-item::before {
+    content: "";
+    position: absolute;
+
+    top: 1.5mm;
+    left: -1.55mm;
+
+    width: 2.6mm;
+    height: 2.6mm;
+
+    border: 0.6mm solid var(--accent);
+    border-radius: 50%;
+    background: var(--color-white);
+}
+
+.certification-item h3 {
+    font-size: 9.5pt;
+}
+
+.certification-meta {
+    margin-top: 2px;
+    color: var(--accent);
+    font-size: 8.2pt;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.credential {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 7.8pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.certification-link {
+    margin-top: 3px;
+    font-size: 7.8pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.certification-link a {
+    color: var(--accent);
+}
 
 /* ==============================
    Print
    ============================== */
 
 @media print {
-
     a {
-        color: inherit;
         text-decoration: none;
+    }
+
+    .header,
+    .section-title,
+    .timeline-heading {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .timeline-item,
+    .education-item,
+    .project-item,
+    .certification-item,
+    section {
+        page-break-inside: auto;
+        break-inside: auto;
     }
 }
