@@ -9,16 +9,16 @@
     margin: 15mm 17mm;
 }
 
-
 /* ==============================
    Global styles
    ============================== */
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-/* Theme tokens */
 :root {
     --color-text: #161616;
     --color-heading: #161616;
@@ -34,6 +34,7 @@
     --color-sidebar: #161616;
     --color-sidebar-text: #f4f4f4;
     --color-sidebar-muted: #c6c6c6;
+
     --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
 
     --text: var(--color-text);
@@ -44,14 +45,59 @@
     --light: var(--color-surface);
 }
 
-body {
-    margin: 0;
-    font-family: var(--font-family);
-    color: var(--text);
-    font-size: 9.5pt;
-    line-height: 1.4;
+html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
+body {
+    margin: 0;
+    background: var(--color-white);
+    color: var(--text);
+    font-family: var(--font-family);
+    font-size: 9.5pt;
+    line-height: 1.45;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+h1,
+h2,
+h3 {
+    page-break-after: avoid;
+    break-after: avoid-page;
+}
+
+h3 {
+    color: var(--color-heading);
+    font-size: 10.5pt;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+p {
+    margin-top: 5px;
+    color: var(--color-text-secondary);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    orphans: 3;
+    widows: 3;
+}
 
 /* ==============================
    Header
@@ -59,8 +105,11 @@ body {
 
 .header {
     position: relative;
-    padding: 0 0 11px;
+    padding: 0 0 12px;
     border-bottom: 2px solid var(--accent);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .header-main {
@@ -69,42 +118,72 @@ body {
 }
 
 h1 {
-    margin: 0;
     color: var(--color-heading);
     font-size: 28pt;
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 1.1;
     letter-spacing: -0.6px;
+    overflow-wrap: anywhere;
 }
 
 .headline {
-    margin: 5px 0 0;
+    margin-top: 5px;
     color: var(--accent);
     font-size: 11.5pt;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
+
+/* ==============================
+   Contact Information
+   ============================== */
 
 .contact {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px 12px;
-    margin-top: 9px;
+    align-items: flex-start;
+    gap: 8px 18px;
+
+    margin-top: 10px;
     padding-left: 18px;
+
     color: var(--muted);
-    font-size: 8.5pt;
+    font-size: 8.2pt;
 }
 
-.contact span {
-    position: relative;
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    flex: 1 1 42mm;
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
-.contact span:not(:last-child)::after {
-    content: "·";
-    position: absolute;
-    right: -8px;
-    color: var(--color-muted);
+.contact-label {
+    color: var(--muted);
+    font-size: 7.3pt;
+    font-weight: 500;
 }
 
+.contact-value {
+    color: var(--color-heading);
+    font-size: 8.3pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.contact-value a {
+    color: inherit;
+}
+
+.contact-value a:hover {
+    color: var(--accent);
+}
 
 /* ==============================
    Sections
@@ -112,64 +191,69 @@ h1 {
 
 section {
     margin-top: 17px;
+
+    /* Long sections are allowed to continue on the next page. */
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .section-heading {
     display: flex;
     align-items: center;
     gap: 10px;
+
     margin-bottom: 9px;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: avoid;
+    break-after: avoid-page;
 }
 
-.section-heading::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-}
+.section-heading h2 {
+    flex: 0 1 auto;
+    min-width: 0;
 
-h2 {
-    margin: 0;
     color: var(--accent-dark);
     font-size: 10pt;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.4px;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
 }
 
-h3 {
-    margin: 0;
-    color: var(--color-heading);
-    font-size: 10.5pt;
-    font-weight: 700;
-    line-height: 1.25;
+.section-heading::after {
+    content: "";
+    flex: 1 1 auto;
+    min-width: 12px;
+    height: 1px;
+    background: var(--border);
 }
-
-p {
-    margin: 5px 0 0;
-    white-space: pre-line;
-}
-
 
 /* ==============================
-   About
+   Profile
    ============================== */
 
 .summary {
     margin-top: 0;
     color: var(--color-text-secondary);
-    line-height: 1.45;
+    line-height: 1.55;
 }
 
-
 /* ==============================
-   Experience / Education
+   Experience and Education
    ============================== */
 
 .experience-item,
 .education-item {
-    margin-bottom: 12px;
+    margin-bottom: 13px;
+
+    /*
+     * Keep headings and dates together, but allow long
+     * descriptions and entries to flow across pages.
+     */
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .experience-item:last-child,
@@ -181,112 +265,184 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 25px;
+    gap: 12px;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.item-main {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .company {
-    margin-top: 2px;
+    margin-top: 3px;
     color: var(--accent);
     font-size: 9pt;
     font-weight: 600;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .separator {
-    color: var(--color-muted);
     padding: 0 2px;
+    color: var(--color-muted);
 }
 
 .dates {
-    flex: 0 0 auto;
+    flex: 0 1 39mm;
+    min-width: 0;
     padding-top: 1px;
-    color: var(--muted);
-    font-size: 8.5pt;
-    white-space: nowrap;
-}
 
-/* Date ranges */
-.dates.date-stack {
-    align-items: flex-end;
-    min-width: 38mm;
+    color: var(--muted);
+    font-size: 8.2pt;
+    text-align: right;
+
+    overflow-wrap: anywhere;
 }
 
 .date-stack {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    align-items: flex-end;
+    gap: 2px;
 }
 
 .date-value {
     display: block;
-    white-space: nowrap;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .date-end::before {
     content: "– ";
 }
 
+.education-item p,
 .experience-item p {
     color: var(--color-text-secondary);
 }
 
 .degree {
-    margin-top: 2px;
+    margin-top: 3px;
     color: var(--accent);
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .field {
-    margin-top: 1px;
+    margin-top: 2px;
     color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
 }
 
+.location {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 8.5pt;
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
    Projects
    ============================== */
 
 .project-item {
-    margin-bottom: 11px;
-    padding-left: 11px;
+    margin-bottom: 12px;
+    padding: 0 0 10px 11px;
     border-left: 3px solid var(--light);
+    border-bottom: 1px solid var(--color-surface-strong);
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .project-item:last-child {
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.project-meta {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 8pt;
 }
 
 .project-item p {
     color: var(--color-text-secondary);
 }
 
-.project-link {
-    margin-top: 4px;
-    color: var(--accent);
-    font-size: 8.3pt;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+.project-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    margin-top: 5px;
 }
 
+.project-link {
+    max-width: 100%;
+    color: var(--accent);
+    font-size: 8.2pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.project-link a {
+    color: var(--accent);
+}
 
 /* ==============================
    Skills
    ============================== */
 
 .skills-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    column-count: 2;
+    column-gap: 10mm;
+    column-fill: balance;
 }
 
 .skill {
-    display: inline-block;
-    padding: 4px 8px;
-    background: var(--light);
-    color: var(--color-heading);
-    font-size: 8.5pt;
-    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+
+    width: 100%;
+    margin: 0;
+    padding: 5px 0 6px;
+
+    border-bottom: 1px solid var(--color-border);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
 }
 
+.skill-name {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    color: var(--color-heading);
+    font-size: 8.8pt;
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.skill-level {
+    flex: 0 0 auto;
+    margin-left: 5px;
+
+    color: var(--accent);
+    font-size: 7.8pt;
+    font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
    Languages
@@ -294,8 +450,8 @@ p {
 
 .languages-list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px 25px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 10mm;
 }
 
 .language {
@@ -303,63 +459,110 @@ p {
     justify-content: space-between;
     align-items: baseline;
     gap: 10px;
-    padding-bottom: 4px;
+    min-width: 0;
+
+    padding: 6px 0;
     border-bottom: 1px solid var(--color-border);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .language-name {
+    flex: 1 1 auto;
+    min-width: 0;
+
     color: var(--color-heading);
+    font-size: 8.8pt;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .language-level {
-    color: var(--accent);
-    font-size: 8.3pt;
-    font-weight: 600;
-}
+    flex: 0 1 auto;
 
+    color: var(--accent);
+    font-size: 8.2pt;
+    font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
    Certifications
    ============================== */
 
 .certification-item {
-    margin-bottom: 10px;
-    padding-left: 11px;
+    margin-bottom: 11px;
+    padding: 0 0 10px 11px;
+
     border-left: 3px solid var(--light);
+    border-bottom: 1px solid var(--color-surface-strong);
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .certification-item:last-child {
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
 }
 
 .certification-date {
-    margin-top: 3px;
+    margin-top: 4px;
     color: var(--muted);
-    font-size: 8.3pt;
-}
-
-.credential {
-    margin-top: 3px;
-    color: var(--color-muted);
     font-size: 8.2pt;
 }
 
+.credential {
+    margin-top: 4px;
+    color: var(--color-muted);
+    font-size: 8.2pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.certification-link {
+    margin-top: 4px;
+    font-size: 8.2pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.certification-link a {
+    color: var(--accent);
+}
 
 /* ==============================
    Print styles
    ============================== */
 
 @media print {
-
     body {
         background: var(--color-white);
     }
 
     section,
     article {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        page-break-inside: auto;
+        break-inside: auto;
     }
 
+    .header,
+    .section-heading,
+    .item-header {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .skill,
+    .language {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    a {
+        text-decoration: none;
+    }
 }

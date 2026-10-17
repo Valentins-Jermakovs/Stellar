@@ -9,10 +9,15 @@
 
 <body>
 
+    <!-- ==============================
+         Header
+         ============================== -->
+
     {% if cv.personal_info %}
     <header class="header">
 
         <div class="header-main">
+
             <h1>
                 {{ cv.personal_info.first_name }}
                 {{ cv.personal_info.last_name }}
@@ -23,26 +28,86 @@
                 {{ cv.personal_info.headline }}
             </p>
             {% endif %}
+
         </div>
 
         <div class="contact">
 
             {% if cv.personal_info.email %}
-            <span>
-                {{ cv.personal_info.email }}
-            </span>
+            <div class="contact-item">
+                <span class="contact-label">
+                    {{ translations.email }}
+                </span>
+                <span class="contact-value">
+                    <a href="mailto:{{ cv.personal_info.email }}">
+                        {{ cv.personal_info.email }}
+                    </a>
+                </span>
+            </div>
             {% endif %}
 
             {% if cv.personal_info.phone %}
-            <span>
-                {{ cv.personal_info.phone }}
-            </span>
+            <div class="contact-item">
+                <span class="contact-label">
+                    {{ translations.phone }}
+                </span>
+                <span class="contact-value">
+                    <a href="tel:{{ cv.personal_info.phone }}">
+                        {{ cv.personal_info.phone }}
+                    </a>
+                </span>
+            </div>
             {% endif %}
 
             {% if cv.personal_info.location %}
-            <span>
-                {{ cv.personal_info.location }}
-            </span>
+            <div class="contact-item">
+                <span class="contact-label">
+                    {{ translations.location }}
+                </span>
+                <span class="contact-value">
+                    {{ cv.personal_info.location }}
+                </span>
+            </div>
+            {% endif %}
+
+            {% if cv.personal_info.website
+            and cv.personal_info.website != '-' %}
+            <div class="contact-item">
+                <span class="contact-label">
+                    {{ translations.website }}
+                </span>
+                <span class="contact-value">
+                    <a href="{{ cv.personal_info.website }}">
+                        {{ cv.personal_info.website }}
+                    </a>
+                </span>
+            </div>
+            {% endif %}
+
+            {% if cv.personal_info.linkedin
+            and cv.personal_info.linkedin != '-' %}
+            <div class="contact-item">
+                <span class="contact-label">LinkedIn</span>
+                <span class="contact-value">
+                    <a href="{{ cv.personal_info.linkedin }}">
+                        {{ cv.personal_info.linkedin }}
+                    </a>
+                </span>
+            </div>
+            {% endif %}
+
+            {% if cv.personal_info.github
+            and cv.personal_info.github != '-' %}
+            <div class="contact-item">
+                <span class="contact-label">
+                    {{ translations.github }}
+                </span>
+                <span class="contact-value">
+                    <a href="{{ cv.personal_info.github }}">
+                        {{ cv.personal_info.github }}
+                    </a>
+                </span>
+            </div>
             {% endif %}
 
         </div>
@@ -51,13 +116,15 @@
     {% endif %}
 
 
+    <!-- ==============================
+         Profile
+         ============================== -->
+
     {% if cv.personal_info and cv.personal_info.summary %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.profile }}
-            </h2>
+            <h2>{{ translations.profile }}</h2>
         </div>
 
         <p class="summary">
@@ -68,13 +135,15 @@
     {% endif %}
 
 
+    <!-- ==============================
+         Experience
+         ============================== -->
+
     {% if cv.experience %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.experience }}
-            </h2>
+            <h2>{{ translations.experience }}</h2>
         </div>
 
         {% for item in cv.experience %}
@@ -82,10 +151,9 @@
 
             <div class="item-header">
 
-                <div>
-                    <h3>
-                        {{ item.position }}
-                    </h3>
+                <div class="item-main">
+
+                    <h3>{{ item.position }}</h3>
 
                     <div class="company">
                         {{ item.company }}
@@ -95,23 +163,35 @@
                         {{ item.location }}
                         {% endif %}
                     </div>
+
                 </div>
 
+                {% if item.start_date or item.end_date or item.is_current %}
                 <div class="dates date-stack">
-                    <span class="date-value">{{ item.start_date | full_date(language) }}</span>
-                    {% if item.is_current %}
-                    <span class="date-value date-end">{{ translations.present }}</span>
-                    {% elif item.end_date %}
-                    <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
+
+                    {% if item.start_date %}
+                    <span class="date-value">
+                        {{ item.start_date | full_date(language) }}
+                    </span>
                     {% endif %}
+
+                    {% if item.is_current %}
+                    <span class="date-value date-end">
+                        {{ translations.present }}
+                    </span>
+                    {% elif item.end_date %}
+                    <span class="date-value date-end">
+                        {{ item.end_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
                 </div>
+                {% endif %}
 
             </div>
 
             {% if item.description %}
-            <p>
-                {{ item.description }}
-            </p>
+            <p>{{ item.description }}</p>
             {% endif %}
 
         </article>
@@ -121,13 +201,15 @@
     {% endif %}
 
 
+    <!-- ==============================
+         Education
+         ============================== -->
+
     {% if cv.education %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.education }}
-            </h2>
+            <h2>{{ translations.education }}</h2>
         </div>
 
         {% for item in cv.education %}
@@ -135,10 +217,9 @@
 
             <div class="item-header">
 
-                <div>
-                    <h3>
-                        {{ item.institution }}
-                    </h3>
+                <div class="item-main">
+
+                    <h3>{{ item.institution }}</h3>
 
                     {% if item.degree %}
                     <div class="degree">
@@ -151,59 +232,104 @@
                         {{ item.field_of_study }}
                     </div>
                     {% endif %}
+
+                    {% if item.location %}
+                    <div class="location">
+                        {{ item.location }}
+                    </div>
+                    {% endif %}
+
                 </div>
 
-                {% if item.start_date %}
+                {% if item.start_date or item.end_date %}
                 <div class="dates date-stack">
-                    <span class="date-value">{{ item.start_date | full_date(language) }}</span>
-                    {% if item.end_date %}
-                    <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
+
+                    {% if item.start_date %}
+                    <span class="date-value">
+                        {{ item.start_date | full_date(language) }}
+                    </span>
                     {% endif %}
+
+                    {% if item.end_date %}
+                    <span class="date-value date-end">
+                        {{ item.end_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
                 </div>
                 {% endif %}
 
             </div>
 
+            {% if item.description %}
+            <p>{{ item.description }}</p>
+            {% endif %}
+
         </article>
         {% endfor %}
 
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Projects
+         ============================== -->
 
     {% if cv.projects %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.projects }}
-            </h2>
+            <h2>{{ translations.projects }}</h2>
         </div>
 
         {% for item in cv.projects %}
         <article class="project-item">
 
-            <h3>
-                {{ item.name }}
-            </h3>
+            <h3>{{ item.name }}</h3>
 
-            {% if item.description %}
-            <p>
-                {{ item.description }}
-            </p>
-            {% endif %}
+            {% if item.start_date or item.end_date %}
+            <div class="project-meta">
 
-            {% if item.github_url %}
-            <div class="project-link">
-                {{ translations.github }}:
-                {{ item.github_url }}
+                {% if item.start_date %}
+                <span>
+                    {{ item.start_date | full_date(language) }}
+                </span>
+                {% endif %}
+
+                {% if item.end_date %}
+                <span>
+                    {% if item.start_date %}– {% endif %}
+                    {{ item.end_date | full_date(language) }}
+                </span>
+                {% endif %}
+
             </div>
             {% endif %}
 
-            {% if item.url %}
-            <div class="project-link">
-                {{ translations.website }}:
-                {{ item.url }}
+            {% if item.description %}
+            <p>{{ item.description }}</p>
+            {% endif %}
+
+            {% if item.url or item.github_url %}
+            <div class="project-links">
+
+                {% if item.url %}
+                <div class="project-link">
+                    {{ translations.website }}:
+                    <a href="{{ item.url }}">{{ item.url }}</a>
+                </div>
+                {% endif %}
+
+                {% if item.github_url %}
+                <div class="project-link">
+                    {{ translations.github }}:
+                    <a href="{{ item.github_url }}">
+                        {{ item.github_url }}
+                    </a>
+                </div>
+                {% endif %}
+
             </div>
             {% endif %}
 
@@ -214,21 +340,33 @@
     {% endif %}
 
 
+    <!-- ==============================
+         Skills
+         ============================== -->
+
     {% if cv.skills %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.skills }}
-            </h2>
+            <h2>{{ translations.skills }}</h2>
         </div>
 
         <div class="skills-list">
 
             {% for skill in cv.skills %}
-            <span class="skill">
-                {{ skill.name }}
-            </span>
+            <div class="skill">
+
+                <span class="skill-name">
+                    {{ skill.name }}
+                </span>
+
+                {% if skill.level %}
+                <span class="skill-level">
+                    {{ skill.level }}
+                </span>
+                {% endif %}
+
+            </div>
             {% endfor %}
 
         </div>
@@ -237,13 +375,15 @@
     {% endif %}
 
 
+    <!-- ==============================
+         Languages
+         ============================== -->
+
     {% if cv.languages %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.languages }}
-            </h2>
+            <h2>{{ translations.languages }}</h2>
         </div>
 
         <div class="languages-list">
@@ -268,41 +408,67 @@
     {% endif %}
 
 
+    <!-- ==============================
+         Certifications
+         ============================== -->
+
     {% if cv.certifications %}
     <section>
 
         <div class="section-heading">
-            <h2>
-                {{ translations.certifications }}
-            </h2>
+            <h2>{{ translations.certifications }}</h2>
         </div>
 
         {% for item in cv.certifications %}
         <article class="certification-item">
 
-            <h3>
-                {{ item.name }}
-            </h3>
+            <div class="item-header">
 
-            {% if item.organization %}
-            <div class="company">
-                {{ item.organization }}
-            </div>
-            {% endif %}
+                <div class="item-main">
 
-            {% if item.issue_date %}
-            <div class="certification-date date-stack">
-                <span class="date-value">{{ translations.issued }} {{ item.issue_date | full_date(language) }}</span>
-                {% if item.expiration_date %}
-                <span class="date-value">{{ translations.expires }} {{ item.expiration_date | full_date(language) }}</span>
+                    <h3>{{ item.name }}</h3>
+
+                    {% if item.organization %}
+                    <div class="company">
+                        {{ item.organization }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                {% if item.issue_date or item.expiration_date %}
+                <div class="certification-date date-stack">
+
+                    {% if item.issue_date %}
+                    <span class="date-value">
+                        {{ translations.issued }}
+                        {{ item.issue_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
+                    {% if item.expiration_date %}
+                    <span class="date-value">
+                        {{ translations.expires }}
+                        {{ item.expiration_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
+                </div>
                 {% endif %}
+
             </div>
-            {% endif %}
 
             {% if item.credential_id %}
             <div class="credential">
                 {{ translations.credential_id }}:
                 {{ item.credential_id }}
+            </div>
+            {% endif %}
+
+            {% if item.url %}
+            <div class="certification-link">
+                {{ translations.website }}:
+                <a href="{{ item.url }}">{{ item.url }}</a>
             </div>
             {% endif %}
 
