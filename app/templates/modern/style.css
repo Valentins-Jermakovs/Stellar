@@ -1,25 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 /* ==============================
-   Page: dark sidebar strip is painted on every page
+   Page
    ============================== */
 
 @page {
     size: A4;
     margin: 8mm 0;
-    background: linear-gradient(to right,
-            var(--color-sidebar) 0,
-            var(--color-sidebar) 68mm,
-            var(--color-accent) 68mm,
-            var(--color-accent) 69.6mm,
-            var(--color-white) 69.6mm);
+    background: linear-gradient(
+        to right,
+        #161616 0,
+        #161616 68mm,
+        #0f62fe 68mm,
+        #0f62fe 69.6mm,
+        #ffffff 69.6mm
+    );
 }
 
 @page :first {
     margin-top: 0;
 }
 
-* {
+/* ==============================
+   Global styles
+   ============================== */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -38,6 +46,7 @@
     --color-sidebar: #161616;
     --color-sidebar-text: #f4f4f4;
     --color-sidebar-muted: #c6c6c6;
+
     --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
 
     --ink: var(--color-text);
@@ -49,43 +58,60 @@
     --accent-light: var(--color-accent-light);
     --side-text: var(--color-sidebar-text);
     --side-muted: var(--color-sidebar-muted);
+
+    --sidebar-width: 68mm;
+    --accent-strip-width: 1.6mm;
+    --main-left: 69.6mm;
 }
 
 html,
 body {
+    width: 210mm;
     margin: 0;
     padding: 0;
-    width: 210mm;
+}
+
+html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 body {
-    font-family: var(--font-family);
     color: var(--ink);
-    font-size: 8.3pt;
-    line-height: 1.3;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    font-family: var(--font-family);
+    font-size: 8.5pt;
+    line-height: 1.4;
 }
 
 a {
     color: inherit;
     text-decoration: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
+h1,
+h2,
+h3,
 p {
-    margin: 1.2mm 0 0;
-    white-space: pre-line;
-    overflow-wrap: anywhere;
+    margin: 0;
 }
 
 h1,
 h2,
 h3 {
-    margin: 0;
-    break-after: avoid;
     page-break-after: avoid;
+    break-after: avoid-page;
 }
 
+p {
+    margin-top: 1.5mm;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    orphans: 3;
+    widows: 3;
+}
 
 /* ==============================
    Layout
@@ -97,47 +123,62 @@ h3 {
     clear: both;
 }
 
+/*
+ * The sidebar contains only concise contact details.
+ * Long sections belong to the main document flow.
+ */
+
 .sidebar {
     float: left;
-    width: 68mm;
+    width: var(--sidebar-width);
     padding: 11mm 6mm 8mm;
     color: var(--side-text);
 }
 
 .main {
-    margin-left: 69.6mm;
+    min-width: 0;
+    margin-left: var(--main-left);
     padding: 11mm 10mm 5mm 9mm;
 }
-
 
 /* ==============================
    Sidebar
    ============================== */
 
 .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     width: 26mm;
     height: 26mm;
     margin: 0 0 6mm;
-    border-radius: 50%;
+
     border: 0.9mm solid var(--accent-light);
+    border-radius: 50%;
     background: var(--color-sidebar);
+
     color: var(--accent-light);
     font-size: 19pt;
     font-weight: 800;
     letter-spacing: 1px;
-    line-height: 24.2mm;
+    line-height: 1;
     text-align: center;
+    overflow-wrap: anywhere;
 }
 
 .side-title {
     margin: 0 0 2.4mm;
     padding-bottom: 1.2mm;
+
     border-bottom: 0.3mm solid rgba(255, 255, 255, 0.18);
+
     color: var(--accent-light);
     font-size: 7.4pt;
     font-weight: 800;
     letter-spacing: 1.4px;
     text-transform: uppercase;
+    overflow-wrap: anywhere;
 }
 
 .side-block {
@@ -145,7 +186,7 @@ h3 {
 }
 
 .contact {
-    margin: 0 0 2.4mm;
+    margin: 0 0 2.8mm;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
@@ -161,86 +202,43 @@ h3 {
 
 .contact .value {
     display: block;
-    margin-top: 0.3mm;
+    margin-top: 0.5mm;
+
     color: var(--color-white);
     font-size: 7.6pt;
-    line-height: 1.25;
+    line-height: 1.35;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .contact .value a {
     color: var(--accent-light);
 }
 
-.chips {
-    line-height: 1;
+.contact .value a:hover {
+    text-decoration: underline;
 }
-
-.chip {
-    display: inline-block;
-    margin: 0 1.2mm 1.6mm 0;
-    padding: 1.1mm 2.4mm;
-    border: 0.25mm solid rgba(15, 98, 254, 0.55);
-    border-radius: 3mm;
-    background: rgba(255, 255, 255, 0.07);
-    color: var(--color-white);
-    font-size: 7.2pt;
-    font-weight: 600;
-    line-height: 1.1;
-    break-inside: avoid;
-    page-break-inside: avoid;
-}
-
-.chip small {
-    margin-left: 1.2mm;
-    color: var(--accent-light);
-    font-size: 6.2pt;
-    font-weight: 600;
-}
-
-.lang {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 2mm;
-    padding: 1.1mm 0;
-    border-bottom: 0.25mm dashed rgba(255, 255, 255, 0.18);
-    font-size: 7.6pt;
-    break-inside: avoid;
-    page-break-inside: avoid;
-}
-
-.lang:last-child {
-    border-bottom: 0;
-}
-
-.lang span:first-child {
-    font-weight: 600;
-    color: var(--color-white);
-}
-
-.lang span:last-child {
-    color: var(--accent-light);
-    font-size: 6.8pt;
-    font-weight: 700;
-    text-align: right;
-}
-
 
 /* ==============================
-   Main: hero
+   Main: Hero
    ============================== */
 
 .hero {
     margin: 0 0 5mm;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .hero h1 {
     color: var(--heading);
-    font-size: 27pt;
-    line-height: 1.02;
+    font-size: 26pt;
+    line-height: 1.08;
     font-weight: 800;
     letter-spacing: -0.8px;
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .hero h1 .last {
@@ -249,33 +247,42 @@ h3 {
 
 .headline {
     display: inline-block;
+    max-width: 100%;
     margin-top: 2.4mm;
-    padding: 1mm 3mm;
+    padding: 1.2mm 3mm;
+
     border-radius: 3mm;
     background: var(--heading);
+
     color: var(--color-white);
     font-size: 7.6pt;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
+
+    overflow-wrap: anywhere;
 }
 
 .summary {
     margin: 4mm 0 0;
     padding: 0.5mm 0 0.5mm 4mm;
+
     border-left: 0.9mm solid var(--accent-light);
+
     color: var(--color-text-secondary);
     font-size: 8.6pt;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
-
 /* ==============================
-   Main: sections
+   Sections
    ============================== */
 
 section {
     margin: 0 0 5.5mm;
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 section:last-child {
@@ -286,21 +293,30 @@ section:last-child {
     display: flex;
     align-items: center;
     gap: 2.4mm;
+
     margin: 0 0 3.2mm;
+
     color: var(--heading);
     font-size: 9pt;
     font-weight: 800;
-    letter-spacing: 1.6px;
+    letter-spacing: 1.4px;
+    line-height: 1.3;
     text-transform: uppercase;
-    break-after: avoid;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
     page-break-after: avoid;
+    break-after: avoid-page;
+    overflow-wrap: anywhere;
 }
 
 .section-title::before {
     content: "";
     flex: 0 0 auto;
+
     width: 3mm;
     height: 3mm;
+
     background: var(--accent-light);
     border-radius: 0.8mm;
 }
@@ -308,34 +324,52 @@ section:last-child {
 .section-title::after {
     content: "";
     flex: 1 1 auto;
+
+    min-width: 5mm;
     height: 0.3mm;
+
     background: var(--line);
 }
 
+/* ==============================
+   Dates
+   ============================== */
+
 .when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4mm;
+
     color: var(--accent);
     font-size: 6.7pt;
     font-weight: 800;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
     text-transform: uppercase;
+
+    overflow-wrap: anywhere;
 }
 
 .when .end::before {
-    content: " – ";
+    content: "– ";
 }
 
-
 /* ==============================
-   Timeline (experience, education)
+   Timeline: Experience and Education
    ============================== */
 
 .tl-item {
     position: relative;
+    min-width: 0;
+
     margin: 0 0 4mm 1.6mm;
     padding: 0 0 0 5.5mm;
+
     border-left: 0.4mm solid var(--line);
-    break-inside: auto;
+
     page-break-inside: auto;
+    break-inside: auto;
 }
 
 .tl-item:last-child {
@@ -347,8 +381,10 @@ section:last-child {
     position: absolute;
     left: -1.65mm;
     top: 0.2mm;
+
     width: 2.9mm;
     height: 2.9mm;
+
     border: 0.6mm solid var(--accent);
     border-radius: 50%;
     background: var(--color-white);
@@ -358,102 +394,271 @@ section:last-child {
     background: var(--accent);
 }
 
+/*
+ * Keep dates, titles and organization together.
+ * Descriptions remain outside this block and can flow
+ * onto following pages.
+ */
+
+.tl-heading {
+    min-width: 0;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
 .tl-item h3 {
     margin-top: 0.8mm;
+
     color: var(--heading);
     font-size: 9.6pt;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.3;
+
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .org {
     margin-top: 0.6mm;
+
     color: var(--accent);
     font-size: 7.9pt;
     font-weight: 700;
+
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .dot {
     margin: 0 1mm;
-    color: var(--color-muted);
+    color: var(--muted);
 }
 
 .sub {
-    margin-top: 0.5mm;
+    margin-top: 0.8mm;
+
     color: var(--muted);
     font-size: 7.4pt;
+
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .tl-item p {
-    margin-top: 1.4mm;
+    margin-top: 1.5mm;
+
     color: var(--color-text-secondary);
     font-size: 8pt;
-    line-height: 1.38;
+    line-height: 1.48;
 }
 
+/* ==============================
+   Skills
+   ============================== */
+
+.skills-list {
+    column-count: 2;
+    column-gap: 7mm;
+    column-fill: balance;
+}
+
+.skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 2mm;
+
+    width: 100%;
+    margin: 0;
+    padding: 1.8mm 0;
+
+    border-bottom: 0.25mm solid var(--line);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+}
+
+.skill-name {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    color: var(--heading);
+    font-size: 7.8pt;
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.skill-level {
+    flex: 0 1 auto;
+    max-width: 45%;
+
+    color: var(--accent);
+    font-size: 6.8pt;
+    font-weight: 700;
+    text-align: right;
+
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
-   Cards (projects, certifications)
+   Languages
+   ============================== */
+
+.languages-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 7mm;
+}
+
+.lang {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 2mm;
+
+    min-width: 0;
+    padding: 1.8mm 0;
+
+    border-bottom: 0.25mm dashed var(--line);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.lang span:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    color: var(--heading);
+    font-size: 7.8pt;
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+}
+
+.lang span:last-child {
+    flex: 0 1 auto;
+
+    color: var(--accent);
+    font-size: 6.8pt;
+    font-weight: 700;
+    text-align: right;
+
+    overflow-wrap: anywhere;
+}
+
+/* ==============================
+   Cards: Projects and Certifications
    ============================== */
 
 .card {
+    min-width: 0;
     margin: 0 0 3mm;
     padding: 2.6mm 3.4mm 2.8mm;
+
     border-left: 1.1mm solid var(--accent-light);
     border-radius: 0 1.6mm 1.6mm 0;
     background: var(--soft);
-    break-inside: avoid;
-    page-break-inside: avoid;
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .card:last-child {
     margin-bottom: 0;
 }
 
+/* Keep only the card heading together, not the entire card. */
+.card-heading {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
 .card h3 {
     color: var(--heading);
     font-size: 9pt;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.3;
+
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .card .when {
     margin-top: 0.8mm;
 }
 
-.card p {
-    margin-top: 1.2mm;
-    color: var(--color-text-secondary);
-    font-size: 7.9pt;
-    line-height: 1.35;
-}
-
 .card .sub {
     margin-top: 0.8mm;
+}
+
+.card p {
+    margin-top: 1.5mm;
+
+    color: var(--color-text-secondary);
+    font-size: 7.9pt;
+    line-height: 1.48;
 }
 
 .links {
     display: flex;
     flex-direction: column;
-    gap: 0.5mm;
-    margin-top: 1.6mm;
+    align-items: flex-start;
+    gap: 1mm;
+
+    margin-top: 1.8mm;
+
     color: var(--accent);
     font-size: 7pt;
     font-weight: 600;
-    line-height: 1.2;
-    word-break: break-word;
+    line-height: 1.4;
+
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .links a {
     color: var(--accent);
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .links .k {
     color: var(--muted);
     font-weight: 700;
+}
+
+/* ==============================
+   Print
+   ============================== */
+
+@media print {
+    body {
+        background: transparent;
+    }
+
+    .hero,
+    .section-title,
+    .tl-heading,
+    .card-heading,
+    .skill-row,
+    .lang {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .tl-item,
+    .card,
+    section {
+        page-break-inside: auto;
+        break-inside: auto;
+    }
+
+    a {
+        text-decoration: none;
+    }
 }

@@ -8,30 +8,44 @@
 </head>
 
 <body>
+
 {% set pi = cv.personal_info or {} %}
 
 <div class="layout">
 
-    <!-- ============ Sidebar ============ -->
+    <!-- ==============================
+         Sidebar: Contact Information
+         ============================== -->
+
     <aside class="sidebar">
 
         {% if pi %}
-        <div class="avatar">{{ (pi.first_name or '')[:1] }}{{ (pi.last_name or '')[:1] }}</div>
+
+        <div class="avatar">
+            {{ (pi.first_name or '')[:1] }}{{ (pi.last_name or '')[:1] }}
+        </div>
 
         <div class="side-block">
-            <div class="side-title">{{ translations.contacts or 'Kontakti' }}</div>
+
+            <h2 class="side-title">
+                {{ translations.contacts or 'Contacts' }}
+            </h2>
 
             {% if pi.email %}
             <div class="contact">
                 <span class="label">{{ translations.email }}</span>
-                <span class="value"><a href="mailto:{{ pi.email }}">{{ pi.email }}</a></span>
+                <span class="value">
+                    <a href="mailto:{{ pi.email }}">{{ pi.email }}</a>
+                </span>
             </div>
             {% endif %}
 
             {% if pi.phone %}
             <div class="contact">
                 <span class="label">{{ translations.phone }}</span>
-                <span class="value">{{ pi.phone }}</span>
+                <span class="value">
+                    <a href="tel:{{ pi.phone }}">{{ pi.phone }}</a>
+                </span>
             </div>
             {% endif %}
 
@@ -45,58 +59,60 @@
             {% if pi.website and pi.website != '-' %}
             <div class="contact">
                 <span class="label">{{ translations.website }}</span>
-                <span class="value"><a href="{{ pi.website if pi.website.startswith('http') else 'https://' ~ pi.website }}">{{ pi.website }}</a></span>
+                <span class="value">
+                    <a href="{{ pi.website if pi.website.startswith('http') else 'https://' ~ pi.website }}">
+                        {{ pi.website }}
+                    </a>
+                </span>
             </div>
             {% endif %}
 
             {% if pi.linkedin and pi.linkedin != '-' %}
             <div class="contact">
                 <span class="label">LinkedIn</span>
-                <span class="value"><a href="{{ pi.linkedin if pi.linkedin.startswith('http') else 'https://' ~ pi.linkedin }}">{{ pi.linkedin }}</a></span>
+                <span class="value">
+                    <a href="{{ pi.linkedin if pi.linkedin.startswith('http') else 'https://' ~ pi.linkedin }}">
+                        {{ pi.linkedin }}
+                    </a>
+                </span>
             </div>
             {% endif %}
 
             {% if pi.github and pi.github != '-' %}
             <div class="contact">
                 <span class="label">{{ translations.github }}</span>
-                <span class="value"><a href="{{ pi.github if pi.github.startswith('http') else 'https://' ~ pi.github }}">{{ pi.github }}</a></span>
+                <span class="value">
+                    <a href="{{ pi.github if pi.github.startswith('http') else 'https://' ~ pi.github }}">
+                        {{ pi.github }}
+                    </a>
+                </span>
             </div>
             {% endif %}
-        </div>
-        {% endif %}
 
-        {% if cv.skills %}
-        <div class="side-block">
-            <div class="side-title">{{ translations.skills }}</div>
-            <div class="chips">
-                {% for skill in cv.skills %}
-                <span class="chip">{{ skill.name }}{% if skill.level %}<small>{{ skill.level }}</small>{% endif %}</span>
-                {% endfor %}
-            </div>
         </div>
-        {% endif %}
 
-        {% if cv.languages %}
-        <div class="side-block">
-            <div class="side-title">{{ translations.languages }}</div>
-            {% for item_language in cv.languages %}
-            <div class="lang">
-                <span>{{ item_language.name }}</span>
-                <span>{{ item_language.proficiency }}</span>
-            </div>
-            {% endfor %}
-        </div>
         {% endif %}
 
     </aside>
 
 
-    <!-- ============ Main ============ -->
+    <!-- ==============================
+         Main Content
+         ============================== -->
+
     <main class="main">
 
+        <!-- ==============================
+             Hero and Profile
+             ============================== -->
+
         {% if pi %}
-        <div class="hero">
-            <h1>{{ pi.first_name }} <span class="last">{{ pi.last_name }}</span></h1>
+        <header class="hero">
+
+            <h1>
+                {{ pi.first_name }}
+                <span class="last">{{ pi.last_name }}</span>
+            </h1>
 
             {% if pi.headline %}
             <div class="headline">{{ pi.headline }}</div>
@@ -105,46 +121,214 @@
             {% if pi.summary %}
             <p class="summary">{{ pi.summary }}</p>
             {% endif %}
-        </div>
+
+        </header>
         {% endif %}
 
 
+        <!-- ==============================
+             Experience
+             ============================== -->
+
         {% if cv.experience %}
         <section>
-            <div class="section-title">{{ translations.experience }}</div>
+
+            <h2 class="section-title">
+                {{ translations.experience }}
+            </h2>
 
             {% for item in cv.experience %}
             <article class="tl-item{% if item.is_current %} current{% endif %}">
-                <div class="when">
-                    <span>{{ item.start_date | full_date(language) }}</span>{% if item.is_current %}<span class="end">{{ translations.present }}</span>{% elif item.end_date %}<span class="end">{{ item.end_date | full_date(language) }}</span>{% endif %}
+
+                <div class="tl-heading">
+
+                    <div class="when">
+
+                        {% if item.start_date %}
+                        <span>{{ item.start_date | full_date(language) }}</span>
+                        {% endif %}
+
+                        {% if item.is_current %}
+                        <span class="end">{{ translations.present }}</span>
+                        {% elif item.end_date %}
+                        <span class="end">{{ item.end_date | full_date(language) }}</span>
+                        {% endif %}
+
+                    </div>
+
+                    <h3>{{ item.position }}</h3>
+
+                    <div class="org">
+                        {{ item.company }}
+                        {% if item.location %}
+                        <span class="dot">•</span>{{ item.location }}
+                        {% endif %}
+                    </div>
+
                 </div>
-
-                <h3>{{ item.position }}</h3>
-
-                <div class="org">{{ item.company }}{% if item.location %}<span class="dot">•</span>{{ item.location }}{% endif %}</div>
 
                 {% if item.description %}
                 <p>{{ item.description }}</p>
                 {% endif %}
+
             </article>
             {% endfor %}
+
         </section>
         {% endif %}
 
 
+        <!-- ==============================
+             Education
+             ============================== -->
+
+        {% if cv.education %}
+        <section>
+
+            <h2 class="section-title">
+                {{ translations.education }}
+            </h2>
+
+            {% for item in cv.education %}
+            <article class="tl-item">
+
+                <div class="tl-heading">
+
+                    {% if item.start_date or item.end_date %}
+                    <div class="when">
+
+                        {% if item.start_date %}
+                        <span>{{ item.start_date | full_date(language) }}</span>
+                        {% endif %}
+
+                        {% if item.end_date %}
+                        <span class="end">{{ item.end_date | full_date(language) }}</span>
+                        {% endif %}
+
+                    </div>
+                    {% endif %}
+
+                    <h3>{{ item.institution }}</h3>
+
+                    {% if item.degree %}
+                    <div class="org">{{ item.degree }}</div>
+                    {% endif %}
+
+                    {% if item.field_of_study %}
+                    <div class="sub">{{ item.field_of_study }}</div>
+                    {% endif %}
+
+                    {% if item.location %}
+                    <div class="sub">{{ item.location }}</div>
+                    {% endif %}
+
+                </div>
+
+                {% if item.description %}
+                <p>{{ item.description }}</p>
+                {% endif %}
+
+            </article>
+            {% endfor %}
+
+        </section>
+        {% endif %}
+
+
+        <!-- ==============================
+             Skills
+             ============================== -->
+
+        {% if cv.skills %}
+        <section>
+
+            <h2 class="section-title">
+                {{ translations.skills }}
+            </h2>
+
+            <div class="skills-list">
+
+                {% for skill in cv.skills %}
+                <div class="skill-row">
+
+                    <span class="skill-name">
+                        {{ skill.name }}
+                    </span>
+
+                    {% if skill.level %}
+                    <span class="skill-level">{{ skill.level }}</span>
+                    {% endif %}
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </section>
+        {% endif %}
+
+
+        <!-- ==============================
+             Languages
+             ============================== -->
+
+        {% if cv.languages %}
+        <section>
+
+            <h2 class="section-title">
+                {{ translations.languages }}
+            </h2>
+
+            <div class="languages-list">
+
+                {% for item_language in cv.languages %}
+                <div class="lang">
+
+                    <span>{{ item_language.name }}</span>
+                    <span>{{ item_language.proficiency }}</span>
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </section>
+        {% endif %}
+
+
+        <!-- ==============================
+             Projects
+             ============================== -->
+
         {% if cv.projects %}
         <section>
-            <div class="section-title">{{ translations.projects }}</div>
+
+            <h2 class="section-title">
+                {{ translations.projects }}
+            </h2>
 
             {% for item in cv.projects %}
             <article class="card">
-                <h3>{{ item.name }}</h3>
 
-                {% if item.start_date %}
-                <div class="when">
-                    <span>{{ item.start_date | full_date(language) }}</span>{% if item.end_date %}<span class="end">{{ item.end_date | full_date(language) }}</span>{% endif %}
+                <div class="card-heading">
+
+                    <h3>{{ item.name }}</h3>
+
+                    {% if item.start_date or item.end_date %}
+                    <div class="when">
+
+                        {% if item.start_date %}
+                        <span>{{ item.start_date | full_date(language) }}</span>
+                        {% endif %}
+
+                        {% if item.end_date %}
+                        <span class="end">{{ item.end_date | full_date(language) }}</span>
+                        {% endif %}
+
+                    </div>
+                    {% endif %}
+
                 </div>
-                {% endif %}
 
                 {% if item.description %}
                 <p>{{ item.description }}</p>
@@ -152,84 +336,94 @@
 
                 {% if item.github_url or item.url %}
                 <div class="links">
+
                     {% if item.github_url %}
-                    <span><span class="k">{{ translations.github }}:</span> <a href="{{ item.github_url if item.github_url.startswith('http') else 'https://' ~ item.github_url }}">{{ item.github_url }}</a></span>
+                    <span>
+                        <span class="k">{{ translations.github }}:</span>
+                        <a href="{{ item.github_url if item.github_url.startswith('http') else 'https://' ~ item.github_url }}">
+                            {{ item.github_url }}
+                        </a>
+                    </span>
                     {% endif %}
+
                     {% if item.url %}
-                    <span><span class="k">{{ translations.website }}:</span> <a href="{{ item.url if item.url.startswith('http') else 'https://' ~ item.url }}">{{ item.url }}</a></span>
+                    <span>
+                        <span class="k">{{ translations.website }}:</span>
+                        <a href="{{ item.url if item.url.startswith('http') else 'https://' ~ item.url }}">
+                            {{ item.url }}
+                        </a>
+                    </span>
                     {% endif %}
+
                 </div>
                 {% endif %}
+
             </article>
             {% endfor %}
+
         </section>
         {% endif %}
 
 
-        {% if cv.education %}
-        <section>
-            <div class="section-title">{{ translations.education }}</div>
-
-            {% for item in cv.education %}
-            <article class="tl-item">
-                {% if item.start_date %}
-                <div class="when">
-                    <span>{{ item.start_date | full_date(language) }}</span>{% if item.end_date %}<span class="end">{{ item.end_date | full_date(language) }}</span>{% endif %}
-                </div>
-                {% endif %}
-
-                <h3>{{ item.institution }}</h3>
-
-                {% if item.degree %}
-                <div class="org">{{ item.degree }}</div>
-                {% endif %}
-
-                {% if item.field_of_study %}
-                <div class="sub">{{ item.field_of_study }}</div>
-                {% endif %}
-
-                {% if item.location %}
-                <div class="sub">{{ item.location }}</div>
-                {% endif %}
-
-                {% if item.description %}
-                <p>{{ item.description }}</p>
-                {% endif %}
-            </article>
-            {% endfor %}
-        </section>
-        {% endif %}
-
+        <!-- ==============================
+             Certifications
+             ============================== -->
 
         {% if cv.certifications %}
         <section>
-            <div class="section-title">{{ translations.certifications }}</div>
+
+            <h2 class="section-title">
+                {{ translations.certifications }}
+            </h2>
 
             {% for item in cv.certifications %}
             <article class="card">
-                <h3>{{ item.name }}</h3>
 
-                {% if item.organization %}
-                <div class="sub">{{ item.organization }}</div>
-                {% endif %}
+                <div class="card-heading">
 
-                {% if item.issue_date %}
-                <div class="when">
-                    <span>{{ item.issue_date | full_date(language) }}</span>{% if item.expiration_date %}<span class="end">{{ item.expiration_date | full_date(language) }}</span>{% endif %}
+                    <h3>{{ item.name }}</h3>
+
+                    {% if item.organization %}
+                    <div class="sub">{{ item.organization }}</div>
+                    {% endif %}
+
+                    {% if item.issue_date or item.expiration_date %}
+                    <div class="when">
+
+                        {% if item.issue_date %}
+                        <span>{{ item.issue_date | full_date(language) }}</span>
+                        {% endif %}
+
+                        {% if item.expiration_date %}
+                        <span class="end">{{ item.expiration_date | full_date(language) }}</span>
+                        {% endif %}
+
+                    </div>
+                    {% endif %}
+
                 </div>
-                {% endif %}
 
                 {% if item.credential_id %}
-                <div class="sub">{{ translations.credential_id }}: {{ item.credential_id }}</div>
+                <div class="sub">
+                    {{ translations.credential_id }}:
+                    {{ item.credential_id }}
+                </div>
                 {% endif %}
 
                 {% if item.credential_url %}
                 <div class="links">
-                    <a href="{{ item.credential_url if item.credential_url.startswith('http') else 'https://' ~ item.credential_url }}">{{ item.credential_url }}</a>
+                    <span>
+                        <span class="k">{{ translations.website }}:</span>
+                        <a href="{{ item.credential_url if item.credential_url.startswith('http') else 'https://' ~ item.credential_url }}">
+                            {{ item.credential_url }}
+                        </a>
+                    </span>
                 </div>
                 {% endif %}
+
             </article>
             {% endfor %}
+
         </section>
         {% endif %}
 
@@ -238,5 +432,4 @@
 </div>
 
 </body>
-
 </html>
