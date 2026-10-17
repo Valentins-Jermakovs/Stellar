@@ -9,6 +9,10 @@
 
 <body>
 
+    <!-- ==============================
+         Header and Contact Information
+         ============================== -->
+
     <header class="header">
 
         {% if cv.personal_info %}
@@ -29,23 +33,57 @@
         <div class="contacts">
 
             {% if cv.personal_info.email %}
-            <span>{{ cv.personal_info.email }}</span>
+            <span class="contact-item">
+                <span class="contact-label">Email:</span>
+                <a href="mailto:{{ cv.personal_info.email }}">
+                    {{ cv.personal_info.email }}
+                </a>
+            </span>
             {% endif %}
 
             {% if cv.personal_info.phone %}
-            <span>{{ cv.personal_info.phone }}</span>
+            <span class="contact-item">
+                <span class="contact-label">Phone:</span>
+                <a href="tel:{{ cv.personal_info.phone }}">
+                    {{ cv.personal_info.phone }}
+                </a>
+            </span>
             {% endif %}
 
             {% if cv.personal_info.location %}
-            <span>{{ cv.personal_info.location }}</span>
+            <span class="contact-item">
+                {{ cv.personal_info.location }}
+            </span>
             {% endif %}
 
-            {% if cv.personal_info.linkedin and cv.personal_info.linkedin != '-' %}
-            <span>{{ cv.personal_info.linkedin }}</span>
+            {% if cv.personal_info.website
+            and cv.personal_info.website != '-' %}
+            <span class="contact-item">
+                <span class="contact-label">{{ translations.website }}:</span>
+                <a href="{{ cv.personal_info.website }}">
+                    {{ cv.personal_info.website }}
+                </a>
+            </span>
             {% endif %}
 
-            {% if cv.personal_info.github and cv.personal_info.github != '-' %}
-            <span>{{ cv.personal_info.github }}</span>
+            {% if cv.personal_info.linkedin
+            and cv.personal_info.linkedin != '-' %}
+            <span class="contact-item">
+                <span class="contact-label">LinkedIn:</span>
+                <a href="{{ cv.personal_info.linkedin }}">
+                    {{ cv.personal_info.linkedin }}
+                </a>
+            </span>
+            {% endif %}
+
+            {% if cv.personal_info.github
+            and cv.personal_info.github != '-' %}
+            <span class="contact-item">
+                <span class="contact-label">{{ translations.github }}:</span>
+                <a href="{{ cv.personal_info.github }}">
+                    {{ cv.personal_info.github }}
+                </a>
+            </span>
             {% endif %}
 
         </div>
@@ -55,6 +93,10 @@
     </header>
 
 
+    <!-- ==============================
+         Profile
+         ============================== -->
+
     {% if cv.personal_info and cv.personal_info.summary %}
     <section>
 
@@ -62,13 +104,15 @@
             <h2>{{ translations.profile }}</h2>
         </div>
 
-        <p class="profile">
-            {{ cv.personal_info.summary }}
-        </p>
+        <p class="profile">{{ cv.personal_info.summary }}</p>
 
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Experience
+         ============================== -->
 
     {% if cv.experience %}
     <section>
@@ -78,7 +122,6 @@
         </div>
 
         {% for item in cv.experience %}
-
         <article class="experience-item">
 
             <div class="entry-header">
@@ -98,14 +141,27 @@
 
                 </div>
 
+                {% if item.start_date or item.end_date or item.is_current %}
                 <div class="dates date-stack">
-                    <span class="date-value">{{ item.start_date | full_date(language) }}</span>
-                    {% if item.is_current %}
-                    <span class="date-value date-end">{{ translations.present }}</span>
-                    {% elif item.end_date %}
-                    <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
+
+                    {% if item.start_date %}
+                    <span class="date-value">
+                        {{ item.start_date | full_date(language) }}
+                    </span>
                     {% endif %}
+
+                    {% if item.is_current %}
+                    <span class="date-value date-end">
+                        {{ translations.present }}
+                    </span>
+                    {% elif item.end_date %}
+                    <span class="date-value date-end">
+                        {{ item.end_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
                 </div>
+                {% endif %}
 
             </div>
 
@@ -114,12 +170,15 @@
             {% endif %}
 
         </article>
-
         {% endfor %}
 
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Education
+         ============================== -->
 
     {% if cv.education %}
     <section>
@@ -129,7 +188,6 @@
         </div>
 
         {% for item in cv.education %}
-
         <article class="education-item">
 
             <div class="entry-header">
@@ -139,9 +197,7 @@
                     <h3>{{ item.institution }}</h3>
 
                     {% if item.degree %}
-                    <div class="degree">
-                        {{ item.degree }}
-                    </div>
+                    <div class="degree">{{ item.degree }}</div>
                     {% endif %}
 
                     {% if item.field_of_study %}
@@ -158,12 +214,21 @@
 
                 </div>
 
-                {% if item.start_date %}
+                {% if item.start_date or item.end_date %}
                 <div class="dates date-stack">
-                    <span class="date-value">{{ item.start_date | full_date(language) }}</span>
-                    {% if item.end_date %}
-                    <span class="date-value date-end">{{ item.end_date | full_date(language) }}</span>
+
+                    {% if item.start_date %}
+                    <span class="date-value">
+                        {{ item.start_date | full_date(language) }}
+                    </span>
                     {% endif %}
+
+                    {% if item.end_date %}
+                    <span class="date-value date-end">
+                        {{ item.end_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
                 </div>
                 {% endif %}
 
@@ -174,12 +239,15 @@
             {% endif %}
 
         </article>
-
         {% endfor %}
 
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Skills
+         ============================== -->
 
     {% if cv.skills %}
     <section>
@@ -191,19 +259,15 @@
         <div class="skills">
 
             {% for skill in cv.skills %}
+            <div class="skill">
 
-            <span class="skill">
-                <span class="skill-name">
-                    {{ skill.name }}
-                </span>
+                <span class="skill-name">{{ skill.name }}</span>
 
                 {% if skill.level %}
-                <span class="skill-level">
-                    {{ skill.level }}
-                </span>
+                <span class="skill-level">{{ skill.level }}</span>
                 {% endif %}
-            </span>
 
+            </div>
             {% endfor %}
 
         </div>
@@ -211,6 +275,10 @@
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Projects
+         ============================== -->
 
     {% if cv.projects %}
     <section>
@@ -220,34 +288,61 @@
         </div>
 
         {% for item in cv.projects %}
-
         <article class="project-item">
 
             <h3>{{ item.name }}</h3>
+
+            {% if item.start_date or item.end_date %}
+            <div class="project-meta">
+
+                {% if item.start_date %}
+                <span>{{ item.start_date | full_date(language) }}</span>
+                {% endif %}
+
+                {% if item.end_date %}
+                <span>
+                    {% if item.start_date %}– {% endif %}
+                    {{ item.end_date | full_date(language) }}
+                </span>
+                {% endif %}
+
+            </div>
+            {% endif %}
 
             {% if item.description %}
             <p>{{ item.description }}</p>
             {% endif %}
 
-            {% if item.github_url %}
-            <div class="project-link">
-                {{ translations.github }}:
-                {{ item.github_url }}
-            </div>
-            {% elif item.url %}
-            <div class="project-link">
-                {{ translations.website }}:
-                {{ item.url }}
+            {% if item.url or item.github_url %}
+            <div class="project-links">
+
+                {% if item.url %}
+                <div class="project-link">
+                    {{ translations.website }}:
+                    <a href="{{ item.url }}">{{ item.url }}</a>
+                </div>
+                {% endif %}
+
+                {% if item.github_url %}
+                <div class="project-link">
+                    {{ translations.github }}:
+                    <a href="{{ item.github_url }}">{{ item.github_url }}</a>
+                </div>
+                {% endif %}
+
             </div>
             {% endif %}
 
         </article>
-
         {% endfor %}
 
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Languages
+         ============================== -->
 
     {% if cv.languages %}
     <section>
@@ -259,17 +354,13 @@
         <div class="languages">
 
             {% for item_language in cv.languages %}
-
             <div class="language">
-                <strong>
-                    {{ item_language.name }}
-                </strong>
 
-                <span>
-                    {{ item_language.proficiency }}
-                </span>
+                <strong>{{ item_language.name }}</strong>
+
+                <span>{{ item_language.proficiency }}</span>
+
             </div>
-
             {% endfor %}
 
         </div>
@@ -277,6 +368,10 @@
     </section>
     {% endif %}
 
+
+    <!-- ==============================
+         Certifications
+         ============================== -->
 
     {% if cv.certifications %}
     <section>
@@ -286,7 +381,6 @@
         </div>
 
         {% for item in cv.certifications %}
-
         <article class="certification-item">
 
             <div class="entry-header">
@@ -303,9 +397,21 @@
 
                 </div>
 
-                {% if item.issue_date %}
+                {% if item.issue_date or item.expiration_date %}
                 <div class="dates date-stack">
-                    <span class="date-value">{{ item.issue_date | full_date(language) }}</span>
+
+                    {% if item.issue_date %}
+                    <span class="date-value">
+                        {{ item.issue_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
+                    {% if item.expiration_date %}
+                    <span class="date-value date-expiration">
+                        {{ item.expiration_date | full_date(language) }}
+                    </span>
+                    {% endif %}
+
                 </div>
                 {% endif %}
 
@@ -318,8 +424,16 @@
             </div>
             {% endif %}
 
-        </article>
+            {% if item.credential_url %}
+            <div class="credential">
+                {{ translations.website }}:
+                <a href="{{ item.credential_url }}">
+                    {{ item.credential_url }}
+                </a>
+            </div>
+            {% endif %}
 
+        </article>
         {% endfor %}
 
     </section>
