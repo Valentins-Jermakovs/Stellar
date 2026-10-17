@@ -6,9 +6,8 @@
 
 @page {
     size: A4;
-    margin: 0;
+    margin: 15mm 17mm;
 }
-
 
 /* ==============================
    Global styles
@@ -18,7 +17,6 @@
     box-sizing: border-box;
 }
 
-/* Theme tokens */
 :root {
     --color-text: #161616;
     --color-heading: #161616;
@@ -34,6 +32,7 @@
     --color-sidebar: #161616;
     --color-sidebar-text: #f4f4f4;
     --color-sidebar-muted: #c6c6c6;
+
     --font-family: "IBM Plex Sans", "IBM Plex", "Noto Sans", Arial, sans-serif;
 
     --ink: var(--color-text);
@@ -44,24 +43,74 @@
     --accent: var(--color-accent);
 }
 
-body {
-    margin: 0;
-    padding: 15mm 17mm;
-    font-family: var(--font-family);
-    color: var(--ink);
-    font-size: 9.5pt;
-    line-height: 1.42;
-    background: var(--color-white);
+html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-white);
+    color: var(--ink);
+    font-family: var(--font-family);
+    font-size: 9.5pt;
+    line-height: 1.45;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+p {
+    margin: 4px 0 0;
+    color: var(--color-text-secondary);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    orphans: 3;
+    widows: 3;
+}
+
+h1,
+h2,
+h3 {
+    page-break-after: avoid;
+    break-after: avoid-page;
+}
+
+h2 {
+    margin: 0;
+    color: var(--dark);
+    font-family: var(--font-family);
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    overflow-wrap: anywhere;
+}
+
+h3 {
+    margin: 0;
+    color: var(--dark);
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
 
 /* ==============================
    Header
    ============================== */
 
 .header {
-    padding-bottom: 10mm;
+    padding-bottom: 8mm;
     border-bottom: 1px solid var(--dark);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .header-top {
@@ -87,18 +136,24 @@ body {
 }
 
 .header-main {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 58mm;
-    gap: 15mm;
+    display: flex;
+    align-items: stretch;
+    gap: 10mm;
+}
+
+.identity {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .identity h1 {
     margin: 0;
     color: var(--dark);
-    font-size: 36pt;
+    font-size: 34pt;
     font-weight: 400;
-    line-height: 0.98;
+    line-height: 1.02;
     letter-spacing: -1.2px;
+    overflow-wrap: anywhere;
 }
 
 .identity h1 span {
@@ -107,105 +162,120 @@ body {
 }
 
 .headline {
-    margin-top: 6mm;
+    margin-top: 5mm;
     color: var(--accent);
     font-family: var(--font-family);
     font-size: 10.5pt;
     font-weight: 700;
     letter-spacing: 0.4px;
+    overflow-wrap: anywhere;
 }
 
+/* ==============================
+   Contact Information
+   ============================== */
+
 .contact-block {
-    align-self: end;
-    padding-left: 7mm;
+    flex: 0 0 56mm;
+    align-self: flex-end;
+    min-width: 0;
+    padding-left: 6mm;
     border-left: 1px solid var(--light);
+
     color: var(--muted);
     font-family: var(--font-family);
     font-size: 8pt;
     line-height: 1.65;
+
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
+.contact-item {
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.contact-item:first-child {
+    margin-top: 0;
+}
+
+.contact-label {
+    color: var(--color-text-secondary);
+    font-weight: 700;
+}
+
+.contact-block a {
+    color: var(--muted);
+}
+
+.contact-block a:hover {
+    color: var(--accent);
+}
 
 /* ==============================
-   Layout
+   Main Document Flow
    ============================== */
 
 .content {
-    display: table;
+    display: block;
     width: 100%;
-    table-layout: fixed;
-    padding-top: 9mm;
+    padding-top: 8mm;
 }
 
-main {
-    display: table-cell;
-    width: calc(100% - 66mm);
-    padding-right: 13mm;
-    vertical-align: top;
-}
-
-aside {
-    display: table-cell;
-    width: 53mm;
-    padding-left: 9mm;
-    border-left: 1px solid var(--light);
-    vertical-align: top;
-}
-
-
-/* ==============================
-   Sections
-   ============================== */
+/*
+ * All sections use normal document flow.
+ * This allows the document to continue naturally
+ * instead of creating separate main and sidebar columns.
+ */
 
 section {
-    margin-bottom: 8mm;
+    display: block;
+    width: 100%;
+    margin: 0 0 8mm;
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 section:last-child {
     margin-bottom: 0;
 }
 
+/* ==============================
+   Section Headings
+   ============================== */
+
 .section-heading,
 .side-heading {
     display: flex;
     align-items: baseline;
-    gap: 7px;
+    gap: 8px;
+
     margin-bottom: 4mm;
     padding-bottom: 2mm;
     border-bottom: 1px solid var(--light);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: avoid;
+    break-after: avoid-page;
 }
 
-.section-heading span,
-.side-heading span {
+.section-heading > span,
+.side-heading > span {
+    flex: 0 0 auto;
     color: var(--accent);
     font-family: var(--font-family);
     font-size: 7.5pt;
     font-weight: 700;
 }
 
-h2 {
-    margin: 0;
-    color: var(--dark);
-    font-family: var(--font-family);
-    font-size: 10pt;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.6px;
+.section-heading h2,
+.side-heading h2 {
+    min-width: 0;
 }
-
-h3 {
-    margin: 0;
-    color: var(--dark);
-    font-size: 11pt;
-    font-weight: 700;
-}
-
-p {
-    margin: 4px 0 0;
-    white-space: pre-line;
-}
-
 
 /* ==============================
    Profile
@@ -213,22 +283,29 @@ p {
 
 .profile {
     max-width: 100%;
+    margin-top: 0;
     color: var(--color-text-secondary);
     font-size: 10pt;
     line-height: 1.55;
 }
 
-
 /* ==============================
-   Experience
+   Experience and Education
    ============================== */
 
 .experience-item,
 .education-item {
-    display: grid;
-    grid-template-columns: 38mm minmax(0, 1fr);
-    gap: 7mm;
+    position: relative;
     margin-bottom: 6mm;
+
+    /*
+     * The date is positioned independently.
+     * Entry text remains in normal flow and can span pages.
+     */
+    padding-left: 38mm;
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .experience-item:last-child,
@@ -240,18 +317,33 @@ p {
     color: var(--muted);
     font-family: var(--font-family);
     font-size: 7.8pt;
-    line-height: 1.4;
+    line-height: 1.45;
 }
 
-/* Date ranges */
-.period.date-stack {
+.experience-item > .period,
+.education-item > .period {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 31mm;
+    overflow-wrap: anywhere;
+}
+
+.date-stack {
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
-    min-width: 38mm;
+    gap: 2px;
 }
 
-.dates.date-stack {
-    align-items: flex-end;
-    min-width: 38mm;
+.date-value {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.date-end::before {
+    content: "– ";
 }
 
 .company {
@@ -260,11 +352,16 @@ p {
     font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .company span {
     color: var(--muted);
     font-weight: 400;
+}
+
+.entry {
+    min-width: 0;
 }
 
 .entry p {
@@ -277,19 +374,22 @@ p {
     font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .field {
+    margin-top: 2px;
     color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
 }
 
 .location {
-    margin-top: 1px;
+    margin-top: 2px;
     color: var(--muted);
     font-family: var(--font-family);
     font-size: 8pt;
+    overflow-wrap: anywhere;
 }
-
 
 /* ==============================
    Projects
@@ -299,14 +399,32 @@ p {
     margin-bottom: 5mm;
     padding-left: 5mm;
     border-left: 2px solid var(--lighter);
+
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .project-item:last-child {
     margin-bottom: 0;
 }
 
+.project-item h3 {
+    overflow-wrap: anywhere;
+}
+
 .project-item p {
     color: var(--color-text-secondary);
+}
+
+.project-meta {
+    margin-top: 3px;
+    color: var(--muted);
+    font-family: var(--font-family);
+    font-size: 7.8pt;
+}
+
+.project-links {
+    margin-top: 4px;
 }
 
 .project-link {
@@ -314,78 +432,91 @@ p {
     color: var(--accent);
     font-family: var(--font-family);
     font-size: 7.8pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
+.project-link a {
+    color: var(--accent);
+}
 
 /* ==============================
    Skills
    ============================== */
 
 .skills {
-    display: flex;
-    flex-direction: column;
-    gap: 3.5mm;
+    column-count: 2;
+    column-gap: 12mm;
+    column-fill: balance;
 }
 
 .skill {
-    padding-bottom: 2.5mm;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 5px 0 6px;
     border-bottom: 1px solid var(--lighter);
-}
 
-.skill:last-child {
-    border-bottom: 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
 }
 
 .skill-name {
     color: var(--dark);
     font-family: var(--font-family);
-    font-size: 8.5pt;
+    font-size: 8.8pt;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .skill-level {
-    margin-top: 1px;
+    display: block;
+    margin-top: 2px;
     color: var(--muted);
     font-family: var(--font-family);
     font-size: 7.5pt;
+    overflow-wrap: anywhere;
 }
-
 
 /* ==============================
    Languages
    ============================== */
 
 .languages {
-    display: flex;
-    flex-direction: column;
-    gap: 3mm;
+    column-count: 2;
+    column-gap: 12mm;
+    column-fill: balance;
 }
 
 .language {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    padding-bottom: 2.5mm;
+    display: block;
+    margin: 0;
+    padding: 5px 0 6px;
     border-bottom: 1px solid var(--lighter);
-}
 
-.language:last-child {
-    border-bottom: 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
 }
 
 .language-name {
+    display: block;
     color: var(--dark);
     font-family: var(--font-family);
     font-size: 8.5pt;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .language-level {
+    display: block;
+    margin-top: 2px;
     color: var(--muted);
     font-family: var(--font-family);
     font-size: 7.5pt;
+    overflow-wrap: anywhere;
 }
-
 
 /* ==============================
    Certifications
@@ -393,6 +524,8 @@ p {
 
 .certification {
     margin-bottom: 5mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .certification:last-child {
@@ -401,7 +534,7 @@ p {
 
 .certification h3 {
     font-size: 9pt;
-    line-height: 1.3;
+    line-height: 1.35;
 }
 
 .certification-org {
@@ -410,37 +543,36 @@ p {
     font-family: var(--font-family);
     font-size: 7.8pt;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .certification-date {
-    margin-top: 2px;
+    margin-top: 3px;
     color: var(--muted);
     font-family: var(--font-family);
     font-size: 7.5pt;
 }
 
-.date-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
+.certification-url {
+    margin-top: 3px;
+    font-family: var(--font-family);
+    font-size: 7.5pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
-.date-value {
-    display: block;
-    white-space: nowrap;
-}
-
-.date-end::before {
-    content: "– ";
+.certification-url a {
+    color: var(--accent);
 }
 
 .credential {
-    margin-top: 2px;
+    margin-top: 3px;
     color: var(--color-muted);
     font-family: var(--font-family);
     font-size: 7.2pt;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
-
 
 /* ==============================
    Utilities
@@ -451,36 +583,35 @@ p {
     word-break: break-word;
 }
 
-
 /* ==============================
-   Print styles
+   Print and Pagination
    ============================== */
 
 @media print {
-
     body {
         background: var(--color-white);
     }
 
-    section,
-    article {
-        break-inside: avoid;
-        page-break-inside: avoid;
-    }
-
-    .header {
-        break-inside: avoid;
-        page-break-inside: avoid;
-    }
-
-    .content {
-        break-inside: auto;
+    section {
         page-break-inside: auto;
+        break-inside: auto;
     }
 
-    main,
-    aside {
-        vertical-align: top;
+    .header,
+    .section-heading,
+    .side-heading {
+        page-break-inside: avoid;
+        break-inside: avoid;
     }
 
+    .skill,
+    .language,
+    .certification {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    a {
+        text-decoration: none;
+    }
 }
